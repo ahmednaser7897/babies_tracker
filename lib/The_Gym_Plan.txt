@@ -1,0 +1,303 @@
+======================================= Users =======================================
+
+Users : 
+    admin
+    gym
+    Coach
+    user
+
+======================================= Pages =======================================
+Targets :
+     # Front-End :
+        => Login Page->Done                                                     Note: For all users
+       
+       @ Gym
+            => Home Page
+                => Setting Screen                                           Note: Show info of gym and can edit it
+                => Coaches Screen                                           Note: Can ban and unban coach from this screen by ban button
+                    => Create new coach Screen
+                    => Coach info Screen
+                => Users Screen                                             Note: Can ban and unban user from this screen by ban button
+                    => Create new user Screen
+                    => User info Screen
+                => Exercises Screen
+                    => Create new exercise Screen
+
+       @ Coach
+            => Home Page
+                => Setting Screen                                           Note: Show info of coach and can edit it
+                => Gym Info Screen
+                => Users Screen                                             Note: Make icon for Open chat for each user (Open Message Screen direct)
+                    => Create new user_exercise Screen                      Note: Couldn't create new one if user has one already for the same day
+                    => User info Screen
+                        => Edit Fitness info of user
+                    => user_exercises Screen                                Note: Show them as cards (user_name, coach_name, done or not)
+                        => All exercise (json) info                         Note: (count, total, exercise_name, video_link)
+                        => Create new user_exercise Screen
+                    => Diets of user Screen                                  Note: Show all user's diets
+                        => Create new Diet Screen
+                        => Show info of diet Screen
+                => Coaches Screen
+                    => Coach info Screen
+                => Exercises Screen                                        Note: show exercises of his gym
+                => Chat Screen                                              Note: Show all users that he made chat with them before
+                    => Messages Screen
+
+       @ User
+            => Home Page
+                => Setting Screen                                           Note: Show info of user and can edit it
+                => Gym Info Screen 
+                => Coaches Screen                                           Note: Make icon for Open chat for each coach (Open Message Screen direct)
+                    => Coach info Screen
+                => his user_exercises Screen                                Note: Show them as cards (user_name, coach_name, done or not), it will be done if he done all of its exercises (json)
+                    => All exercise (json) info                             Note: (count, total, exercise_name, video_link), can't done it if it wasn't the same day
+                => Diets of user Screen                                      Note: Show all user's diets
+                    => Show info of diet Screen
+                => Chat Screen                                              Note: Show all coaches that he made chat with them before
+                    => Messages Screen
+
+       @ Admin->Done
+            => Home Page
+                => Setting Screen                                           Note: Show info of admin and can edit it
+                => admins Screen                                            Note: Can ban and unban admin from this screen by ban button
+                    => Create new admin screen
+                    => admin info Screen
+                => Gyms Screen                                              Note: Can ban and unban Gym from this screen by ban button
+                    => Create new gym screen
+                    => gym info Screen
+                    => users of gym Screen
+                    => Coaches of gym Screen
+
+
+======================================= Tables =======================================
+
+@ Admins->Done
+    => id
+    => name
+    => email (unique, lowercase)
+    => password (lowercase)
+    => gender enum['Male', 'Female']
+    => phone (unique) example : "0512345678"
+    => photo (not required)
+    => ban (Boolean)
+
+@ Gyms
+    => id
+    => name
+    => email (unique, lowercase)
+    => password (lowercase)
+    => description
+    => phone (unique) example : "0512345678"
+    => photo (not required)
+    => ban (Boolean : false)
+    => open_date (Date)
+    => close_date (Date)            Note : create validation to make close_date after open_date
+    => rate enum[1, 2, 3, 4, 5]
+
+@ Coach
+    => id
+    => gym_id
+    => name
+    => email (unique, lowercase)
+    => password (lowercase)
+    => gender enum['Male', 'Female']
+    => age
+    => bio
+    => phone (unique) example : "0512345678"
+    => photo (not required)
+    => ban (Boolean : false)
+
+@ Users
+    => id
+    => gym_id
+    => name
+    => email (unique, lowercase)
+    => password (lowercase)
+    => gender enum['Male', 'Female']
+    => age
+    => phone example : "0512345678" (unique)
+    => photo
+    => ban (Boolean : false)
+            /* Fitness Info */          Note: Only coach can update this info
+    => fitness_level enum['beginner', 'intermediate', 'advanced']
+    => Weight
+    => height
+    => body_fat_percentage
+    => goals enum['Weight loss', 'Get muscles', 'both of them']
+
+@ Exercises     Note: static information get it from "https://vgfit.com/workouts"
+    => id
+    => gym_id
+    => name     (string)
+    => video_link (string)
+
+@ User_Exercises
+    => id
+    => user_id
+    => coach_id
+    => exercise (json) [ {'count' : 10, 'total' : 4, 'exercise_id': 'id', 'done': false}, ... ]
+    => done (Boolean: false)
+    => date (Date)
+
+@ Diets
+    => id
+    => user_id
+    => coach_id
+    => breakfast (string)
+    => dinner (string)
+    => lunch (string)
+    => notes (string)
+    => created_at (date)
+
+@ messages
+    => id
+    => user_id
+    => coach_id
+    => sender enum['user', 'coach']
+    => text (nullable)
+    => PDF (nullable)
+    => created_at (date)
+
+======================================= Permissions =======================================
+admin :
+ahmednaser321@gmail.com
+1234567
+
+gym:
+ahmednaser123@gmail.com
+1234567
+
+coach
+ahmednaser@gmail.com
+1234567
+
+user
+ahmednaser1@gmail.com
+1234567
+
+@ Gym =>    Can do ?->Done
+            # Make Login Note: "Can not login if was banned"->Done
+            # Can See Table ( 
+                            his gym info,->Done
+                            his coaches,->Done
+                            his users,->Done
+                            all exercises of his users,->Done
+                            diet of his users,->Done
+                            his exercises->Done
+                           )
+            # Edit His Info->Done
+            # Create new Coach->Done
+            # Create new User->Done
+            # Create, Edit his exercises->Done
+            # Ban (User, Coach)->Done
+
+@ Coach =>    Can do ?->Done
+            # Make Login Note: "Can not login if his gym was banned or he was banned"->Done
+            # Can See Table (
+                            his gym info,->Done
+                            coaches of his gym,->Done
+                            users of his gym,->Done
+                            all exercises of users of his gym,->Done
+                            diet of users of his gym,->Done
+                           )
+            # Edit His Info->Done
+            # Edit Fitness info of each user of his gym->Done
+            # Set user_exercise of each user of his gym->Done
+            # Set diet of each user of his gym->Done
+            # Chat communication with users of his gym (text or file Message)->Done
+
+@ User =>   Can do? 
+            # Make Login Note: "Can not login if his gym was banned or he was banned"->Done
+            # Can See Table (
+                            info of his gym,->Done
+                            coaches of his gym,->Done
+                            all of his user_exercises,->Done
+                            )
+            # Edit His Info->Done
+            # Get Notification if he get new exercise
+            # Can make done for each exercise of his user_exercise that coach set it for him->Done
+            # Chat communication with his coach of his gym (text or file Message)->Done
+
+@ Admin =>      Can do ?->Done
+            # Make Login  Note: "Can not login if was banned"->Done
+            # Can See Table (
+                Admins,->Done
+                gyms,->Done
+                users of each gym->Done,
+                coaches of each gym->Done
+                )
+            # Edit His Info->Done
+            # Can Create New Admin->Done
+            # Can Create New Gym->Done
+            # Can Ban ( Admins, Gym)->Done
+------------------------------------------------------
+
+@ Global
+    # Make inputs of login page empty by default
+    # Make password minimum 8
+    # Show each data of each table into new screen like i explained it into plan (Home Page)
+    # Hash Password before save it
+    # Age must to be unsigned integer 
+    # Make image not required for all users
+    # =>FOCUS<= When take any screen copy and paste it to any other user don't forget to change name of this screen
+    # =>FOCUS<= with english spelling
+
+@ Login Page
+    # ignore spaces into email input to make login is easer->Done
+    # Convert user not found alert to be invalid account->Done
+
+@ Admin 
+
+    => Home Page
+        # Don't show data of admin that made sign in into admins page->Done
+        # 
+
+    => Add New Admin Screen
+        # Make image not required to create new admin and use default image for admin that i sent it to you->Done
+        # I tried to enter word into age input and it's passed must to make validation into age input to take only numbers->Done 
+
+    => Add New Gym
+        # Don't make user must to enter lowercase letters into email you can convert it by yourself before save it into database->Done
+        # Make image not required to create new gym and use default image for gym that i sent it to you->Done
+        # make validation on close date to make it required to be after open date->Done
+
+    => Admin Details Screen
+        # When make ban to admin show alert admin is banned or admin is unbanned->Done
+
+
+@ Gym
+    => Show User Exercises Screen
+        # Show user_exercises into cards and into each card show (coach name, date of user_exercise, status)->Done
+            # When gym click on any user_exercise open a new screen show all exercises into card of this user_exercise (coach name, date of user_exercise, status of user_exercise, exercise_name, count, total, status each exercise)   Note : show count and total as an integer not as a decimal->Done
+    
+    
+    => Show User Diet
+        # Show all diets into cards and into each card (coach_name, date of diet)->Done
+            # When gym click on any diet open new screen show into it all info of this diet (coach_name, date of diet, breakfast, dinner, lunch, notes)
+
+    => Edit Gym Info
+        # Name of screen is wrong =>FOCUS<=->Done
+        # make validation on close date to make it required to be after open date->Done
+
+@ Coach
+    => forget to show data of his gym to him make it into Setting screen (Gym Information)->Done
+    
+    => Setting Screen->Done
+        # Remove into of coach from this screen and set link Gym Information->Done
+
+    => User Details->Done 
+        # =>UI Edit<= Remove add diet button and set it into top of (show User diet screen) 
+        # =>UI Edit<= Remove add exercise button and set it into top of (show User exercise screen) 
+        # =>UI Edit<= Set Edit Fitness button into bottom of (User Details screen)
+
+    => Show User Exercises Screen->Done
+        # Show user_exercises into cards and into each card show (coach name, date of user_exercise, status)->Done
+            # When gym click on any user_exercise open a new screen show all exercises into card of this user_exercise (coach name, date of user_exercise, status of user_exercise, exercise_name, count, total, status each exercise)   Note : show count and total as an integer not as a decimal->Done
+
+    => Show User Diet->Done
+        # Show all diets into cards and into each card (coach_name, date of diet)
+            # When gym click on any diet open new screen show into it all info of this diet (coach_name, date of diet, breakfast, dinner, lunch, notes)
+    
+    => Add new user_exercise->Done
+        # =>UI Edit<= show each exercise into card to make it more ease to read
+            

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "876782942172",
+    "project_id": "babies-tracker-c44f7",
+    "storage_bucket": "babies-tracker-c44f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876782942172:android:5829102956470afd750119",
+        "android_client_info": {
+          "package_name": "com.example.babies_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChO_upkbv9soEnvDpdB9WrAcVX8-WOH2Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

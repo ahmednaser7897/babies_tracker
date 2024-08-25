@@ -1,0 +1,264 @@
+======================================= Users =======================================
+
+Users : 
+    Hospitals---->DONE
+    Doctors---->DONE
+    Mothers---->DONE
+    Admins---->DONE
+
+======================================= Pages =======================================
+Targets :
+    # Front-End :
+        => Login Page ---->DONE
+
+       @ Admin Section---->DONE
+            => Home Page 
+               => All Admins Screen ---->DONE
+               => All Hospitals Screen ---->DONE
+               => Hospital Info Page ---->DONE
+                  => Hospital's Doctors screen ---->DONE
+                  => Hospital's birth_reports screen ---->DONE
+                        => birth_report's Baby screen ---->DONE
+                            => vaccinations_history of Baby screen---->DONE
+                            => sleep_details of Baby screen---->DONE
+                            => feeding_time of Baby screen---->DONE
+                        => birth_report's mother screen ---->DONE
+                            => current_medications of mother screen---->DONE
+               => Edit his Info Page---->DONE
+               => Create Admin Page ---->DONE
+               => Create Hospital Page ---->DONE
+ 
+       @ Hospital Section ---->DONE
+            => Home Page ---->DONE
+                => Hospital Info Page ---->DONE
+                    => Hospital's Doctors screen ---->DONE
+                    => Hospital's birth_reports screen---->DONE 
+                        => birth_report's Baby screen ---->DONE
+                            => vaccinations_history of Baby screen---->DONE
+                            => sleep_details of Baby screen---->DONE
+                            => feeding_time of Baby screen---->DONE
+                        => birth_report's mother screen ---->DONE
+                            => current_medications of mother screen---->DONE
+                => Edit his Info Page---->DONE
+                => Create Doctor Page---->DONE 
+                => Create Mother Page ---->DONE
+ 
+       @ Doctor Section---->DONE
+            => Home Page ---->DONE
+                => Hospital Info Page ---->DONE
+                    => Hospital's Doctors screen ---->DONE
+                    => his birth_reports screen ---->DONE
+                        => his birth_report's Baby screen ---->DONE
+                            => vaccinations_history of Baby screen---->DONE
+                                => Create vaccinations_history of Baby screen---->DONE
+                            => sleep_details of Baby screen---->DONE
+                                => Create sleep_details of Baby screen---->DONE
+                            => feeding_time of Baby screen---->DONE
+                                => Create feeding_time of Baby screen---->DONE
+                        => his birth_report's mother screen ---->DONE
+                            => current_medications of mother screen---->DONE
+                                => Create current_medication of Baby screen---->DONE
+                => Edit his Info Page---->DONE
+                => Create Baby Page ---->DONE
+                => Update health status Baby Page ---->DONE
+                => Create birth_report Page ---->DONE
+                => Update health status birth_report Page ---->DONE
+
+       @ Mother Section 
+          => Home Page 
+            => Hospital Info Page 
+                    => Hospital's Doctors screen 
+                    => her birth_reports screen 
+                        => her birth_report's Baby screen 
+                        => her birth_report's mother screen 
+          => Edit her Info Page  
+
+======================================= Tables =======================================
+
+@ Admins---->DONE
+    => id
+    => name
+    => email
+    => password
+    => gender enum['Male', 'Female']
+    => phone example : "0512345678"
+    => photo
+    => online
+    => ban (Boolean)
+
+@ Hospitals---->DONE
+    => id
+    => name
+    => email
+    => password
+    => phone example : "0512345678"
+    => photo
+    => city
+    => bio
+    => location (map link)
+    => online
+    => ban (Boolean)
+
+@ Doctors---->DONE
+    => id
+    => name
+    => email
+    => password
+    => gender enum['Male', 'Female']
+    => phone example : "0512345678"
+    => bio
+    => photo
+    => online
+    => ban (Boolean)
+
+@ Mothers---->DONE
+    => id
+    => name
+    => email
+    => password
+    => phone example : "0512345678"
+    => photo
+    => address (string)
+    => healthy_history set["Diabetes", "Hypertension", "Heart Disease", "Asthma", "Thyroid Disorders", "Cervical Cancer"]
+    => postpartum_health set["Postpartum Bleeding", "Abdominal Pain", "Uterine Contraction", "Mastitis", "Constipation", "Excessive Swelling"]
+    => online
+    => ban (Boolean)
+    => doctor_notes (text: nullable)
+    => left (Boolean: false)
+
+@ current_medications---->DONE
+    => id
+    => mother_id
+    => name
+    => dosage
+    => frequency (Integer : min: 1)      Note: How often the medication is taken (e.g., daily, 3 a day)
+    => start_date
+    => end_date (nullable)
+    => purpose (text)
+    => doctor_notes (text: nullable)
+
+@ Babies---->DONE
+    => id
+    => mother_id
+    => doctor_id
+    => name
+    => photo
+    => birth_weight
+    => birth_length
+    => head_circumference
+    => APGAR_score (json) {
+        "Appearance" : [0, 1, 2],
+        "Pulse" : [0, 1, 2],
+        "Grimace" : [0, 1, 2],
+        "Activity" : [0, 1, 2],
+        "Respiration" : [0, 1, 2]
+    }
+    => birth_date
+    => gestational_age
+    => delivery_type enum["Natural", "Cesarean"]
+    => doctor_notes (text: nullable)
+    => left (Boolean: false)
+
+@ vaccinations_histories---->DONE
+    => id
+    => baby_id
+    => vaccine_name
+    => vaccination_date
+    => dose
+    => Administering Entity
+    => administration_site enum["Arm", "Thigh"]
+    => next_dose_date (date: nullable)
+    => side_effects (text: nullable)
+
+@ sleep_details---->DONE
+    => id
+    => child_id
+    => date (date)
+    => total_sleep_duration             Notes: it will equal summation of all duration sleeps into details      example: (end_1 - start_1) + (end_2 - start_2) + ......
+    => details (json) [
+        {
+            "start_time" : " ",          (time)
+            "end_time" : " ",            (time)
+            "sleep_quality" : " ",       enum["Restful", "Slightly restless"]
+        }
+    ]
+    => notes (text: nullable)
+
+@ feeding_times---->DONE
+    => id
+    => child_id
+    => date (date)
+    => details (json)[
+        {
+            "feeding_details" : " ",    enum["Breast Feeding", "Formula Feeding"]
+            "feeding_time" : " ",       (time)
+            "feeding_amount" : " ",     (double)          Notes : Milliliters
+            "feeding_duration" : " ",   (double)        Notes : Minutes
+        }
+    ]
+    => notes (text: nullable)
+
+@ messages---->DONE
+    => id
+    => doctor_id
+    => mother_id
+    => sender enum['doctor', 'mother']
+    => text (nullable)
+    => PDF (nullable)
+    => created_at (date)
+======================================= Permissions =======================================
+
+@ Hospital =>   Can do ?
+            # Make Login Note: "Can not login if was banned"---->DONE
+            # Can See Table (  
+                            his hospital's doctors,---->DONE
+                            his hospital's mothers,---->DONE
+                            his hospital's babies (vaccinations_histories, sleep_details, feeding_times),
+                            his hospital's birth_reports---->DONE
+                            )
+            # Edit His Info---->DONE
+            # Create new Doctor---->DONE
+            # Create new Mother---->DONE
+            # Can record check out the mother ---->DONE
+            # Can record check out the baby ---->DONE
+            # Ban his (doctors, mothers)---->DONE
+
+@ Doctor =>   Can do?---->DONE
+            # Make Login Note: "Can not login if his hospital was banned or he was banned"---->DONE
+            # Can See Table (  
+                            his hospital's doctors,---->DONE
+                            his hospital's mothers,---->DONE
+                            his hospital's babies (vaccinations_histories, sleep_details, feeding_times---->DONE),
+                            his hospital's birth_reports---->DONE)
+            # Edit His Info---->DONE
+            # Create new Baby---->DONE
+            # Create new birth_report---->DONE
+            # Add current_medications for his mother---->DONE
+            # Add vaccination_history for his babies---->DONE
+            # Add sleep_details for his babies---->DONE
+            # Add feeding_times for his babies---->DONE
+            # Chat communication with Mother (text or file Message)---->DONE
+
+@ Mother =>    Can do ?
+            # Make Register And Login Note: "Can not login if his hospital was banned or he was banned"---->DONE
+            # Can See Table ( 
+                            his hospital's doctors,---->DONE
+                            his babies (vaccinations_histories, sleep_details, feeding_times),---->DONE
+                            his birth_reports)
+            # Edit His Info---->DONE
+            # Print as PDF her healthy information from tables (mothers, current_medications)
+            # Print as PDF her baby's healthy information from tables (babies, vaccinations_histories, sleep_details, feeding_times)
+            # Print as PDF her birth_report's healthy information
+            # Get notified if a new current_medication is registered
+            # Chat communication with Doctor (text or file Message)---->DONE
+
+@ Admin =>      Can do ?---->DONE
+            # Can See Table ( 
+                Admins, ---->DONE
+                Hospital, ---->DONE
+                Info of Hospital (Doctors, Mothers, Babies, Birth_Reports),---->DONE
+                )
+            # Edit His Info---->DONE
+            # Can Create New Admin---->DONE
+            # Can Create New Hospital---->DONE
+            # Can Ban ( Admins, Hospital) Note : "the oldest admin could not be banned by a new admin"---->DONE
