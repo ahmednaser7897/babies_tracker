@@ -86,7 +86,9 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                   prefix: Icons.male),
               AppSizedBox.h3,
               dataValue(
-                  name: "Bio", value: model.bio ?? '', prefix: Icons.biotech),
+                  name: "Bio",
+                  value: model.bio ?? '',
+                  prefix: Icons.info_outline),
               AppSizedBox.h3,
             ],
           ),

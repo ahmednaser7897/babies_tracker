@@ -1,3 +1,4 @@
+import 'package:babies_tracker/ui/componnents/widgets.dart';
 import 'package:flutter/material.dart';
 
 import '../../app/app_sized_box.dart';
@@ -32,8 +33,6 @@ Widget screenBuilder({
       child: Text('Empty'),
     );
   } else {
-    return const Center(child: Text('No data to show')
-        //LogOutButton(onTap: () {}),
-        );
+    return emptListWidget(null);
   }
 }

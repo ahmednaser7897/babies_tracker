@@ -148,7 +148,7 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
                       selectFromOptionbs(healthyHistory, motherHealthyHistory),
                       AppSizedBox.h3,
                       const Text(
-                        "Postpar tumHealth",
+                        "Postpartum Health",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

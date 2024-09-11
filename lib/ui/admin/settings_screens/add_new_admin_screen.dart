@@ -31,13 +31,13 @@ class _AddNewAdminScreenState extends State<AddNewAdminScreen> {
 
   TextEditingController phoneController = TextEditingController();
 
-  TextEditingController genderController = TextEditingController();
+  //TextEditingController genderController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
+  String? gender;
   @override
   void initState() {
-    genderController.text = 'male';
+    //genderController.text = 'male';
     super.initState();
   }
 
@@ -146,7 +146,13 @@ class _AddNewAdminScreenState extends State<AddNewAdminScreen> {
                       ),
                     ),
                     AppSizedBox.h2,
-                    genderWidget(genderController),
+                    genderWidget(
+                        initValue: gender,
+                        onTap: (String value) {
+                          setState(() {
+                            gender = value;
+                          });
+                        }),
                     AppSizedBox.h3,
                     BlocConsumer<AdminCubit, AdminState>(
                       listener: (context, state) {
@@ -178,6 +184,13 @@ class _AddNewAdminScreenState extends State<AddNewAdminScreen> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  if (gender == null) {
+                                    showFlutterToast(
+                                      message: 'You must add gender',
+                                      toastColor: Colors.red,
+                                    );
+                                    return;
+                                  }
                                   if (_formKey.currentState!.validate()) {
                                     emailController.text = emailController.text
                                         .replaceAll(' ', '')
@@ -192,7 +205,7 @@ class _AddNewAdminScreenState extends State<AddNewAdminScreen> {
                                             name: nameController.text,
                                             password: passwordController.text,
                                             phone: phoneController.text,
-                                            gender: genderController.text,
+                                            gender: gender,
                                             createdAt:
                                                 DateTime.now().toString()));
                                   }

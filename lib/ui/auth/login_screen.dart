@@ -25,11 +25,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController =
-      TextEditingController(text: 'ahmed@gmail.com');
+  TextEditingController emailController = TextEditingController();
 
-  TextEditingController passwordController =
-      TextEditingController(text: '12345678');
+  TextEditingController passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   @override
@@ -39,6 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    emailController.text = 'ahmed11@me.com';
+    passwordController.text = '12345678';
+
     return BlocProvider(
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthState>(

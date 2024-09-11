@@ -1,4 +1,6 @@
+import 'package:babies_tracker/app/app_prefs.dart';
 import 'package:babies_tracker/app/app_strings.dart';
+import 'package:babies_tracker/app/luanch_url.dart';
 import 'package:babies_tracker/model/hospital_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:babies_tracker/app/extensions.dart';
 import 'package:babies_tracker/controller/admin/admin_cubit.dart';
 import 'package:babies_tracker/ui/componnents/const_widget.dart';
 
+import '../../../app/app_colors.dart';
 import '../../componnents/custom_button.dart';
 import '../../componnents/show_flutter_toast.dart';
 import '../../componnents/users_lists.dart';
@@ -59,12 +62,24 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
                   prefix: Icons.location_city),
               AppSizedBox.h3,
               dataValue(
-                  name: "Location",
-                  value: model.location ?? '',
-                  prefix: Icons.location_history),
+                name: "Location",
+                value: model.location ?? '',
+                prefix: Icons.location_history,
+                trailing: InkWell(
+                  onTap: () {
+                    launchURLFunction(model.location ?? '');
+                  },
+                  child: const Icon(
+                    Icons.info,
+                    color: AppColors.primer,
+                  ),
+                ),
+              ),
               AppSizedBox.h3,
               dataValue(
-                  name: "Bio", value: model.bio ?? '', prefix: Icons.biotech),
+                  name: "Bio",
+                  value: model.bio ?? '',
+                  prefix: Icons.info_outline),
               AppSizedBox.h3,
             ],
           ),
@@ -80,7 +95,7 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
         children: [
           CustomButton(
             text: 'Doctors',
-            width: 40,
+            width: AppPreferences.userType != AppStrings.admin ? 40 : 90,
             fontsize: 12,
             onTap: () async {
               var value = await Navigator.push(
@@ -90,7 +105,9 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
                     appBar: AppBar(
                       title: const Text('Show doctors'),
                     ),
-                    body: buildDoctorsList(doctors: model.doctors ?? []),
+                    body: (model.doctors ?? []).isEmpty
+                        ? emptListWidget(AppStrings.doctors)
+                        : buildDoctorsList(doctors: model.doctors ?? []),
                   ),
                 ),
               );
@@ -99,27 +116,28 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
               }
             },
           ),
-          CustomButton(
-            text: 'Mothers',
-            width: 40,
-            fontsize: 12,
-            onTap: () async {
-              var value = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Show mothers'),
+          if (AppPreferences.userType != AppStrings.admin)
+            CustomButton(
+              text: 'Mothers',
+              width: 40,
+              fontsize: 12,
+              onTap: () async {
+                var value = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: const Text('Show mothers'),
+                      ),
+                      body: buildMothersList(mothers: model.mothers ?? []),
                     ),
-                    body: buildMothersList(mothers: model.mothers ?? []),
                   ),
-                ),
-              );
-              if (value == 'add') {
-                Navigator.pop(context, 'add');
-              }
-            },
-          ),
+                );
+                if (value == 'add') {
+                  Navigator.pop(context, 'add');
+                }
+              },
+            ),
         ],
       );
     });
@@ -154,31 +172,10 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
               ),
               Hero(
                 tag: model.id.orEmpty(),
-                child: SizedBox(
-                  width: 30.w,
-                  child: Stack(
-                    alignment: Alignment.topRight,
-                    children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: CircleAvatar(
-                          backgroundColor:
-                              model.online ?? false ? Colors.green : Colors.red,
-                          radius: 2.w,
-                        ),
-                      ),
-                      CircleAvatar(
-                        radius: 15.w,
-                        backgroundImage:
-                            (model.image != null && model.image!.isNotEmpty)
-                                ? NetworkImage(model.image.orEmpty())
-                                : AssetImage(
-                                    AppAssets.admin,
-                                  ) as ImageProvider,
-                      ),
-                    ],
-                  ),
-                ),
+                child: imageWithOnlineState(
+                    uri: model.image,
+                    type: AppAssets.hospital,
+                    isOnline: model.online.orFalse()),
               ),
               AppSizedBox.h2,
               (state is LoadingChangeHospitalBan)

@@ -43,7 +43,9 @@ class _AllMothersScreenState extends State<AllMothersScreen> {
           ),
           isEmpty: false,
           isErorr: state is ErorrGetHomeData,
-          isLoading: state is LoadingGetHomeData,
+          isLoading: state is LoadingGetHomeData ||
+              state is LoadingGetHospital ||
+              state is LoadingChangeHospitalOnline,
           isSc: state is ScGetHomeData || cubit.mothers.isNotEmpty,
         );
       },

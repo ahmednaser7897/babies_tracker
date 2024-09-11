@@ -35,7 +35,7 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.userDetails(AppStrings.hospital)),
+        title: Text(AppStrings.userDetails(AppStrings.admin)),
       ),
       body: SingleChildScrollView(
         child: Padding(

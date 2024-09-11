@@ -55,7 +55,6 @@ class HospitalCubit extends Cubit<HospitalState> {
       hospitalModel = HospitalModel.fromJson(value.data() ?? {});
       changeHospitalOnline(hospitalModel!.id ?? '', true);
       saveFvmToken(hospitalModel!.id ?? '');
-      getHomeData();
       emit(ScGetHospital());
     } catch (e) {
       print('Get Hospital Data Error: $e');
@@ -83,7 +82,21 @@ class HospitalCubit extends Cubit<HospitalState> {
         }
       }
       User? currentUser = FirebaseAuth.instance.currentUser;
-      await currentUser!.updatePassword(model.password.orEmpty());
+      print('show user');
+      print(currentUser);
+
+      // Re-authenticate user with current password
+      final credential = EmailAuthProvider.credential(
+        email: hospitalModel!.email!,
+        password: hospitalModel!.password!,
+      );
+
+      await currentUser!.reauthenticateWithCredential(credential);
+      print('User re-authenticated successfully');
+      await currentUser.updatePassword(model.password.orEmpty());
+      // await currentUser.verifyBeforeUpdateEmail(model.email.orEmpty());
+      // await currentUser.updateEmail(model.email.orEmpty());
+
       print(model.toJson());
       await FirebaseFirestore.instance
           .collection(AppStrings.hospital)
@@ -91,7 +104,7 @@ class HospitalCubit extends Cubit<HospitalState> {
           .update(model.toJson());
       if (image != null) {
         await addImage(
-          type: AppStrings.doctor,
+          type: AppStrings.hospital,
           userId: AppPreferences.uId,
           parentImageFile: image,
         );
@@ -134,7 +147,7 @@ class HospitalCubit extends Cubit<HospitalState> {
     }
   }
 
-  Future<void> addImageSub(
+  Future<String?> addImageSub(
       {required String type,
       required String userId,
       required File parentImageFile}) async {
@@ -154,9 +167,11 @@ class HospitalCubit extends Cubit<HospitalState> {
           .update({
         'image': parentImageUrl,
       });
+      return parentImageUrl;
     } catch (e) {
       print('Error: $e');
     }
+    return null;
   }
 
   Future<void> addDoctor(
@@ -186,15 +201,17 @@ class HospitalCubit extends Cubit<HospitalState> {
             .collection(AppStrings.doctor)
             .doc(value1.user?.uid)
             .set(model.toJson());
+
+        String? imageUri;
         if (image != null) {
-          await addImageSub(
+          imageUri = await addImageSub(
             type: AppStrings.doctor,
             userId: value1.user!.uid,
             parentImageFile: image,
           );
         }
+        setNewDoctor(model, imageUri);
         emit(ScAddDoctor());
-        await getHomeData();
       }
     } catch (error) {
       if (error
@@ -207,6 +224,23 @@ class HospitalCubit extends Cubit<HospitalState> {
       }
       print('Error: $error');
     }
+  }
+
+  void setNewDoctor(DoctorModel model, String? imageUri) {
+    DoctorModel newDoctor = DoctorModel(
+      ban: false,
+      email: model.email,
+      id: model.id,
+      image: imageUri,
+      name: model.name,
+      online: false,
+      password: model.password,
+      phone: model.phone,
+      bio: model.bio,
+      gender: model.gender,
+      hospitalId: model.hospitalId,
+    );
+    doctors.add(newDoctor);
   }
 
   Future<void> addMother(
@@ -236,15 +270,16 @@ class HospitalCubit extends Cubit<HospitalState> {
             .collection(AppStrings.mother)
             .doc(value1.user?.uid)
             .set(model.toJson());
+        String? imageUri;
         if (image != null) {
-          await addImageSub(
+          imageUri = await addImageSub(
             type: AppStrings.mother,
             userId: value1.user!.uid,
             parentImageFile: image,
           );
         }
+        setNewMother(model, imageUri);
         emit(ScAddMother());
-        await getHomeData();
       }
     } catch (error) {
       if (error
@@ -257,6 +292,29 @@ class HospitalCubit extends Cubit<HospitalState> {
       }
       print('Error: $error');
     }
+  }
+
+  void setNewMother(MotherModel model, String? imageUri) {
+    MotherModel newMother = MotherModel(
+      ban: false,
+      email: model.email,
+      id: model.id,
+      image: imageUri,
+      name: model.name,
+      online: false,
+      password: model.password,
+      phone: model.phone,
+      hospitalId: model.hospitalId,
+      address: model.address,
+      doctorNotes: model.docyorlId,
+      docyorlId: model.docyorlId,
+      healthyHistory: model.healthyHistory,
+      leaft: false,
+      postpartumHealth: model.postpartumHealth,
+    );
+    newMother.doctorModel =
+        doctors.firstWhere((element) => element.id == newMother.docyorlId);
+    mothers.add(newMother);
   }
 
   Future<void> changeMotherLeft(MotherModel model, bool value) async {
@@ -339,6 +397,8 @@ class HospitalCubit extends Cubit<HospitalState> {
 
       for (var element in value.docs) {
         var mother = MotherModel.fromJson(element.data());
+        mother.doctorModel =
+            doctors.firstWhere((element) => element.id == mother.docyorlId);
         //get evrey mother baby
         var bays = await element.reference.collection(AppStrings.baby).get();
         mother.medications = [];

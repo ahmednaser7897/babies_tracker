@@ -41,9 +41,9 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
   DoctorModel? doc;
   @override
   void initState() {
-    if (HospitalCubit.get(context).doctors.isNotEmpty) {
-      doc = HospitalCubit.get(context).doctors[0];
-    }
+    // if (HospitalCubit.get(context).doctors.isNotEmpty) {
+    //   doc = HospitalCubit.get(context).doctors[0];
+    // }
 
     super.initState();
   }
@@ -145,6 +145,7 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
                               name: ' phone');
                         },
                       ),
+                      AppSizedBox.h3,
                       const Text(
                         "Doctor",
                         style: TextStyle(
@@ -162,17 +163,17 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      AppSizedBox.h1,
+                      AppSizedBox.h2,
                       selectFromOptionbs(healthyHistory, motherHealthyHistory),
                       AppSizedBox.h3,
                       const Text(
-                        "Postpar tumHealth",
+                        "Postpartum Health",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      AppSizedBox.h1,
+                      AppSizedBox.h2,
                       selectFromOptionbs(
                           postpartumHealth, motherPostpartumHealth),
                       AppSizedBox.h3,
@@ -183,7 +184,6 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      AppSizedBox.h2,
                       AppSizedBox.h2,
                       AppTextFormFiledWidget(
                         keyboardType: TextInputType.text,
@@ -209,6 +209,7 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
                         controller: doctorNotesController,
                         hintText: "Enter  doctor notes",
                         prefix: Icons.note,
+                        maxLines: 5,
                         validate: (value) {
                           return null;
                         },
@@ -289,7 +290,7 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
 
   Widget pickDoctor() {
     return Container(
-      width: 70.w,
+      width: 90.w,
       height: 5.h,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       decoration: BoxDecoration(

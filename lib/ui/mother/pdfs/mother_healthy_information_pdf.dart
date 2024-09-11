@@ -82,7 +82,7 @@ class MotherHealthPdf {
       ),
       SizedBox(height: 0.5 * PdfPageFormat.cm),
       Text(
-        "Postpar tumHealth :",
+        "Postpartum Health :",
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,

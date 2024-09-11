@@ -25,27 +25,38 @@ class EditNewAdminScreen extends StatefulWidget {
 class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
   TextEditingController nameController = TextEditingController();
 
-  TextEditingController emailController = TextEditingController();
+  //TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
 
   TextEditingController phoneController = TextEditingController();
 
-  TextEditingController genderController = TextEditingController();
+  //TextEditingController genderController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
+  String? gender;
   @override
   void initState() {
     AdminCubit cubit = AdminCubit.get(context);
     if (cubit.adminModel != null) {
-      genderController.text = cubit.adminModel!.gender ?? 'male';
+      gender = cubit.adminModel!.gender;
+      // genderController.text = cubit.adminModel!.gender ?? 'male';
       phoneController.text = cubit.adminModel!.phone ?? '';
       nameController.text = cubit.adminModel!.name ?? '';
       passwordController.text = cubit.adminModel!.password ?? '';
+      //emailController.text = cubit.adminModel!.email ?? '';
     }
 
     super.initState();
+  }
+
+  bool isDataChanged(BuildContext context) {
+    AdminCubit cubit = AdminCubit.get(context);
+    return ImageCubit.get(context).image != null ||
+        cubit.adminModel!.gender != gender ||
+        cubit.adminModel!.phone != phoneController.text ||
+        cubit.adminModel!.name != nameController.text ||
+        cubit.adminModel!.password != passwordController.text;
   }
 
   @override
@@ -91,6 +102,25 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
                       },
                     ),
                     AppSizedBox.h3,
+                    // const Text(
+                    //   "Email",
+                    //   style: TextStyle(
+                    //     fontSize: 16,
+                    //     fontWeight: FontWeight.w400,
+                    //   ),
+                    // ),
+                    // AppSizedBox.h2,
+                    // AppTextFormFiledWidget(
+                    //   controller: emailController,
+                    //   keyboardType: TextInputType.text,
+                    //   hintText: "Enter Email",
+                    //   prefix: Icons.person,
+                    //   validate: (value) {
+                    //     return Validations.emailValidation(value,
+                    //         name: ' Email');
+                    //   },
+                    // ),
+                    //AppSizedBox.h3,
                     const Text(
                       "Password",
                       style: TextStyle(
@@ -110,7 +140,7 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
                             name: ' password');
                       },
                     ),
-                    AppSizedBox.h2,
+                    AppSizedBox.h3,
                     const Text(
                       "Phone",
                       style: TextStyle(
@@ -138,7 +168,13 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
                       ),
                     ),
                     AppSizedBox.h2,
-                    genderWidget(genderController),
+                    genderWidget(
+                        initValue: gender,
+                        onTap: (String value) {
+                          setState(() {
+                            gender = value;
+                          });
+                        }),
                     AppSizedBox.h3,
                     BlocConsumer<AdminCubit, AdminState>(
                       listener: (context, state) {
@@ -170,18 +206,33 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  print("object1");
+                                  if (gender == null) {
+                                    showFlutterToast(
+                                      message: 'You must add gender',
+                                      toastColor: Colors.red,
+                                    );
+                                    return;
+                                  }
                                   if (_formKey.currentState!.validate()) {
-                                    print("object2");
-                                    adminCubit.editAdmin(
-                                        image: ImageCubit.get(context).image,
-                                        model: AdminModel(
-                                          image: cubit.adminModel?.image,
-                                          name: nameController.text,
-                                          password: passwordController.text,
-                                          phone: phoneController.text,
-                                          gender: genderController.text,
-                                        ));
+                                    if (!isDataChanged(context)) {
+                                      showFlutterToast(
+                                        message: 'No data changed for now!',
+                                        toastColor: Colors.red,
+                                      );
+                                      print('No data changed for now!');
+                                    } else {
+                                      print('data changed');
+                                      adminCubit.editAdmin(
+                                          image: ImageCubit.get(context).image,
+                                          model: AdminModel(
+                                            image: cubit.adminModel?.image,
+                                            name: nameController.text,
+                                            password: passwordController.text,
+                                            phone: phoneController.text,
+                                            gender: gender,
+                                            // email: emailController.text
+                                          ));
+                                    }
                                   }
                                 },
                               );

@@ -149,8 +149,8 @@ class _AddNewHospitalScreenState extends State<AddNewHospitalScreen> {
                     AppTextFormFiledWidget(
                       controller: cityController,
                       keyboardType: TextInputType.text,
-                      hintText: "Enter  city",
-                      prefix: Icons.person,
+                      hintText: "Enter city",
+                      prefix: Icons.home,
                       validate: (value) {
                         return Validations.normalValidation(value,
                             name: ' city');
@@ -169,9 +169,9 @@ class _AddNewHospitalScreenState extends State<AddNewHospitalScreen> {
                       controller: locationController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter  location",
-                      prefix: Icons.person,
+                      prefix: Icons.location_history,
                       validate: (value) {
-                        return Validations.normalValidation(value,
+                        return Validations.isGoogleMapsUrl(value,
                             name: ' location');
                       },
                     ),
@@ -188,8 +188,8 @@ class _AddNewHospitalScreenState extends State<AddNewHospitalScreen> {
                       controller: bioController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter  bio",
-                      prefix: Icons.person,
-                      maxLines: 3,
+                      prefix: Icons.info_outline,
+                      maxLines: 5,
                       validate: (value) {
                         return Validations.normalValidation(value,
                             name: ' bio');
@@ -232,7 +232,7 @@ class _AddNewHospitalScreenState extends State<AddNewHospitalScreen> {
                                         .toLowerCase();
                                     adminCubit.addHospital(
                                         image: ImageCubit.get(context).image,
-                                        hospitalModel: HospitalModel(
+                                        model: HospitalModel(
                                             ban: false,
                                             email: emailController.text,
                                             id: null,

@@ -22,11 +22,32 @@ class Validations {
   static RegExp smallLettersRegix = RegExp(r'^(?=.*?[a-z]).{1,}$');
   static RegExp numbersRegix = RegExp(r'^(?=.*?[0-9]).{1,}$');
   static RegExp arabic = RegExp(r'^[ّء-ي 0-9]+$');
+  static RegExp googleMapsPattern = RegExp(
+      r'^https:\/\/maps\.app\.goo\.gl\/[a-zA-Z0-9_-]{10,}$',
+      // r'^(http:|https:)?\\/\\/(www\\.)?(maps.)?google\\.[a-z.]+\\/maps/?([\\?]|place/*[^@]*)?/*@?(ll=)?(q=)?(([\\?=]?[a-zA-Z]*[+]?)*/?@{0,1})?([0-9]{1,3}\\.[0-9]+(,|&[a-zA-Z]+=)-?[0-9]{1,3}\\.[0-9]+(,?[0-9]+(z|m))?)?(\\/?data=[\\!:\\.\\-0123456789abcdefmsx]+)?',
+      //r'^(https?:\/\/)?maps.*$',
+      // r'^https?\:\/\/(www\.|maps\.)?google(\.[a-z]+){1,2}\/maps\/?\?([^&]+&)*(ll=-?[0-9]{1,2}\.[0-9]+,-?[0-9]{1,2}\.[0-9]+|q=[^&]+)+($|&)/',
+      caseSensitive: false);
+
+  // static RegExp gmailPattern = RegExp(
+  //   r'^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$',
+  //   // r'^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$', // Note the escaped dot before 'com'
+  // );
 
   static RegExp english = RegExp('[a-zA-Z]');
   static String? normalValidation(String? value, {required String name}) {
     if (value == null || value.isEmpty) {
       return "Please Enter $name";
+    }
+    return null;
+  }
+
+  static String? isGoogleMapsUrl(String? value, {required String name}) {
+    if (value == null || value.isEmpty) {
+      return "Please Enter $name";
+    }
+    if (!googleMapsPattern.hasMatch(value)) {
+      return ' $name must ba a correct Google map link';
     }
     return null;
   }
@@ -45,13 +66,25 @@ class Validations {
   }
 
   static String? emailValidation(String? value, {required String name}) {
+    return null;
+    RegExp specialcharactersRegex =
+        RegExp(r'^(?=.*[*"!@#$%^&(){}:;<>,?/~_+-]).{1,}$');
+    // print(value);
+    // print(specialcharactersRegex.hasMatch(value![0]));
+    // print(!value.contains('@gmail.com'));
+    print("object1");
     if (value == null || value.isEmpty) {
+      print("object2");
       return 'Please enter $name';
     }
-    if (!value.contains('@')) {
+    print("object3");
+    if (specialcharactersRegex.hasMatch(value[0]) ||
+        !value.contains('@gmail.com')) {
+      print("object4");
       return 'Please enter a valid email';
     }
 
+    print("object5");
     return null;
   }
 

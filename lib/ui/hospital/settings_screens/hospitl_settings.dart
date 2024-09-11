@@ -153,7 +153,9 @@ class _HospitalSettingsScreenState extends State<HospitalSettingsScreen> {
           ),
           isEmpty: false,
           isErorr: state is ErorrGetHospital,
-          isLoading: state is LoadingGetHospital,
+          isLoading: state is LoadingGetHomeData ||
+              state is LoadingGetHospital ||
+              state is LoadingChangeHospitalOnline,
           isSc: state is ScGetHospital || cubit.hospitalModel != null,
         );
       },

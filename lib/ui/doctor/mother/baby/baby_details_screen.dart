@@ -1,3 +1,4 @@
+import 'package:babies_tracker/app/app_colors.dart';
 import 'package:babies_tracker/app/app_strings.dart';
 import 'package:babies_tracker/model/babies_model.dart';
 import 'package:flutter/material.dart';
@@ -107,36 +108,22 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
               Row(
                 children: [
                   const Text(
-                    "Next Info",
+                    "APGAR Score !",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const Spacer(),
+                  AppSizedBox.w5,
                   scoresIcon(context),
                 ],
               ),
               AppSizedBox.h1,
               dataValue(
-                  name: "Appearance",
-                  value: model.appearance.toString(),
-                  prefix: Icons.skateboarding_rounded),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Grimace",
-                  value: model.grimace.toString(),
-                  prefix: Icons.skateboarding_rounded),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Pulse",
-                  value: model.pulse.toString(),
-                  prefix: Icons.skateboarding_rounded),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Respiration",
-                  value: model.respiration.toString(),
-                  prefix: Icons.skateboarding_rounded),
+                name: null,
+                value:
+                    '( ${model.appearance} , ${model.pulse} , ${model.grimace} , ${model.activity} , ${model.respiration} )',
+              ),
               AppSizedBox.h3,
               dataValue(
                   name: "Doctor Notes",
@@ -195,10 +182,23 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("AlertDialog"),
+          title: Row(
+            children: [
+              Text(!model.left.orFalse()
+                  ? "Check out the $user"
+                  : 'Recheck in the $user"'),
+              const Spacer(),
+              const Icon(
+                Icons.check_box_rounded,
+                size: 20,
+                color: AppColors.primerColor,
+              ),
+            ],
+          ),
           content: Text(!model.left.orFalse()
               ? "Are you sour you want Check out the $user ?"
               : 'Are you sour you want Recheck in the $user ?"'),
+          elevation: 10,
           actions: [
             TextButton(
               child: const Text("Cancel"),
@@ -304,7 +304,7 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
               backgroundImage: (model.photo != null && model.photo!.isNotEmpty)
                   ? NetworkImage(model.photo.orEmpty())
                   : AssetImage(
-                      AppAssets.mother,
+                      AppAssets.baby,
                     ) as ImageProvider,
             ),
           ),

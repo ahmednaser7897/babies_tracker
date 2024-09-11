@@ -28,7 +28,7 @@ class _ShowBabyVaccinationssState extends State<ShowBabyVaccinationss> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Show Baby Vaccinationss'),
+          title: const Text('Show Baby vaccinations'),
           actions: [
             if (!widget.model.left.orFalse() &&
                 AppPreferences.userType == AppStrings.doctor &&

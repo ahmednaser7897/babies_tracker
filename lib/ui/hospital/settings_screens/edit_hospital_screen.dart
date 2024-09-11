@@ -24,7 +24,7 @@ class EditHospitalScreen extends StatefulWidget {
 class _EditHospitalScreenState extends State<EditHospitalScreen> {
   TextEditingController nameController = TextEditingController();
 
-  TextEditingController emailController = TextEditingController();
+  //TextEditingController emailController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
 
@@ -47,9 +47,21 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
       cityController.text = cubit.hospitalModel!.city ?? '';
       nameController.text = cubit.hospitalModel!.name ?? '';
       passwordController.text = cubit.hospitalModel!.password ?? '';
+      // emailController.text = cubit.hospitalModel!.email ?? '';
     }
 
     super.initState();
+  }
+
+  bool isDataChanged(BuildContext context) {
+    HospitalCubit cubit = HospitalCubit.get(context);
+    return ImageCubit.get(context).image != null ||
+        cubit.hospitalModel!.phone != phoneController.text ||
+        cubit.hospitalModel!.name != nameController.text ||
+        cubit.hospitalModel!.password != passwordController.text ||
+        cubit.hospitalModel!.bio != bioController.text ||
+        cubit.hospitalModel!.location != locationController.text ||
+        cubit.hospitalModel!.city != cityController.text;
   }
 
   @override
@@ -95,6 +107,25 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
                             name: ' name');
                       },
                     ),
+                    AppSizedBox.h3,
+                    // const Text(
+                    //   "Email",
+                    //   style: TextStyle(
+                    //     fontSize: 16,
+                    //     fontWeight: FontWeight.w400,
+                    //   ),
+                    // ),
+                    // AppSizedBox.h2,
+                    // AppTextFormFiledWidget(
+                    //   controller: emailController,
+                    //   keyboardType: TextInputType.text,
+                    //   hintText: "Enter Email",
+                    //   prefix: Icons.person,
+                    //   validate: (value) {
+                    //     return Validations.emailValidation(value,
+                    //         name: 'Email');
+                    //   },
+                    // ),
                     AppSizedBox.h3,
                     const Text(
                       "Password",
@@ -147,7 +178,7 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
                       controller: cityController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter  city",
-                      prefix: Icons.house,
+                      prefix: Icons.home,
                       validate: (value) {
                         return Validations.normalValidation(value,
                             name: ' city');
@@ -166,9 +197,9 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
                       controller: locationController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter  location",
-                      prefix: Icons.house,
+                      prefix: Icons.location_history,
                       validate: (value) {
-                        return Validations.normalValidation(value,
+                        return Validations.isGoogleMapsUrl(value,
                             name: ' location');
                       },
                     ),
@@ -185,8 +216,8 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
                       controller: bioController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter  bio",
-                      prefix: Icons.person,
-                      maxLines: 3,
+                      prefix: Icons.info_outline,
+                      maxLines: 5,
                       validate: (value) {
                         return Validations.normalValidation(value,
                             name: ' bio');
@@ -228,17 +259,26 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
                                   print("object1");
                                   if (_formKey.currentState!.validate()) {
                                     print("object2");
-                                    hspitalCubit.editHospital(
-                                        image: ImageCubit.get(context).image,
-                                        model: HospitalModel(
-                                            image: cubit.hospitalModel?.image,
-                                            name: nameController.text,
-                                            password: passwordController.text,
-                                            phone: phoneController.text,
-                                            bio: bioController.text,
-                                            city: cityController.text,
-                                            location: locationController.text,
-                                            online: true));
+                                    if (!isDataChanged(context)) {
+                                      showFlutterToast(
+                                        message: 'No data changed for now!',
+                                        toastColor: Colors.red,
+                                      );
+                                      print('No data changed for now!');
+                                    } else {
+                                      hspitalCubit.editHospital(
+                                          image: ImageCubit.get(context).image,
+                                          model: HospitalModel(
+                                              image: cubit.hospitalModel?.image,
+                                              name: nameController.text,
+                                              password: passwordController.text,
+                                              phone: phoneController.text,
+                                              bio: bioController.text,
+                                              city: cityController.text,
+                                              location: locationController.text,
+                                              //email: emailController.text,
+                                              online: true));
+                                    }
                                   }
                                 },
                               );

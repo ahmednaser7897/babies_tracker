@@ -18,7 +18,7 @@ class _HospitalHomeScreenState extends State<HospitalHomeScreen> {
   @override
   void initState() {
     HospitalCubit.get(context).getCurrentHospitalData();
-
+    HospitalCubit.get(context).getHomeData();
     super.initState();
   }
 

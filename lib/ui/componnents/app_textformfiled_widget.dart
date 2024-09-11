@@ -63,6 +63,8 @@ class _AppTextFormFiledWidgetState extends State<AppTextFormFiledWidget> {
           color: Colors.black45,
         ),
         filled: true,
+        alignLabelWithHint: true,
+        floatingLabelAlignment: FloatingLabelAlignment.start,
         prefixIcon: widget.prefix != null
             ? Icon(
                 widget.prefix,

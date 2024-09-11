@@ -31,16 +31,17 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
 
   TextEditingController phoneController = TextEditingController();
 
-  TextEditingController genderController = TextEditingController();
+  //TextEditingController genderController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
+  String? gender;
   @override
   void initState() {
     DoctorCubit cubit = DoctorCubit.get(context);
     if (cubit.model != null) {
-      genderController.text = cubit.model!.gender ?? 'male';
+      gender = cubit.model!.gender;
+      // genderController.text = cubit.model!.gender ?? 'male';
       phoneController.text = cubit.model!.phone ?? '';
 
       nameController.text = cubit.model!.name ?? '';
@@ -142,7 +143,13 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
                         ),
                       ),
                       AppSizedBox.h2,
-                      genderWidget(genderController),
+                      genderWidget(
+                          initValue: gender,
+                          onTap: (String value) {
+                            setState(() {
+                              gender = value;
+                            });
+                          }),
                       AppSizedBox.h3,
                       const Text(
                         "Bio",
@@ -156,7 +163,7 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
                         keyboardType: TextInputType.text,
                         controller: bioController,
                         hintText: "Enter  bio",
-                        prefix: Icons.call,
+                        prefix: Icons.info_outline,
                         validate: (value) {
                           return Validations.normalValidation(value,
                               name: 'bio');
@@ -194,6 +201,13 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
                                     ),
                                   ),
                                   onPressed: () {
+                                    if (gender == null) {
+                                      showFlutterToast(
+                                        message: 'You must add gender',
+                                        toastColor: Colors.red,
+                                      );
+                                      return;
+                                    }
                                     if (_formKey.currentState!.validate()) {
                                       doctorCubit.editDoctor(
                                           image: ImageCubit.get(context).image,
@@ -202,7 +216,7 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
                                             name: nameController.text,
                                             password: passwordController.text,
                                             phone: phoneController.text,
-                                            gender: genderController.text,
+                                            gender: gender,
                                             bio: bioController.text,
                                             online: true,
                                           ));

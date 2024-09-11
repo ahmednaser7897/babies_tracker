@@ -1,0 +1,105 @@
+@ Gloabal :
+    => Put suitable icon for each input into UI of all forms.-->DONE IN ADMIN , Hospital
+    => Increase the height of bio input into UI.-->DONE IN ADMIN, Hospital
+    => Make email of any account must to be gmail acccount.-->DONE IN ADMIN, Hospital
+    => location input must make validation into it to take correct Google map link.-->DONE IN ADMIN, Hospital
+    => If there is no data to show, show alert that say there is no data into all pages.-->DONE IN ADMIN, Hospital
+    => Make any select box is empty untill user select any value -->DONE IN ADMIN, Hospital
+    => Fix the problem of excessive loading into system.-->DONE IN ADMIN, Hospital
+    => Design of (vaccination, sleep, Feeding) of boby is not suitable (use photos that i sent it)
+    => use all default images that i sent to you
+    => into any page that show data of all users show online icon into each card like (Doctors Page, Hospital Page, ....)-->DONE IN ADMIN, Hospital
+    => make width of any select box is 100% like inputs--> DONE IN ADMIN, Hospital
+    => make any user can update his email.
+    => Find awesome package for popup alerts to use it into all applications--> DONE IN ADMIN, Hospital
+    => Any doctor notes input make it like textarea "its height is bigger" into form and data show page-->DONE IN ADMIN, Hospital
+    => Focus on your writing in English.-->DONE IN ADMIN, Hospital
+    => UI of info icon into each card of any user not suitable, try to make better design ( Problem 9 )DONE IN ADMIN, Hospital
+    => It is not possible that when I enter any data in anything, it returns me to the first page, Exp: when i enter vaccination to baby back me to mothers page-->DONE IN ADMIN, Hospital
+
+@ Admin Section :-->DONE
+        # hospital details page-->DONE
+            => Default image of hospital is not correct (show default image of admin).-->done
+        # Update admin info page-->DONE
+            => The "Update Admin" button should be available when the admin updates any information.-->done            Note: Stop every updated butons into all system until user change any data
+
+        Notes : -->DONE
+            => Make admin can see only data of hospital and its doctors, its not necessary to show data of mothers.-->done
+
+
+@ Hospital Section :
+        # Update hospital page-->DONE
+            => Fix problem that i sent into whatsapp as a photo ( Problem 3 )-->DONE
+
+        # Add new mother page-->DONE
+            => fix margin between each input -->DONE
+            => edit name of input "Postpar tumHealth" to be "Postpartum Health"-->DONE
+
+        # Baby details page-->DONE
+            => Fix (Birth date, gestational age, delivery type) into baby that i sent video of it ( Problem 4 )-->DONE
+            => Show APGAR Score into one cell like that (0, 1, 0, 0, 0)-->DONE
+            => Make icon of photo of APGAR_score smaller and put it after name of info "APGAR Score !"-->DONE
+
+        # Show Baby vaccinations 
+            => Write name of page correct-->DONE
+            => Update UI of page and use default image that i sent before
+
+        # Show Baby sleep details
+            => Write name of page correct
+            => Update UI of page and use default image that i sent before
+
+        # Show Baby Feeding details
+            => Write name of page correct
+            => Update UI of page and use default image that i sent before
+
+        # Show mother meducations 
+            => Write name of page correct
+            => Update UI of page and use default image that i sent before
+
+        # Doctors Page-->DONE
+            => data of doctors is dublicated ( Problem 5 )-->DONE
+
+        # Mother Details Page-->DONE
+            => Show details of the doctor in charge of the case-->DONE
+
+        Notes : 
+            => Fix problem that i sent into whatsapp as a photo ( Problem 1 )-->DONE
+            => Fix problem that i sent into whatsapp as a video ( Problem 2 )-->DONE
+
+
+@ Doctor Section :
+    # Add new medications page
+        => Purpose input make it like textarea "its height is bigger" into form and data show page
+        => If there are error into start and end date design of start date go down a little bit ( Problem 7 )   Note: It is repeated in every form that have start and end date inputs
+
+    # medication Details page
+        => add padding to doctor_notes UI ( Problem 6 )
+
+    # Add new baby
+        => Make APGAR five small inputs next to each other decorate it like Photo that i sent ( Problem 8 ) or if you have better design do it
+        => Make gestational_age as Integer input take number from 28 to 42 weaks, The list covers all births that are in good condition. ( Problem 10 )
+
+    # Show Mother's Babyies
+        => Update name of page to be "Show Mother's Babies"
+        => into each card of baby show his photo, name and birth_date
+
+    # baby details
+        => Try to decorate buttons into better design, what about fixed bottom navbar and using icons ( Problem 11 )
+
+    # Add new sleep details page (Same thing to "Add new feeding page")
+        => Edit design of popup of details, try to add header and padding trying to make it better ( Problem 12 )
+        => Edit design of details that add to be like i sent into photo ( Probelm 13 )
+    
+
+
+@ Mother Section :
+
+
+
+
+@ Chat Section :
+    => It's not necessary to send text message with file
+    => Fix ( Problem 14 )
+
+
+

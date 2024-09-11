@@ -78,6 +78,11 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
               dataValue(
+                  name: "Doctor",
+                  value: model.doctorModel!.name ?? '',
+                  prefix: Icons.person),
+              AppSizedBox.h3,
+              dataValue(
                   name: "Email",
                   value: model.email ?? '',
                   prefix: Icons.email_rounded),
@@ -108,7 +113,7 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
               ),
               AppSizedBox.h3,
               const Text(
-                "Postpar tumHealth",
+                "Postpartum Health",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -257,30 +262,10 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
               ),
               Hero(
                 tag: model.id.orEmpty(),
-                child: SizedBox(
-                  width: 30.w,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: CircleAvatar(
-                          backgroundColor:
-                              model.online ?? false ? Colors.green : Colors.red,
-                          radius: 2.w,
-                        ),
-                      ),
-                      CircleAvatar(
-                        radius: 15.w,
-                        backgroundImage:
-                            (model.image != null && model.image!.isNotEmpty)
-                                ? NetworkImage(model.image.orEmpty())
-                                : AssetImage(
-                                    AppAssets.mother,
-                                  ) as ImageProvider,
-                      ),
-                    ],
-                  ),
-                ),
+                child: imageWithOnlineState(
+                    uri: model.image,
+                    type: AppAssets.mother,
+                    isOnline: model.online.orFalse()),
               ),
               AppSizedBox.h2,
               if (AppPreferences.userType == AppStrings.hospital)

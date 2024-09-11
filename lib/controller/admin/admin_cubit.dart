@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:babies_tracker/app/app_strings.dart';
-import 'package:babies_tracker/model/babies_model.dart';
 import 'package:babies_tracker/model/doctor_model.dart';
 import 'package:babies_tracker/model/hospital_model.dart';
-import 'package:babies_tracker/model/mother_model.dart';
 import 'package:babies_tracker/ui/admin/hospitels_screen/admin_hospitels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,10 +13,6 @@ import 'package:babies_tracker/app/extensions.dart';
 import 'package:babies_tracker/model/admin_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-import '../../model/current_medications_model.dart';
-import '../../model/feeding_times_model.dart';
-import '../../model/sleep_details_model.dart';
-import '../../model/vaccinations_histories_model.dart';
 import '../../ui/admin/admins/admins_home.dart';
 import '../../ui/admin/settings_screens/admin_settings.dart';
 import '../auth/auth_cubit.dart';
@@ -54,7 +48,6 @@ class AdminCubit extends Cubit<AdminState> {
           .get();
       adminModel = AdminModel.fromJson(value.data() ?? {});
       changeAdminOnline(adminModel!.id ?? '', true);
-      getHomeData();
       saveFvmToken(adminModel!.id ?? '');
       emit(ScGetAdmin());
     } catch (e) {
@@ -67,6 +60,7 @@ class AdminCubit extends Cubit<AdminState> {
       {required AdminModel model, required File? image}) async {
     try {
       emit(LoadingAddAdmin());
+      //check if the new phone number is not used
       var value =
           await FirebaseFirestore.instance.collection('phoneNumbers').get();
       if (checkPhone(model.phone ?? '', value.docs)) {
@@ -77,6 +71,7 @@ class AdminCubit extends Cubit<AdminState> {
           email: model.email ?? '',
           password: model.password ?? '',
         );
+        //save the number in firebase
         await FirebaseFirestore.instance
             .collection('phoneNumbers')
             .doc(value1.user!.uid)
@@ -88,15 +83,18 @@ class AdminCubit extends Cubit<AdminState> {
             .collection(AppStrings.admin)
             .doc(value1.user?.uid)
             .set(model.toJson());
+        String? imageUri;
         if (image != null) {
-          await addImage(
+          //return the image link to use it(if it is exists)
+          imageUri = await addImage(
             type: AppStrings.admin,
             userId: value1.user!.uid,
             parentImageFile: image,
           );
         }
+        //save this admin in the list of admins
+        setNewAdmin(model, imageUri);
         emit(ScAddAdmin());
-        await getHomeData();
       }
     } catch (error) {
       if (error
@@ -111,10 +109,27 @@ class AdminCubit extends Cubit<AdminState> {
     }
   }
 
+  void setNewAdmin(AdminModel model, String? imageUri) {
+    AdminModel newAdmin = AdminModel(
+        ban: false,
+        createdAt: model.createdAt,
+        email: model.email,
+        gender: model.gender,
+        id: model.id,
+        image: imageUri,
+        name: model.name,
+        online: false,
+        password: model.password,
+        phone: model.phone);
+    admins.add(newAdmin);
+  }
+
   Future<void> editAdmin(
       {required AdminModel model, required File? image}) async {
     try {
       emit(LoadingEditAdmin());
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      //check if the new phone number is not used
       var value =
           await FirebaseFirestore.instance.collection('phoneNumbers').get();
       if (model.phone != adminModel!.phone) {
@@ -122,6 +137,7 @@ class AdminCubit extends Cubit<AdminState> {
           emit(ErorrEditAdmin('Phone number is already used'));
           return;
         } else {
+          //save the number in firebas
           await FirebaseFirestore.instance
               .collection('phoneNumbers')
               .doc(AppPreferences.uId)
@@ -130,8 +146,14 @@ class AdminCubit extends Cubit<AdminState> {
           });
         }
       }
-      User? currentUser = FirebaseAuth.instance.currentUser;
-      await currentUser!.updatePassword(model.password.orEmpty());
+      // Re-authenticate user with current password
+      final credential = EmailAuthProvider.credential(
+        email: adminModel!.email!,
+        password: adminModel!.password!,
+      );
+      await currentUser!.reauthenticateWithCredential(credential);
+      print('User re-authenticated successfully');
+      await currentUser.updatePassword(model.password.orEmpty());
       print(model.toJson());
       await FirebaseFirestore.instance
           .collection(AppStrings.admin)
@@ -159,7 +181,7 @@ class AdminCubit extends Cubit<AdminState> {
     }
   }
 
-  Future<void> addImage(
+  Future<String?> addImage(
       {required String type,
       required String userId,
       required File parentImageFile}) async {
@@ -177,9 +199,11 @@ class AdminCubit extends Cubit<AdminState> {
         'image': parentImageUrl,
       });
       print('addImage done');
+      return parentImageUrl;
     } catch (e) {
       print('Error: $e');
     }
+    return null;
   }
 
   List<AdminModel> admins = [];
@@ -200,39 +224,43 @@ class AdminCubit extends Cubit<AdminState> {
   }
 
   Future<void> addHospital(
-      {required HospitalModel hospitalModel, required File? image}) async {
+      {required HospitalModel model, required File? image}) async {
     try {
       emit(LoadingAddHospital());
+      //check if the new phone number is not used
       var value =
           await FirebaseFirestore.instance.collection('phoneNumbers').get();
-      if (checkPhone(hospitalModel.phone ?? '', value.docs)) {
+      if (checkPhone(model.phone ?? '', value.docs)) {
         emit(ErorrAddHospital('Phone number is already used'));
         return;
       } else {
         var value1 = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: hospitalModel.email ?? '',
-          password: hospitalModel.password ?? '',
+          email: model.email ?? '',
+          password: model.password ?? '',
         );
+        //save the number in firebase
         FirebaseFirestore.instance
             .collection('phoneNumbers')
             .doc(value1.user!.uid)
             .set({
-          'phone': hospitalModel.phone,
+          'phone': model.phone,
         });
-        hospitalModel.id = value1.user!.uid;
+        model.id = value1.user!.uid;
         await FirebaseFirestore.instance
             .collection(AppStrings.hospital)
             .doc(value1.user?.uid)
-            .set(hospitalModel.toJson());
+            .set(model.toJson());
+        String? imageUri;
         if (image != null) {
-          await addImage(
+          imageUri = await addImage(
             type: AppStrings.hospital,
             userId: value1.user!.uid,
             parentImageFile: image,
           );
         }
+        //save this hospital in the list of hospitals
+        setNewHospital(model, imageUri);
         emit(ScAddHospital());
-        await getHomeData();
       }
     } catch (error) {
       if (error
@@ -247,6 +275,23 @@ class AdminCubit extends Cubit<AdminState> {
     }
   }
 
+  void setNewHospital(HospitalModel model, String? imageUri) {
+    HospitalModel newHospital = HospitalModel(
+      ban: false,
+      email: model.email,
+      id: model.id,
+      image: imageUri,
+      name: model.name,
+      online: false,
+      password: model.password,
+      phone: model.phone,
+      bio: model.bio,
+      city: model.city,
+      location: model.location,
+    );
+    hospitals.add(newHospital);
+  }
+
   List<HospitalModel> hospitals = [];
   Future<void> getAllHospitals() async {
     emit(LoadingGetAdmin());
@@ -254,7 +299,6 @@ class AdminCubit extends Cubit<AdminState> {
       var value = await FirebaseFirestore.instance
           .collection(AppStrings.hospital)
           .get();
-
       for (var element in value.docs) {
         var hospital = HospitalModel.fromJson(element.data());
         //get evrey Hospitals doctor
@@ -264,82 +308,12 @@ class AdminCubit extends Cubit<AdminState> {
         for (var element in doctors.docs) {
           hospital.doctors!.add(DoctorModel.fromJson(element.data()));
         }
-        //get evrey Hospitals mother
-        var mothers =
-            await element.reference.collection(AppStrings.mother).get();
-        hospital.mothers = [];
-        for (var element in mothers.docs) {
-          var mother = MotherModel.fromJson(element.data());
-          //get evrey mother baby
-          var bays = await element.reference.collection(AppStrings.baby).get();
-          mother.medications = [];
-          //get evrey users medications
-          await getMotherMedication(element, mother);
-          mother.babys = [];
-          for (var element in bays.docs) {
-            var baby = BabieModel.fromJson(element.data());
-            baby.sleepDetailsModel = [];
-            baby.vaccinations = [];
-            baby.feedingTimes = [];
-            //get   baby DATA
-            await getBabyVaccination(element, baby);
-            await getSleepBetails(element, baby);
-            await getBabyfeedingTimes(element, baby);
-            mother.babys!.add(baby);
-          }
-          hospital.mothers!.add(mother);
-        }
         hospitals.add(hospital);
       }
       emit(ScGetAdmin());
     } catch (e) {
       print('Get all Hospitals Data Error: $e');
       emit(ErorrGetAdmin(e.toString()));
-    }
-  }
-
-  Future<void> getMotherMedication(
-      QueryDocumentSnapshot<Map<String, dynamic>> element,
-      MotherModel mother) async {
-    //get evrey users medications
-    var medications =
-        await element.reference.collection(AppStrings.medication).get();
-    for (var element in medications.docs) {
-      var medication = CurrentMedicationsModel.fromJson(element.data());
-      mother.medications!.add(medication);
-    }
-  }
-
-  Future<void> getBabyVaccination(
-      QueryDocumentSnapshot<Map<String, dynamic>> element,
-      BabieModel baby) async {
-    var vaccinations =
-        await element.reference.collection(AppStrings.vaccination).get();
-    for (var element in vaccinations.docs) {
-      var vaccination = VaccinationsHistoriesModel.fromJson(element.data());
-      baby.vaccinations!.add(vaccination);
-    }
-  }
-
-  Future<void> getBabyfeedingTimes(
-      QueryDocumentSnapshot<Map<String, dynamic>> element,
-      BabieModel baby) async {
-    var feedingTimess =
-        await element.reference.collection(AppStrings.feeding).get();
-    for (var element in feedingTimess.docs) {
-      var feedingTimes = FeedingTimesModel.fromJson(element.data());
-      baby.feedingTimes!.add(feedingTimes);
-    }
-  }
-
-  Future<void> getSleepBetails(
-      QueryDocumentSnapshot<Map<String, dynamic>> element,
-      BabieModel baby) async {
-    var sleepDetails =
-        await element.reference.collection(AppStrings.sleep).get();
-    for (var element in sleepDetails.docs) {
-      var sleepDetail = SleepDetailsModel.fromJson(element.data());
-      baby.sleepDetailsModel!.add(sleepDetail);
     }
   }
 

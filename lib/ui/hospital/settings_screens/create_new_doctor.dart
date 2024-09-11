@@ -31,14 +31,15 @@ class _CreateNewDoctorState extends State<CreateNewDoctor> {
   TextEditingController passwordController = TextEditingController();
 
   TextEditingController phoneController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
+  //TextEditingController genderController = TextEditingController();
 
   TextEditingController bioController = TextEditingController();
+  String? gender;
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    genderController.text = 'male';
+    // genderController.text = 'male';
     super.initState();
   }
 
@@ -148,7 +149,13 @@ class _CreateNewDoctorState extends State<CreateNewDoctor> {
                         ),
                       ),
                       AppSizedBox.h2,
-                      genderWidget(genderController),
+                      genderWidget(
+                          initValue: gender,
+                          onTap: (String value) {
+                            setState(() {
+                              gender = value;
+                            });
+                          }),
                       AppSizedBox.h3,
                       const Text(
                         "Bio",
@@ -162,8 +169,8 @@ class _CreateNewDoctorState extends State<CreateNewDoctor> {
                         controller: bioController,
                         keyboardType: TextInputType.text,
                         hintText: "Enter  bio",
-                        prefix: Icons.biotech,
-                        maxLines: 3,
+                        prefix: Icons.info_outline,
+                        maxLines: 5,
                         validate: (value) {
                           return Validations.normalValidation(value,
                               name: ' bio');
@@ -201,6 +208,12 @@ class _CreateNewDoctorState extends State<CreateNewDoctor> {
                                     ),
                                   ),
                                   onPressed: () {
+                                    if (gender == null) {
+                                      showFlutterToast(
+                                        message: 'you must enter gender',
+                                        toastColor: Colors.red,
+                                      );
+                                    }
                                     if (_formKey.currentState!.validate()) {
                                       emailController.text = emailController
                                           .text
@@ -216,7 +229,7 @@ class _CreateNewDoctorState extends State<CreateNewDoctor> {
                                               name: nameController.text,
                                               password: passwordController.text,
                                               phone: phoneController.text,
-                                              gender: genderController.text,
+                                              gender: gender,
                                               online: false,
                                               bio: bioController.text,
                                               hospitalId: AppPreferences.uId));

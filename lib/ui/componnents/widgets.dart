@@ -9,18 +9,24 @@ import '../../app/app_colors.dart';
 import '../../app/app_sized_box.dart';
 import '../auth/widgets/build_auth_bottom.dart';
 
-Widget dataValue({required name, required String value, IconData? prefix}) {
+Widget dataValue(
+    {required String? name,
+    required String value,
+    IconData? prefix,
+    Widget? trailing}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(
-        name,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
+      if (name != null) ...[
+        Text(
+          name,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
         ),
-      ),
-      AppSizedBox.h2,
+        AppSizedBox.h2
+      ],
       ListTile(
         tileColor: Colors.grey[100],
         shape: const OutlineInputBorder(
@@ -37,6 +43,7 @@ Widget dataValue({required name, required String value, IconData? prefix}) {
           style: const TextStyle(
               fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black54),
         ),
+        trailing: trailing,
         leading: prefix != null
             ? Icon(
                 prefix,
@@ -46,6 +53,71 @@ Widget dataValue({required name, required String value, IconData? prefix}) {
             : null,
       )
     ],
+  );
+}
+
+Widget emptListWidget(String? title) {
+  print(title);
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.no_sim_outlined,
+            size: 50,
+            color: AppColors.primerColor,
+          ),
+          AppSizedBox.h3,
+          Text(
+            'There  is no ${title ?? 'data'} to show for now!',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              color: AppColors.primerColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+SizedBox imageWithOnlineState(
+    {required String? uri,
+    required String type,
+    required bool isOnline,
+    double? radius}) {
+  return SizedBox(
+    width: radius != null ? (radius * 2 + 12) : 32.w,
+    child: Stack(
+      alignment: Alignment.topLeft,
+      children: [
+        CircleAvatar(
+          radius: radius ?? 15.w,
+          backgroundImage: (uri != null && uri.isNotEmpty)
+              ? NetworkImage(uri.orEmpty())
+              : AssetImage(
+                  type,
+                ) as ImageProvider,
+        ),
+        Align(
+            alignment: Alignment.topRight,
+            child: Icon(
+              Icons.power_settings_new_outlined,
+              color: isOnline ? Colors.green : Colors.deepPurple[900],
+              size: 20,
+            )
+            // child: CircleAvatar(
+            //   backgroundColor: isOnline ? Colors.green : Colors.red,
+            //   radius: 1.8.w,
+            // ),
+            ),
+      ],
+    ),
   );
 }
 
@@ -72,7 +144,7 @@ Widget selectFromOptionbs(List<String> mainList, List<String> myList) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 70.w,
+          width: 90.w,
           height: 5.h,
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           decoration: BoxDecoration(
@@ -93,7 +165,7 @@ Widget selectFromOptionbs(List<String> mainList, List<String> myList) {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              value: mainList[0],
+              //value: mainList[0],
               onChanged: (String? value) {
                 if (value != null && !myList.contains(value)) {
                   setState(() {
@@ -179,13 +251,13 @@ TimeOfDay parseTimeOfDay(String timeString) {
 
 SizedBox scoresIcon(BuildContext context) {
   return SizedBox(
-    width: 15.w,
-    height: 5.h,
+    width: 45,
+    height: 30,
     child: BottomComponent(
       child: const Icon(
         Icons.info,
         color: Colors.white,
-        size: 20,
+        size: 15,
       ),
       onPressed: () {
         showDialog(
@@ -240,55 +312,58 @@ Future<DateTime?> showDateEPicker(BuildContext context) async {
   }
 }
 
-Widget genderWidget(TextEditingController genderController,
-    {String init = 'male'}) {
-  var list = ['male', 'female'];
-  if (init == 'female') {
-    list = ['female', 'male'];
-  }
+var genderList = ['male', 'female'];
+Widget genderWidget({
+  required String? initValue,
+  required Function(String value) onTap,
+}) {
   return StatefulBuilder(builder: (context, setState) {
-    return Container(
-      width: 40.w,
-      height: 6.5.h,
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.grey,
-          width: 1,
-        ),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton(
-          isExpanded: true,
-          hint: const Text(
-            "Select status",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+    return Row(
+      children: [
+        Container(
+          width: 90.w,
+          height: 6.5.h,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.grey,
+              width: 1,
             ),
           ),
-          value: genderController.text,
-          onChanged: (value) {
-            setState(() {
-              genderController.text = value.toString();
-            });
-          },
-          items: list.map((value) {
-            return DropdownMenuItem(
-              value: value,
-              child: Text(
-                value,
-                style: const TextStyle(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              isExpanded: true,
+              hint: const Text(
+                "Select gender",
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                 ),
               ),
-            );
-          }).toList(),
+              value: initValue,
+              onChanged: (value) {
+                setState(() {
+                  onTap(value!);
+                });
+              },
+              items: genderList.map((value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   });
 }
@@ -354,141 +429,151 @@ Widget buildHomeItem(
     required String assetImage,
     required String name,
     required bool ban,
+    required bool? isOnline,
     bool leaft = false,
     required String des,
     required String id,
-    IconData icon = Icons.info_outline,
+    IconData icon = Icons.arrow_forward_ios_rounded,
     bool showOnly = false}) {
-  return Builder(builder: (context) {
-    return FadeInUp(
-      from: 20,
-      delay: const Duration(milliseconds: 400),
-      duration: const Duration(milliseconds: 500),
-      child: Container(
-        width: 100.w,
-        height: 18.h,
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        child: Stack(
-          alignment: Alignment.bottomLeft,
-          children: [
-            Container(
-              width: 100.w,
-              height: 17.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Hero(
-                      tag: id,
-                      child: CircleAvatar(
-                        radius: 33,
-                        backgroundImage: (image != null && image.isNotEmpty)
-                            ? NetworkImage(image.orEmpty())
-                            : AssetImage(
-                                assetImage,
-                              ) as ImageProvider,
-                      ),
-                    ),
-                    AppSizedBox.w3,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            name.orEmpty(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.start,
-                            style: GoogleFonts.almarai(
-                              color: Colors.black45,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          AppSizedBox.h2,
-                          Text(
-                            des.orEmpty(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.almarai(
-                              color: Colors.black45,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          AppSizedBox.h1,
-                          Text(
-                            ban.orFalse() ? 'Banned' : '',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.almarai(
-                              color: ban.orFalse() ? Colors.red : Colors.green,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          AppSizedBox.h1,
-                          Text(
-                            leaft.orFalse() ? 'Cheked out' : '',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.almarai(
-                              color: ban.orFalse() ? Colors.red : Colors.green,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    AppSizedBox.w5,
-                    InkWell(
-                      onTap: () {
-                        ontap();
-                      },
-                      child: Container(
-                        width: 14.w,
-                        height: 6.5.h,
-                        decoration: BoxDecoration(
-                          color: AppColors.primer,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 1,
-                              blurRadius: 7,
-                              offset: const Offset(
-                                  0, 3), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          icon,
-                          color: Colors.white,
-                        ),
-                      ),
+  return InkWell(
+    onTap: () {
+      ontap();
+    },
+    child: Builder(builder: (context) {
+      return FadeInUp(
+        from: 20,
+        delay: const Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 500),
+        child: Container(
+          width: 100.w,
+          height: 18.h,
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          child: Stack(
+            alignment: Alignment.bottomLeft,
+            children: [
+              Container(
+                width: 100.w,
+                height: 17.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
                   ],
                 ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Hero(
+                        tag: id,
+                        child: isOnline != null
+                            ? imageWithOnlineState(
+                                uri: image,
+                                type: assetImage,
+                                radius: 33,
+                                isOnline: isOnline)
+                            : CircleAvatar(
+                                radius: 33,
+                                backgroundImage:
+                                    (image != null && image.isNotEmpty)
+                                        ? NetworkImage(image.orEmpty())
+                                        : AssetImage(
+                                            assetImage,
+                                          ) as ImageProvider,
+                              ),
+                      ),
+                      AppSizedBox.w3,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              name.orEmpty(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+                              style: GoogleFonts.almarai(
+                                color: Colors.black45,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            AppSizedBox.h2,
+                            Text(
+                              des.orEmpty(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.almarai(
+                                color: Colors.black45,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            AppSizedBox.h1,
+                            Text(
+                              ban.orFalse() ? 'Banned' : '',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.almarai(
+                                color:
+                                    ban.orFalse() ? Colors.red : Colors.green,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            AppSizedBox.h1,
+                            Text(
+                              leaft.orFalse() ? 'Cheked out' : '',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.almarai(
+                                color:
+                                    ban.orFalse() ? Colors.red : Colors.green,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      AppSizedBox.w5,
+                      Container(
+                        width: 14.w,
+                        height: 6.5.h,
+                        // decoration: BoxDecoration(
+                        //   color: AppColors.primerColor,
+                        //   borderRadius: BorderRadius.circular(10),
+                        //   boxShadow: [
+                        //     BoxShadow(
+                        //       color: Colors.grey.withOpacity(0.5),
+                        //       spreadRadius: 1,
+                        //       blurRadius: 7,
+                        //       offset: const Offset(
+                        //           0, 3), // changes position of shadow
+                        //     ),
+                        //   ],
+                        // ),
+                        child: Icon(
+                          icon,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  });
+      );
+    }),
+  );
 }
