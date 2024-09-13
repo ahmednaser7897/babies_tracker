@@ -27,6 +27,12 @@ class DoctorMessageMotherScreen extends StatefulWidget {
 
 class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
   TextEditingController messageController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   File? file;
   @override
   Widget build(BuildContext context) {
@@ -109,6 +115,8 @@ class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
                             maxLines: 999,
                             decoration: InputDecoration(
                               border: InputBorder.none,
+                              contentPadding: const EdgeInsets.all(3),
+                              hintStyle: const TextStyle(fontSize: 13),
                               hintText: 'Type your message here...',
                               suffixIcon: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -136,8 +144,10 @@ class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
                                   MaterialButton(
                                     padding: EdgeInsets.zero,
                                     onPressed: () async {
-                                      if (messageController.text.isNotEmpty) {
-                                        await cubit.sendMessage(
+                                      print(file);
+                                      if (messageController.text.isNotEmpty ||
+                                          file != null) {
+                                        cubit.sendMessage(
                                           file: file,
                                           messageModel: MessageModel(
                                             motherId: widget.model.id,

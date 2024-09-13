@@ -19,7 +19,7 @@ class _DoctorMothersScreenState extends State<DoctorMothersScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<DoctorCubit, DoctorState>(
       buildWhen: (previous, current) =>
-          current is LoadingGetHomeData ||
+          previous is LoadingGetHomeData ||
           current is ScGetHomeData ||
           current is ErorrGetHomeData,
       listener: (context, state) {},
@@ -44,7 +44,9 @@ class _DoctorMothersScreenState extends State<DoctorMothersScreen> {
           ),
           isEmpty: false,
           isErorr: state is ErorrGetHomeData,
-          isLoading: state is LoadingGetHomeData,
+          isLoading: state is LoadingGetHomeData ||
+              state is LoadingGetDoctor ||
+              state is LoadingChangeDoctorOnline,
           isSc: state is ScGetHomeData || cubit.mothers.isNotEmpty,
         );
       },

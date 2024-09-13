@@ -33,7 +33,6 @@ Map<String, dynamic> _$SleepDetailsModelToJson(SleepDetailsModel instance) {
   writeNotNull('totalSleepDuration', instance.totalSleepDuration);
   writeNotNull('notes', instance.notes);
   writeNotNull('details', instance.details?.map((e) => e.toJson()).toList());
-  print(val);
   return val;
 }
 

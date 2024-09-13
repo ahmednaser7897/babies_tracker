@@ -1,3 +1,4 @@
+import 'package:babies_tracker/controller/doctor/doctor_state.dart';
 import 'package:babies_tracker/model/babies_model.dart';
 import 'package:babies_tracker/model/hospital_model.dart';
 import 'package:babies_tracker/model/mother_model.dart';
@@ -8,6 +9,7 @@ import 'package:babies_tracker/ui/componnents/widgets.dart';
 import 'package:babies_tracker/app/extensions.dart';
 import '../../app/app_strings.dart';
 import '../../controller/admin/admin_cubit.dart';
+import '../../controller/doctor/doctor_cubit.dart';
 import '../../controller/hospital/hospital_cubit.dart';
 import '../../model/doctor_model.dart';
 import '../../model/admin_model.dart';
@@ -203,7 +205,7 @@ Widget buildBabyList({required List<BabieModel> baby, bool canEdit = true}) {
                     ban: false,
                     leaft: baby[index].left.orFalse(),
                     name: baby[index].name.orEmpty(),
-                    des: baby[index].doctorNotes.orEmpty(),
+                    des: 'Birth Date : ' + baby[index].birthDate.orEmpty(),
                     id: baby[index].id.orEmpty(),
                     image: baby[index].photo,
                     assetImage: AppAssets.baby,
@@ -211,8 +213,16 @@ Widget buildBabyList({required List<BabieModel> baby, bool canEdit = true}) {
                       var value = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BabyDetailsScreen(
-                            model: baby[index],
+                          builder: (context) =>
+                              BlocConsumer<DoctorCubit, DoctorState>(
+                            listener: (context, state) {
+                              // TODO: implement listener
+                            },
+                            builder: (context, state) {
+                              return BabyDetailsScreen(
+                                model: baby[index],
+                              );
+                            },
                           ),
                         ),
                       );

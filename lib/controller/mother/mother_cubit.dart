@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:babies_tracker/app/app_strings.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_prefs.dart';
 import 'package:babies_tracker/model/mother_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:http/http.dart' as http;
 import '../../model/babies_model.dart';
 import '../../model/current_medications_model.dart';
 import '../../model/feeding_times_model.dart';
@@ -22,6 +20,7 @@ import '../../ui/hospital/doctors/all_doctors.dart';
 import '../../ui/mother/baby/show_my_baybs.dart';
 import '../../ui/mother/settings_screens/mother_settings.dart';
 import '../auth/auth_cubit.dart';
+import '../doctor/doctor_cubit.dart';
 
 class MotherCubit extends Cubit<MotherState> {
   MotherCubit() : super(MotherInitial());
@@ -281,6 +280,10 @@ class MotherCubit extends Cubit<MotherState> {
       if (file != null) {
         messageModel.file = await uploadFile(file);
       }
+
+      var time = FieldValue.serverTimestamp();
+      Map<String, dynamic> data = messageModel.toMap();
+      data.addAll({'timestamp': time});
       var value = FirebaseFirestore.instance
           .collection(AppStrings.hospital)
           .doc(AppPreferences.hospitalUid)
@@ -290,8 +293,8 @@ class MotherCubit extends Cubit<MotherState> {
           .doc(messageModel.doctorId)
           .collection(AppStrings.messages)
           .doc();
-      messageModel.id = value.id;
-      await value.set(messageModel.toMap());
+      data['id'] = value.id;
+      await value.set(data);
       var value1 = FirebaseFirestore.instance
           .collection(AppStrings.hospital)
           .doc(AppPreferences.hospitalUid)
@@ -301,8 +304,9 @@ class MotherCubit extends Cubit<MotherState> {
           .doc(AppPreferences.uId)
           .collection(AppStrings.messages)
           .doc();
-      messageModel.id = value1.id;
-      await value1.set(messageModel.toMap());
+      data['id'] = value1.id;
+      await value1.set(data);
+      await sendNotificationsToDoctor(messageModel.doctorId ?? '');
       emit(ScSendMessage());
     } catch (error) {
       emit(ErorrSendMessage(error.toString()));
@@ -338,12 +342,19 @@ class MotherCubit extends Cubit<MotherState> {
           .collection(AppStrings.chats)
           .doc(model.id)
           .collection(AppStrings.messages)
-          .orderBy('dateTime')
+          .orderBy('timestamp')
           .snapshots()
           .listen((event) {
         messages = [];
         for (var element in event.docs) {
-          messages.add(MessageModel.fromJson(element.data()));
+          // print('element[type]');
+          // print(element['message']);
+          // print(element['timestamp']);
+
+          MessageModel messageModel = MessageModel.fromJson(element.data());
+          messageModel.dateTime =
+              (element['timestamp'] as Timestamp).toDate().toLocal().toString();
+          messages.add(messageModel);
         }
         emit(ScGetdMessages());
       });
@@ -354,45 +365,22 @@ class MotherCubit extends Cubit<MotherState> {
     }
   }
 
-  Future<void> sendNotificationsToUser(DoctorModel model) async {
+  Future<void> sendNotificationsToDoctor(String docId) async {
     try {
-      var tokenDocs =
-          await FirebaseFirestore.instance.collection('tokens').get();
-      tokenDocs.docs.forEach((element) async {
-        if (element.id == model.id) {
-          print(element.data()['token']);
-          await sendNotificationToUser(element.data()['token']);
-        }
-      });
-    } catch (e) {
-      print("erorr $e");
-    }
-  }
-
-  String authorization =
-      "key=AAAAd2vXNyY:fw7DGe96Q_Ginx7elwo5Ol:APA91bEbmscJ1sVSYrvhjJGyItPiXaqCyTXBleNpuENiYbD4QHKDfBqXxf2cNNbLyCQ-jOxxm10zymF8bSF5A1AlayfEvT3aaa6OZhEwl2qziMuJ2PoJ-dNBR4N1tefL10RQru6zXv22";
-  Future<void> sendNotificationToUser(String token) async {
-    try {
-      //how to get token
-      // var a = FirebaseMessaging.instance;
-      // await a.requestPermission();
-      // var token = await a.getToken();
-      // print("token is $token");
-      await http.post(
-        Uri.parse("https://fcm.googleapis.com/fcm/send"),
-        headers: <String, String>{
-          "content-type": "application/json",
-          "Authorization": authorization,
-        },
-        body: jsonEncode({
-          "to": token,
-          "notification": {
-            "body":
-                "👋 A new exercise has been added. Log in to your account to view the details and participate.",
-            "title": "New Exercise Added🎉"
-          },
-        }),
-      );
+      print('send notfi1');
+      print('docId :${docId}');
+      Map<String, dynamic> data = {
+        'id': model!.id,
+        'name': model!.name,
+        'email': model!.email,
+        'image': model!.image
+      };
+      data.addAll({'type': 'chat'});
+      sendNotification(
+          playerId: docId,
+          message: 'A New Message',
+          dis: '👋 Mother ${model!.name ?? ''} sent to you a new message',
+          data: data);
     } catch (e) {
       print("erorr $e");
     }

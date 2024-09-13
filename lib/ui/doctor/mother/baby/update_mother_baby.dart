@@ -197,21 +197,41 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                         (int val) {
                       gestational = val;
                     }),
-                    findValue(activity, 'Activity', (int val) {
-                      activity = val;
-                    }),
-                    findValue(appearance, 'Appearance', (int val) {
-                      appearance = val;
-                    }),
-                    findValue(grimace, 'Grimace', (int val) {
-                      grimace = val;
-                    }),
-                    findValue(pulse, 'Pulse', (int val) {
-                      pulse = val;
-                    }),
-                    findValue(respiration, 'Respiration', (int val) {
-                      respiration = val;
-                    }),
+                    AppSizedBox.h3,
+                    Row(
+                      children: [
+                        scoresIcon(context),
+                        AppSizedBox.w5,
+                        const Text(
+                          "APGAR Score !",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    AppSizedBox.h2,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        findValue(activity, 'Activity', (int val) {
+                          activity = val;
+                        }),
+                        findValue(appearance, 'Appearance', (int val) {
+                          appearance = val;
+                        }),
+                        findValue(grimace, 'Grimace', (int val) {
+                          grimace = val;
+                        }),
+                        findValue(pulse, 'Pulse', (int val) {
+                          pulse = val;
+                        }),
+                        findValue(respiration, 'Respiration', (int val) {
+                          respiration = val;
+                        }),
+                      ],
+                    ),
                     AppSizedBox.h3,
                     const Text(
                       "Doctor notes",
@@ -225,7 +245,8 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                       controller: docNoatesController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter  Doctor notes",
-                      prefix: Icons.person,
+                      maxLines: 5,
+                      prefix: Icons.note,
                       validate: (value) {
                         return null;
                       },
@@ -238,7 +259,9 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                             message: AppStrings.userUpdated(AppStrings.baby),
                             toastColor: Colors.green,
                           );
-                          Navigator.pop(context, 'add');
+                          Navigator.pop(
+                            context,
+                          );
                         }
                         if (state is ErorrEditBaby) {
                           showFlutterToast(
@@ -263,6 +286,7 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     cubit.editBaby(
+                                        mainBaby: widget.model,
                                         image: ImageCubit.get(context).image,
                                         motherId: widget.model.motherId ?? '',
                                         model: BabieModel(
@@ -375,65 +399,59 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
+        // Text(
+        //   title,
+        //   style: const TextStyle(
+        //     fontSize: 16,
+        //     fontWeight: FontWeight.w400,
+        //   ),
+        // ),
+        // AppSizedBox.h2,
+        Container(
+          width: 15.w,
+          height: 5.h,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.grey,
+              width: 1,
+            ),
           ),
-        ),
-        AppSizedBox.h2,
-        Row(
-          children: [
-            Container(
-              width: 60.w,
-              height: 5.h,
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              isExpanded: true,
+              hint: const Text(
+                "Select value",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton(
-                  isExpanded: true,
-                  hint: const Text(
-                    "Select value",
-                    style: TextStyle(
+              value: data,
+              onChanged: (int? value) {
+                if (value != null) {
+                  onchange(value);
+                  setState(() {
+                    data = value;
+                  });
+                }
+              },
+              items: values.map((value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value.toString(),
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  value: data,
-                  onChanged: (int? value) {
-                    if (value != null) {
-                      onchange(value);
-                      setState(() {
-                        data = value;
-                      });
-                    }
-                  },
-                  items: values.map((value) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Text(
-                        value.toString(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
+                );
+              }).toList(),
             ),
-            const Spacer(),
-            scoresIcon(context),
-          ],
+          ),
         ),
         AppSizedBox.h2,
       ],

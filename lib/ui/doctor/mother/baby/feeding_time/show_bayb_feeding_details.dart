@@ -26,70 +26,77 @@ class ShowBabyFeedingDetailss extends StatefulWidget {
 class _ShowBabyFeedingDetailssState extends State<ShowBabyFeedingDetailss> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Show Baby Feeding Detailss'),
-          actions: [
-            if (!widget.model.left.orFalse() &&
-                AppPreferences.userType == AppStrings.doctor &&
-                widget.model.doctorId == DoctorCubit.get(context).model!.id)
-              IconButton(
-                  onPressed: () async {
-                    var value = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddFeedingDetailsScreen(
-                          model: widget.model,
+    return BlocConsumer<DoctorCubit, DoctorState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+            appBar: AppBar(
+              title: const Text('Show Baby Feeding Detailss'),
+              actions: [
+                if (!widget.model.left.orFalse() &&
+                    AppPreferences.userType == AppStrings.doctor &&
+                    widget.model.doctorId == DoctorCubit.get(context).model!.id)
+                  IconButton(
+                      onPressed: () async {
+                        var value = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddFeedingDetailsScreen(
+                              model: widget.model,
+                            ),
+                          ),
+                        );
+                        if (value == 'add') {
+                          Navigator.pop(context, 'add');
+                        }
+                      },
+                      icon: const Icon(Icons.add))
+              ],
+            ),
+            body: BlocConsumer<DoctorCubit, DoctorState>(
+              buildWhen: (previous, current) =>
+                  current is LoadingGetHomeData ||
+                  current is ScGetHomeData ||
+                  current is ErorrGetHomeData,
+              listener: (context, state) {},
+              builder: (context, state) {
+                return screenBuilder(
+                  contant: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppSizedBox.h2,
+                            ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) =>
+                                    feedingDetailsCard(
+                                        (widget.model.feedingTimes ??
+                                            [])[index]),
+                                separatorBuilder: (context, index) =>
+                                    AppSizedBox.h2,
+                                itemCount:
+                                    (widget.model.feedingTimes ?? []).length),
+                            AppSizedBox.h2,
+                          ],
                         ),
                       ),
-                    );
-                    if (value == 'add') {
-                      Navigator.pop(context, 'add');
-                    }
-                  },
-                  icon: const Icon(Icons.add))
-          ],
-        ),
-        body: BlocConsumer<DoctorCubit, DoctorState>(
-          buildWhen: (previous, current) =>
-              current is LoadingGetHomeData ||
-              current is ScGetHomeData ||
-              current is ErorrGetHomeData,
-          listener: (context, state) {},
-          builder: (context, state) {
-            return screenBuilder(
-              contant: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppSizedBox.h2,
-                        ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) => feedingDetailsCard(
-                                (widget.model.feedingTimes ?? [])[index]),
-                            separatorBuilder: (context, index) =>
-                                AppSizedBox.h2,
-                            itemCount:
-                                (widget.model.feedingTimes ?? []).length),
-                        AppSizedBox.h2,
-                      ],
                     ),
                   ),
-                ),
-              ),
-              isEmpty: false,
-              isErorr: state is ErorrGetHomeData,
-              isLoading: state is LoadingGetHomeData,
-              isSc: state is ScGetHomeData ||
-                  (widget.model.feedingTimes ?? []).isNotEmpty,
-            );
-          },
-        ));
+                  isEmpty: false,
+                  isErorr: state is ErorrGetHomeData,
+                  isLoading: state is LoadingGetHomeData,
+                  isSc: state is ScGetHomeData ||
+                      (widget.model.feedingTimes ?? []).isNotEmpty,
+                );
+              },
+            ));
+      },
+    );
   }
 
   Widget feedingDetailsCard(FeedingTimesModel model) {

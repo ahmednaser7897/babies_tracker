@@ -33,16 +33,33 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
   TextEditingController dateController = TextEditingController();
   TextEditingController gestationalAgeController = TextEditingController();
   var deliveryType = ["Natural", "Cesarean"];
-  String delivery = "Natural";
-  var gestationalAge = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  var gestational = 0;
+  String? delivery;
+  var gestationalAge = [
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+  ];
+  int? gestational;
   final _formKey = GlobalKey<FormState>();
   List<int> values = [0, 1, 2];
-  int activity = 0;
-  int appearance = 0;
-  int grimace = 0;
-  int pulse = 0;
-  int respiration = 0;
+  int? activity;
+  int? appearance;
+  int? grimace;
+  int? pulse;
+  int? respiration;
   @override
   void initState() {
     super.initState();
@@ -178,21 +195,41 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
                         (int val) {
                       gestational = val;
                     }),
-                    findValue(activity, 'Activity', (int val) {
-                      activity = val;
-                    }),
-                    findValue(appearance, 'Appearance', (int val) {
-                      appearance = val;
-                    }),
-                    findValue(grimace, 'Grimace', (int val) {
-                      grimace = val;
-                    }),
-                    findValue(pulse, 'Pulse', (int val) {
-                      pulse = val;
-                    }),
-                    findValue(respiration, 'Respiration', (int val) {
-                      respiration = val;
-                    }),
+                    AppSizedBox.h3,
+                    Row(
+                      children: [
+                        scoresIcon(context),
+                        AppSizedBox.w5,
+                        const Text(
+                          "APGAR Score !",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    AppSizedBox.h2,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        findValue(activity, 'Activity', (int val) {
+                          activity = val;
+                        }),
+                        findValue(appearance, 'Appearance', (int val) {
+                          appearance = val;
+                        }),
+                        findValue(grimace, 'Grimace', (int val) {
+                          grimace = val;
+                        }),
+                        findValue(pulse, 'Pulse', (int val) {
+                          pulse = val;
+                        }),
+                        findValue(respiration, 'Respiration', (int val) {
+                          respiration = val;
+                        }),
+                      ],
+                    ),
                     AppSizedBox.h3,
                     const Text(
                       "Doctor notes",
@@ -206,6 +243,7 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
                       controller: docNoatesController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter  Doctor notes",
+                      maxLines: 5,
                       prefix: Icons.note,
                       validate: (value) {
                         return null;
@@ -219,7 +257,9 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
                             message: AppStrings.userAdded(AppStrings.baby),
                             toastColor: Colors.green,
                           );
-                          Navigator.pop(context, 'add');
+                          Navigator.pop(
+                            context,
+                          );
                         }
                         if (state is ErorrAddBaby) {
                           showFlutterToast(
@@ -242,9 +282,24 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  if (delivery == null ||
+                                      gestational == null ||
+                                      activity == null ||
+                                      appearance == null ||
+                                      grimace == null ||
+                                      pulse == null ||
+                                      respiration == null) {
+                                    showFlutterToast(
+                                      message:
+                                          'All child information must be entered first',
+                                      toastColor: Colors.red,
+                                    );
+                                    return;
+                                  }
                                   if (_formKey.currentState!.validate()) {
                                     cubit.addBaby(
                                         image: ImageCubit.get(context).image,
+                                        motherModel: widget.model,
                                         motherId: widget.model.id ?? '',
                                         model: BabieModel(
                                           birthDate: dateController.text,
@@ -284,7 +339,7 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
   }
 
   Widget findDelevaryValue(
-      String data, String title, Function(String) onchange) {
+      String? data, String title, Function(String) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -299,7 +354,7 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
         Row(
           children: [
             Container(
-              width: 60.w,
+              width: 90.w,
               height: 5.h,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               decoration: BoxDecoration(
@@ -351,69 +406,63 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
     );
   }
 
-  Widget findValue(int data, String title, Function(int) onchange) {
+  Widget findValue(int? data, String title, Function(int) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
+        // Text(
+        //   title,
+        //   style: const TextStyle(
+        //     fontSize: 16,
+        //     fontWeight: FontWeight.w400,
+        //   ),
+        // ),
+        // AppSizedBox.h2,
+        Container(
+          width: 15.w,
+          height: 5.h,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.grey,
+              width: 1,
+            ),
           ),
-        ),
-        AppSizedBox.h2,
-        Row(
-          children: [
-            Container(
-              width: 60.w,
-              height: 5.h,
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1,
-                ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton(
-                  isExpanded: true,
-                  hint: const Text(
-                    "Select value",
-                    style: TextStyle(
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              isExpanded: true,
+              // hint: const Text(
+              //   "Select value",
+              //   style: TextStyle(
+              //     fontSize: 16,
+              //     fontWeight: FontWeight.w400,
+              //   ),
+              // ),
+              value: data,
+              onChanged: (int? value) {
+                if (value != null) {
+                  onchange(value);
+                  setState(() {
+                    data = value;
+                  });
+                }
+              },
+              items: values.map((value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value.toString(),
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  value: data,
-                  onChanged: (int? value) {
-                    if (value != null) {
-                      onchange(value);
-                      setState(() {
-                        data = value;
-                      });
-                    }
-                  },
-                  items: values.map((value) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Text(
-                        value.toString(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
+                );
+              }).toList(),
             ),
-            const Spacer(),
-            scoresIcon(context),
-          ],
+          ),
         ),
         AppSizedBox.h2,
       ],
@@ -421,7 +470,7 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
   }
 
   Widget findGestationalAgeValue(
-      int data, String title, Function(int) onchange) {
+      int? data, String title, Function(int) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -436,7 +485,7 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
         Row(
           children: [
             Container(
-              width: 60.w,
+              width: 90.w,
               height: 5.h,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               decoration: BoxDecoration(
@@ -470,7 +519,7 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
                     return DropdownMenuItem(
                       value: value,
                       child: Text(
-                        '$value month',
+                        '$value week',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

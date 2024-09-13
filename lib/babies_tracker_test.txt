@@ -62,32 +62,32 @@
         # Mother Details Page-->DONE
             => Show details of the doctor in charge of the case-->DONE
 
-        Notes : 
+        Notes : -->DONE
             => Fix problem that i sent into whatsapp as a photo ( Problem 1 )-->DONE
             => Fix problem that i sent into whatsapp as a video ( Problem 2 )-->DONE
 
 
 @ Doctor Section :
-    # Add new medications page
-        => Purpose input make it like textarea "its height is bigger" into form and data show page
-        => If there are error into start and end date design of start date go down a little bit ( Problem 7 )   Note: It is repeated in every form that have start and end date inputs
+    # Add new medications page-->DONE
+        => Purpose input make it like textarea "its height is bigger" into form and data show page-->DONE
+        => If there are error into start and end date design of start date go down a little bit ( Problem 7 )-->DONE   Note: It is repeated in every form that have start and end date inputs
 
-    # medication Details page
-        => add padding to doctor_notes UI ( Problem 6 )
+    # medication Details page-->DONE
+        => add padding to doctor_notes UI ( Problem 6 )-->DONE
 
-    # Add new baby
-        => Make APGAR five small inputs next to each other decorate it like Photo that i sent ( Problem 8 ) or if you have better design do it
-        => Make gestational_age as Integer input take number from 28 to 42 weaks, The list covers all births that are in good condition. ( Problem 10 )
+    # Add new baby-->DONE
+        => Make APGAR five small inputs next to each other decorate it like Photo that i sent ( Problem 8 ) or if you have better design do it-->DONE
+        => Make gestational_age as Integer input take number from 28 to 42 weaks, The list covers all births that are in good condition. ( Problem 10 )-->DONE
 
-    # Show Mother's Babyies
-        => Update name of page to be "Show Mother's Babies"
-        => into each card of baby show his photo, name and birth_date
+    # Show Mother's Babyies-->DONE
+        => Update name of page to be "Show Mother's Babies"-->DONE
+        => into each card of baby show his photo, name and birth_date-->DONE
 
-    # baby details
-        => Try to decorate buttons into better design, what about fixed bottom navbar and using icons ( Problem 11 )
+    # baby details-->DONE
+        => Try to decorate buttons into better design, what about fixed bottom navbar and using icons ( Problem 11 )-->DONE
 
     # Add new sleep details page (Same thing to "Add new feeding page")
-        => Edit design of popup of details, try to add header and padding trying to make it better ( Problem 12 )
+        => Edit design of popup of details, try to add header and padding trying to make it better ( Problem 12 )-->DONE
         => Edit design of details that add to be like i sent into photo ( Probelm 13 )
     
 

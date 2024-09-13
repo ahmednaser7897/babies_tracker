@@ -26,7 +26,7 @@ class _SleepsDetailsScreenState extends State<SleepsDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.userDetails(AppStrings.sleeps)),
+        title: Text(AppStrings.userDetails('Sleeping times')),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -50,7 +50,7 @@ class _SleepsDetailsScreenState extends State<SleepsDetailsScreen> {
                   name: "Notes", value: model.notes ?? '', prefix: Icons.note),
               AppSizedBox.h3,
               Text(
-                'Sleeps : ',
+                'Sleeping Times : ',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.start,
@@ -95,26 +95,30 @@ class _SleepsDetailsScreenState extends State<SleepsDetailsScreen> {
                         color: Colors.black),
                   ),
                   AppSizedBox.h1,
-                  Text(
-                    'Start Time : ${details[index].startTime.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  AppSizedBox.h1,
-                  Text(
-                    'End Time : ${details[index].endTime.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        'From : ${details[index].startTime.orEmpty()}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.almarai(
+                          color: Colors.grey,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      AppSizedBox.w3,
+                      Text(
+                        'To : ${details[index].endTime.orEmpty()}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.almarai(
+                          color: Colors.grey,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -191,6 +191,7 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
                         controller: doctorNotesController,
                         hintText: "Enter  doctor notes",
                         prefix: Icons.note,
+                        maxLines: 5,
                         validate: (value) {
                           return null;
                         },

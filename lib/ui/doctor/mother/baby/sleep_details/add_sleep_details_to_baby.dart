@@ -33,7 +33,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   var sleepTyps = ["Restful", "Slightly restless"];
-  String sleepQuality = "Restful";
+  String? sleepQuality;
   double totalSleepDuration = 0;
   List<DetailsModel> details = [];
   @override
@@ -57,7 +57,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Total sleeped hours :$totalSleepDuration hours',
+                  'Total sleeped hours : ${totalSleepDuration.toStringAsFixed(2)} hours',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -102,6 +102,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                   keyboardType: TextInputType.text,
                   hintText: "Enter Notes",
                   prefix: Icons.note,
+                  maxLines: 5,
                   validate: (value) {
                     return null;
                   },
@@ -126,8 +127,9 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                           color: Colors.white,
                           size: 20,
                         ),
-                        onPressed: () {
-                          showMyDialog(context);
+                        onPressed: () async {
+                          await showMyDialog(context);
+                          setState(() {});
                         },
                       ),
                     )
@@ -143,7 +145,9 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                         message: AppStrings.userAdded(AppStrings.sleeps),
                         toastColor: Colors.green,
                       );
-                      Navigator.pop(context, 'add');
+                      Navigator.pop(
+                        context,
+                      );
                     }
                     if (state is ErorrAddSleepDetails) {
                       showFlutterToast(
@@ -175,6 +179,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                               }
                               if (_formKey.currentState!.validate()) {
                                 cubit.addSleepDetails(
+                                    baby: widget.model,
                                     babyId: widget.model.id ?? '',
                                     motherId: widget.model.motherId ?? '',
                                     model: SleepDetailsModel(
@@ -220,31 +225,35 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                   Text(
                     details[index].sleepQuality.orEmpty(),
                     style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 17,
                         fontWeight: FontWeight.w400,
                         color: Colors.black),
                   ),
                   AppSizedBox.h1,
-                  Text(
-                    'Start Time : ${details[index].startTime.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  AppSizedBox.h1,
-                  Text(
-                    'End Time : ${details[index].endTime.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        'From : ${details[index].startTime.orEmpty()}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.almarai(
+                          color: Colors.grey,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      AppSizedBox.w3,
+                      Text(
+                        'To : ${details[index].endTime.orEmpty()}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.almarai(
+                          color: Colors.grey,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -269,70 +278,97 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
     await showDialog(
       context: context,
       builder: (context) => Dialog(
-        child: Form(
-          key: _formKey2,
-          child: SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.all(10),
-              height: 50.h,
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  findValue(sleepQuality, 'Sleep Quality', (String val) {
-                    sleepQuality = val;
-                  }),
-                  AppSizedBox.h2,
-                  TimesRow(
-                    startDateController: startDateController,
-                    endDateController: endDateController,
-                  ),
-                  AppSizedBox.h2,
-                  const Spacer(),
-                  BottomComponent(
-                    child: const Text(
-                      'Add',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+        child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return Form(
+            key: _formKey2,
+            child: SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
+                height: 60.h,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Sleeping Details",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      if (_formKey2.currentState!.validate()) {
-                        if (startDateController.text.isNotEmpty &&
-                            endDateController.text.isNotEmpty) {
-                          DetailsModel model = DetailsModel(
-                            endTime: endDateController.text,
-                            sleepQuality: sleepQuality,
-                            startTime: startDateController.text,
-                          );
-                          setState(() {
-                            details.add(model);
-                            startDateController.text = '';
-                            endDateController.text = '';
-                          });
-                          calcToalSleepDuration();
-                          Navigator.pop(context);
-                        } else {
+                    AppSizedBox.h3,
+                    findValue(sleepQuality, 'Sleep Quality', (String val) {
+                      setState(() {
+                        sleepQuality = val;
+                      });
+                    }),
+                    AppSizedBox.h2,
+                    TimesRow(
+                      startDateController: startDateController,
+                      endDateController: endDateController,
+                    ),
+                    AppSizedBox.h2,
+                    const Spacer(),
+                    BottomComponent(
+                      child: const Text(
+                        'Add',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () {
+                        if (sleepQuality == null) {
                           showFlutterToast(
-                            message: 'add start and end time ',
+                            message: 'You must add sleep quality',
                             toastColor: Colors.red,
                           );
+                          return;
                         }
-                      }
-                    },
-                  )
-                ],
+                        if (_formKey2.currentState!.validate()) {
+                          if (startDateController.text.isNotEmpty &&
+                              endDateController.text.isNotEmpty) {
+                            DetailsModel model = DetailsModel(
+                              endTime: endDateController.text,
+                              sleepQuality: sleepQuality,
+                              startTime: startDateController.text,
+                            );
+                            setState(() {
+                              details.add(model);
+                              startDateController.text = '';
+                              endDateController.text = '';
+                            });
+                            calcToalSleepDuration();
+                            Navigator.pop(context);
+                          } else {
+                            showFlutterToast(
+                              message: 'add start and end time ',
+                              toastColor: Colors.red,
+                            );
+                          }
+                        }
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
     startDateController.text = '';
     endDateController.text = '';
+    sleepQuality = null;
   }
 
   void calcToalSleepDuration() {
@@ -352,7 +388,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
     });
   }
 
-  Widget findValue(String data, String title, Function(String) onchange) {
+  Widget findValue(String? data, String title, Function(String) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -367,7 +403,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
         Row(
           children: [
             Container(
-              width: 60.w,
+              width: 65.w,
               height: 5.h,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               decoration: BoxDecoration(

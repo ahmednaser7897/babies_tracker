@@ -23,9 +23,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HandleFirebaseNotification.handleNotifications(context);
-    HandleLocalNotification notification = HandleLocalNotification();
-    notification.initializeFlutterNotification(context);
+    // HandleFirebaseNotification.handleNotifications(context);
+    // HandleLocalNotification notification = HandleLocalNotification();
+    //notification.initializeFlutterNotification(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(

@@ -47,7 +47,7 @@ class _VaccinationsDetailsScreenState extends State<VaccinationsDetailsScreen> {
                   prefix: Icons.medical_information),
               AppSizedBox.h3,
               dataValue(
-                  name: "Administering",
+                  name: "Administering Entity",
                   value: model.administering.toString(),
                   prefix: Icons.admin_panel_settings),
               AppSizedBox.h3,

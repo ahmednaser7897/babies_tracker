@@ -19,7 +19,13 @@ HospitalModel _$HospitalModelFromJson(Map<String, dynamic> json) =>
       city: json['city'] as String?,
       location: json['location'] as String?,
       online: json['online'] as bool?,
-    );
+    )
+      ..doctors = (json['doctors'] as List<dynamic>?)
+          ?.map((e) => DoctorModel.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..mothers = (json['mothers'] as List<dynamic>?)
+          ?.map((e) => MotherModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
 Map<String, dynamic> _$HospitalModelToJson(HospitalModel instance) {
   final val = <String, dynamic>{};
@@ -41,5 +47,7 @@ Map<String, dynamic> _$HospitalModelToJson(HospitalModel instance) {
   writeNotNull('location', instance.location);
   writeNotNull('ban', instance.ban);
   writeNotNull('online', instance.online);
+  writeNotNull('doctors', instance.doctors);
+  writeNotNull('mothers', instance.mothers);
   return val;
 }

@@ -108,6 +108,8 @@ class _MotherMessageDoctorScreenState extends State<MotherMessageDoctorScreen> {
                             controller: messageController,
                             maxLines: 999,
                             decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(3),
+                              hintStyle: const TextStyle(fontSize: 13),
                               border: InputBorder.none,
                               hintText: 'Type your message here...',
                               suffixIcon: Row(
@@ -136,8 +138,9 @@ class _MotherMessageDoctorScreenState extends State<MotherMessageDoctorScreen> {
                                   MaterialButton(
                                     padding: EdgeInsets.zero,
                                     onPressed: () async {
-                                      if (messageController.text.isNotEmpty) {
-                                        await cubit.sendMessage(
+                                      if (messageController.text.isNotEmpty ||
+                                          file != null) {
+                                        cubit.sendMessage(
                                           file: file,
                                           messageModel: MessageModel(
                                             motherId: AppPreferences.uId,

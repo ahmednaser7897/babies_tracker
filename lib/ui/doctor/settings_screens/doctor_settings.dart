@@ -152,7 +152,9 @@ class _DoctorSettingsScreenState extends State<DoctorSettingsScreen> {
           ),
           isEmpty: false,
           isErorr: state is ErorrGetDoctor,
-          isLoading: state is LoadingGetDoctor,
+          isLoading: state is LoadingGetHomeData ||
+              state is LoadingGetDoctor ||
+              state is LoadingChangeDoctorOnline,
           isSc: state is ScGetDoctor || cubit.model != null,
         );
       },

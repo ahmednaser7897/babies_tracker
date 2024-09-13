@@ -36,98 +36,85 @@ class _TimesRowState extends State<TimesRow> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "start Time",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              AppSizedBox.h2,
-              InkWell(
-                onTap: isEnable
-                    ? () async {
-                        TimeOfDay? value = await showPicker(context);
-                        if (value != null) {
-                          start = value;
-                          print('start');
-                          print(start);
-                          startDateController.text = start.format(context);
-                        }
-                      }
-                    : null,
-                child: AppTextFormFiledWidget(
-                  isEnable: false,
-                  controller: startDateController,
-                  keyboardType: TextInputType.text,
-                  hintText: "Enter start Time",
-                  prefix: Icons.date_range,
-                  validate: (value) {
-                    return Validations.normalValidation(value,
-                        name: 'your start time');
-                  },
-                ),
-              ),
-            ],
+        const Text(
+          "Start Time",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
           ),
         ),
-        AppSizedBox.w5,
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "end Time",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              AppSizedBox.h2,
-              InkWell(
-                onTap: isEnable
-                    ? () async {
-                        TimeOfDay? value = await showPicker(context);
-                        if (value != null) {
-                          end = value;
-                          print('end');
-                          print(end);
-                          endDateController.text = end.format(context);
-                        }
-                      }
-                    : null,
-                child: AppTextFormFiledWidget(
-                  isEnable: false,
-                  controller: endDateController,
-                  keyboardType: TextInputType.text,
-                  hintText: "Enter end Time",
-                  prefix: Icons.date_range,
-                  validate: (value) {
-                    print('object33');
+        AppSizedBox.h2,
+        InkWell(
+          onTap: isEnable
+              ? () async {
+                  TimeOfDay? value = await showPicker(context);
+                  if (value != null) {
+                    start = value;
+                    print('start');
                     print(start);
+                    startDateController.text = start.format(context);
+                  }
+                }
+              : null,
+          child: AppTextFormFiledWidget(
+            isEnable: false,
+            controller: startDateController,
+            keyboardType: TextInputType.text,
+            hintText: "Enter Start Time",
+            prefix: Icons.date_range,
+            validate: (value) {
+              return Validations.normalValidation(value,
+                  name: 'your Start time');
+            },
+          ),
+        ),
+        AppSizedBox.h3,
+        const Text(
+          "End Time",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        AppSizedBox.h2,
+        InkWell(
+          onTap: isEnable
+              ? () async {
+                  TimeOfDay? value = await showPicker(context);
+                  if (value != null) {
+                    end = value;
+                    print('end');
                     print(end);
-                    double startVal = toDouble(start);
-                    double endVal = toDouble(end);
-                    if (startVal > endVal) {
-                      print('start time must be befor end tome');
-                      showFlutterToast(
-                        message: 'start time must be befor end time',
-                        toastColor: Colors.red,
-                      );
-                      return 'start time must be befor end time';
-                    }
-                    print('object44');
-                    return null;
-                  },
-                ),
-              ),
-            ],
+                    endDateController.text = end.format(context);
+                  }
+                }
+              : null,
+          child: AppTextFormFiledWidget(
+            isEnable: false,
+            controller: endDateController,
+            keyboardType: TextInputType.text,
+            hintText: "Enter End Time",
+            prefix: Icons.date_range,
+            validate: (value) {
+              print('object33');
+              print(start);
+              print(end);
+              double startVal = toDouble(start);
+              double endVal = toDouble(end);
+              if (startVal > endVal) {
+                print('start time must be befor end tome');
+                showFlutterToast(
+                  message: 'start time must be befor end time',
+                  toastColor: Colors.red,
+                );
+                return 'start time must be befor end time';
+              }
+              print('object44');
+              return null;
+            },
           ),
         ),
       ],

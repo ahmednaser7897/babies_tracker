@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../../app/app_prefs.dart';
 import '../../model/tokens_model.dart';
@@ -39,22 +40,31 @@ class AuthCubit extends Cubit<AuthState> {
       if (userId != '') {
         //save token to firebase to send notifications
         await saveFvmToken(userId);
+
         if (await isAdmin(userId)) {
+          await OneSignal.login(
+              userId); // This will set the user ID as the external ID
           userId = '';
           print('User is an admin😎');
           AppPreferences.userType = AppStrings.admin;
           emit(AuthGetUserAfterLoginSuccessState(message: AppStrings.admin));
         } else if (await isHospital(userId)) {
+          await OneSignal.login(
+              userId); // This will set the user ID as the external ID
           userId = '';
           print('User is a hospital');
           AppPreferences.userType = AppStrings.hospital;
           emit(AuthGetUserAfterLoginSuccessState(message: AppStrings.hospital));
         } else if (await isMother(userId)) {
+          await OneSignal.login(
+              userId); // This will set the user ID as the external ID
           userId = '';
           print('User is a moter');
           AppPreferences.userType = AppStrings.mother;
           emit(AuthGetUserAfterLoginSuccessState(message: AppStrings.mother));
         } else if (await isDoctor(userId)) {
+          await OneSignal.login(
+              userId); // This will set the user ID as the external ID
           AppPreferences.userType = AppStrings.doctor;
           emit(AuthGetUserAfterLoginSuccessState(message: AppStrings.doctor));
           userId = '';

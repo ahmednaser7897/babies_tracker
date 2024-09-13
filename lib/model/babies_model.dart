@@ -2,6 +2,7 @@
 //flutter packages pub run build_runner build
 //dart run build_runner build
 import 'package:babies_tracker/model/sleep_details_model.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'feeding_times_model.dart';
@@ -10,7 +11,7 @@ import 'vaccinations_histories_model.dart';
 part 'babies_model.g.dart';
 
 @JsonSerializable(includeIfNull: false)
-class BabieModel {
+class BabieModel extends Equatable {
   String? id;
   String? motherId;
   String? doctorId;
@@ -55,4 +56,7 @@ class BabieModel {
   factory BabieModel.fromJson(Map<String, dynamic> json) =>
       _$BabieModelFromJson(json);
   Map<String, dynamic> toJson() => _$BabieModelToJson(this);
+
+  @override
+  List<Object?> get props => [id];
 }

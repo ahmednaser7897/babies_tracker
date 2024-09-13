@@ -33,7 +33,7 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
   TextEditingController endDateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   List<int> values = [1, 2, 4, 5, 6, 7, 8, 9, 10];
-  int frequency = 1;
+  int? frequency;
 
   @override
   void initState() {
@@ -90,6 +90,7 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
                       prefix: Icons.add_circle,
                       keyboardType: TextInputType.text,
                       hintText: "Enter Purpose",
+                      maxLines: 5,
                       validate: (value) {
                         return Validations.normalValidation(value,
                             name: 'Purpose');
@@ -135,7 +136,8 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
                       controller: docNoatesController,
                       keyboardType: TextInputType.text,
                       hintText: "Enter  Doctor notes",
-                      prefix: Icons.person,
+                      prefix: Icons.note,
+                      maxLines: 5,
                       validate: (value) {
                         return null;
                       },
@@ -149,7 +151,9 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
                                 AppStrings.userAdded(AppStrings.medication),
                             toastColor: Colors.green,
                           );
-                          Navigator.pop(context, 'add');
+                          Navigator.pop(
+                            context,
+                          );
                         }
                         if (state is ErorrAddMedications) {
                           showFlutterToast(
@@ -172,8 +176,16 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  if (frequency == null) {
+                                    showFlutterToast(
+                                      message: 'You must add frequency',
+                                      toastColor: Colors.red,
+                                    );
+                                    return;
+                                  }
                                   if (_formKey.currentState!.validate()) {
                                     cubit.addMedications(
+                                        motherModel: widget.model,
                                         motherId: widget.model.id ?? '',
                                         model: CurrentMedicationsModel(
                                           endDate: endDateController.text,
@@ -202,7 +214,7 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
     );
   }
 
-  Widget findValue(int data, String title, Function(int) onchange) {
+  Widget findValue(int? data, String title, Function(int) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -217,7 +229,7 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
         Row(
           children: [
             Container(
-              width: 60.w,
+              width: 90.w,
               height: 5.h,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               decoration: BoxDecoration(

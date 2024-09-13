@@ -26,69 +26,79 @@ class ShowMotherMedicationss extends StatefulWidget {
 class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Show mother medicationss'),
-          actions: [
-            if (!widget.model.leaft.orFalse() &&
-                AppPreferences.userType == AppStrings.doctor &&
-                widget.model.docyorlId == DoctorCubit.get(context).model!.id)
-              IconButton(
-                  onPressed: () async {
-                    var value = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddMedicationsScreen(
-                          model: widget.model,
+    return BlocConsumer<DoctorCubit, DoctorState>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        return Scaffold(
+            appBar: AppBar(
+              title: const Text('Show mother medicationss'),
+              actions: [
+                if (!widget.model.leaft.orFalse() &&
+                    AppPreferences.userType == AppStrings.doctor &&
+                    widget.model.docyorlId ==
+                        DoctorCubit.get(context).model!.id)
+                  IconButton(
+                      onPressed: () async {
+                        var value = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddMedicationsScreen(
+                              model: widget.model,
+                            ),
+                          ),
+                        );
+                        if (value == 'add') {
+                          Navigator.pop(context, 'add');
+                        }
+                      },
+                      icon: const Icon(Icons.add))
+              ],
+            ),
+            body: BlocConsumer<DoctorCubit, DoctorState>(
+              buildWhen: (previous, current) =>
+                  current is LoadingGetHomeData ||
+                  current is ScGetHomeData ||
+                  current is ErorrGetHomeData,
+              listener: (context, state) {},
+              builder: (context, state) {
+                return screenBuilder(
+                  contant: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppSizedBox.h2,
+                            ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) =>
+                                    medicationsCard((widget.model.medications ??
+                                        [])[index]),
+                                separatorBuilder: (context, index) =>
+                                    AppSizedBox.h2,
+                                itemCount:
+                                    (widget.model.medications ?? []).length),
+                            AppSizedBox.h2,
+                          ],
                         ),
                       ),
-                    );
-                    if (value == 'add') {
-                      Navigator.pop(context, 'add');
-                    }
-                  },
-                  icon: const Icon(Icons.add))
-          ],
-        ),
-        body: BlocConsumer<DoctorCubit, DoctorState>(
-          buildWhen: (previous, current) =>
-              current is LoadingGetHomeData ||
-              current is ScGetHomeData ||
-              current is ErorrGetHomeData,
-          listener: (context, state) {},
-          builder: (context, state) {
-            return screenBuilder(
-              contant: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppSizedBox.h2,
-                        ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) => medicationsCard(
-                                (widget.model.medications ?? [])[index]),
-                            separatorBuilder: (context, index) =>
-                                AppSizedBox.h2,
-                            itemCount: (widget.model.medications ?? []).length),
-                        AppSizedBox.h2,
-                      ],
                     ),
                   ),
-                ),
-              ),
-              isEmpty: false,
-              isErorr: state is ErorrGetHomeData,
-              isLoading: state is LoadingGetHomeData,
-              isSc: state is ScGetHomeData ||
-                  (widget.model.medications ?? []).isNotEmpty,
-            );
-          },
-        ));
+                  isEmpty: false,
+                  isErorr: state is ErorrGetHomeData,
+                  isLoading: state is LoadingGetHomeData,
+                  isSc: state is ScGetHomeData ||
+                      (widget.model.medications ?? []).isNotEmpty,
+                );
+              },
+            ));
+      },
+    );
   }
 
   Widget medicationsCard(CurrentMedicationsModel model) {
@@ -109,15 +119,13 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
           duration: const Duration(milliseconds: 500),
           child: Container(
             width: 100.w,
-            margin: const EdgeInsets.symmetric(
-              vertical: 5,
-            ),
+            //height: 17.h,
             decoration: BoxDecoration(
-              //color: model..orFalse() ? Colors.white : Colors.grey[200],
+              color: Colors.white,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey[200]!,
+                  color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 1,
                   blurRadius: 7,
                   offset: const Offset(0, 3), // changes position of shadow
@@ -125,7 +133,7 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -136,7 +144,7 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
                     children: [
                       Expanded(
                         child: Text(
-                          'name : ${model.name.orEmpty()}',
+                          'Name : ${model.name.orEmpty()}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
@@ -167,7 +175,7 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
                     children: [
                       Expanded(
                         child: Text(
-                          "frequency : ${model.frequency.toString()}",
+                          "Frequency : ${model.frequency.toString()}",
                           style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.grey,

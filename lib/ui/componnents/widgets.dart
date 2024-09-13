@@ -38,10 +38,11 @@ Widget dataValue(
             width: 2,
           ),
         ),
+        contentPadding: EdgeInsets.all(5),
         title: Text(
           value,
           style: const TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black54),
+              fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black54),
         ),
         trailing: trailing,
         leading: prefix != null
@@ -453,7 +454,7 @@ Widget buildHomeItem(
             children: [
               Container(
                 width: 100.w,
-                height: 17.h,
+                height: 15.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -518,49 +519,42 @@ Widget buildHomeItem(
                               ),
                             ),
                             AppSizedBox.h1,
-                            Text(
-                              ban.orFalse() ? 'Banned' : '',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.almarai(
-                                color:
-                                    ban.orFalse() ? Colors.red : Colors.green,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            AppSizedBox.h1,
-                            Text(
-                              leaft.orFalse() ? 'Cheked out' : '',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.almarai(
-                                color:
-                                    ban.orFalse() ? Colors.red : Colors.green,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  ban.orFalse() ? 'Banned' : '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.almarai(
+                                    color: ban.orFalse()
+                                        ? Colors.red
+                                        : Colors.green,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                if (ban.orFalse()) AppSizedBox.w5,
+                                Text(
+                                  leaft.orFalse() ? 'Cheked out' : '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.almarai(
+                                    color: ban.orFalse()
+                                        ? Colors.red
+                                        : Colors.green,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
                       AppSizedBox.w5,
-                      Container(
+                      SizedBox(
                         width: 14.w,
                         height: 6.5.h,
-                        // decoration: BoxDecoration(
-                        //   color: AppColors.primerColor,
-                        //   borderRadius: BorderRadius.circular(10),
-                        //   boxShadow: [
-                        //     BoxShadow(
-                        //       color: Colors.grey.withOpacity(0.5),
-                        //       spreadRadius: 1,
-                        //       blurRadius: 7,
-                        //       offset: const Offset(
-                        //           0, 3), // changes position of shadow
-                        //     ),
-                        //   ],
-                        // ),
                         child: Icon(
                           icon,
                           color: Colors.black45,

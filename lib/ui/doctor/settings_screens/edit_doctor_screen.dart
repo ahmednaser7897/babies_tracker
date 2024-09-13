@@ -51,6 +51,16 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
     super.initState();
   }
 
+  bool isDataChanged(BuildContext context) {
+    DoctorCubit cubit = DoctorCubit.get(context);
+    return ImageCubit.get(context).image != null ||
+        cubit.model!.phone != phoneController.text ||
+        cubit.model!.name != nameController.text ||
+        cubit.model!.password != passwordController.text ||
+        cubit.model!.bio != bioController.text ||
+        cubit.model!.gender != gender;
+  }
+
   @override
   Widget build(BuildContext context) {
     DoctorCubit cubit = DoctorCubit.get(context);
@@ -164,6 +174,7 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
                         controller: bioController,
                         hintText: "Enter  bio",
                         prefix: Icons.info_outline,
+                        maxLines: 5,
                         validate: (value) {
                           return Validations.normalValidation(value,
                               name: 'bio');
@@ -209,17 +220,39 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
                                       return;
                                     }
                                     if (_formKey.currentState!.validate()) {
-                                      doctorCubit.editDoctor(
-                                          image: ImageCubit.get(context).image,
-                                          model: DoctorModel(
-                                            ban: false,
-                                            name: nameController.text,
-                                            password: passwordController.text,
-                                            phone: phoneController.text,
-                                            gender: gender,
-                                            bio: bioController.text,
-                                            online: true,
-                                          ));
+                                      if (!isDataChanged(context)) {
+                                        showFlutterToast(
+                                          message: 'No data changed for now!',
+                                          toastColor: Colors.red,
+                                        );
+                                        print('No data changed for now!');
+                                      } else {
+                                        doctorCubit.editDoctor(
+                                            image:
+                                                ImageCubit.get(context).image,
+                                            model: DoctorModel(
+                                              ban: false,
+                                              name: nameController.text,
+                                              password: passwordController.text,
+                                              phone: phoneController.text,
+                                              gender: gender,
+                                              email: DoctorCubit.get(context)
+                                                  .model!
+                                                  .email,
+                                              hospitalId:
+                                                  DoctorCubit.get(context)
+                                                      .model!
+                                                      .hospitalId,
+                                              bio: bioController.text,
+                                              id: DoctorCubit.get(context)
+                                                  .model!
+                                                  .id,
+                                              image: DoctorCubit.get(context)
+                                                  .model!
+                                                  .image,
+                                              online: true,
+                                            ));
+                                      }
                                     }
                                   },
                                 );

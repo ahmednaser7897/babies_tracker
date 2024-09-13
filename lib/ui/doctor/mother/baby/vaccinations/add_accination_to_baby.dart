@@ -32,7 +32,7 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
   TextEditingController endDateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   var administrationSite = ["Arm", "Thigh"];
-  String site = "Arm";
+  String? site;
   @override
   void initState() {
     super.initState();
@@ -82,7 +82,7 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
                   AppSizedBox.h2,
                   AppTextFormFiledWidget(
                     controller: administeringController,
-                    prefix: Icons.vaccines,
+                    prefix: Icons.admin_panel_settings,
                     keyboardType: TextInputType.text,
                     hintText: "Enter Administering Entity",
                     validate: (value) {
@@ -122,7 +122,7 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
                   ),
                   AppSizedBox.h3,
                   const Text(
-                    "Side EffectsNoates",
+                    "Side Effects Noates",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
@@ -132,8 +132,9 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
                   AppTextFormFiledWidget(
                     controller: sideEffectsNoatesController,
                     keyboardType: TextInputType.text,
-                    hintText: "Enter  Side EffectsNoates",
+                    hintText: "Enter  Side Effects Noates",
                     prefix: Icons.note,
+                    maxLines: 5,
                     validate: (value) {
                       return null;
                     },
@@ -146,7 +147,9 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
                           message: AppStrings.userAdded(AppStrings.vaccination),
                           toastColor: Colors.green,
                         );
-                        Navigator.pop(context, 'add');
+                        Navigator.pop(
+                          context,
+                        );
                       }
                       if (state is ErorrAddVaccination) {
                         showFlutterToast(
@@ -169,8 +172,16 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
                                 ),
                               ),
                               onPressed: () {
+                                if (site == null) {
+                                  showFlutterToast(
+                                    message: 'You must add administration site',
+                                    toastColor: Colors.red,
+                                  );
+                                  return;
+                                }
                                 if (_formKey.currentState!.validate()) {
                                   cubit.addVaccination(
+                                      baby: widget.model,
                                       babyId: widget.model.id ?? '',
                                       motherId: widget.model.motherId ?? '',
                                       model: VaccinationsHistoriesModel(
@@ -201,7 +212,7 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
     );
   }
 
-  Widget findValue(String data, String title, Function(String) onchange) {
+  Widget findValue(String? data, String title, Function(String) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -216,7 +227,7 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
         Row(
           children: [
             Container(
-              width: 60.w,
+              width: 90.w,
               height: 5.h,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               decoration: BoxDecoration(

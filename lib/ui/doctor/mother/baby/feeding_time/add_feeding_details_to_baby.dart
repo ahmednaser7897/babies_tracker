@@ -35,7 +35,7 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   var feedTyps = ["Breast Feeding", "Formula Feeding"];
-  String feedQuality = "Breast Feeding";
+  String? feedQuality;
 
   List<Feedingdetails> details = [];
   @override
@@ -96,6 +96,7 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                   keyboardType: TextInputType.text,
                   hintText: "Enter Notes",
                   prefix: Icons.note,
+                  maxLines: 5,
                   validate: (value) {
                     return null;
                   },
@@ -120,8 +121,9 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                           color: Colors.white,
                           size: 20,
                         ),
-                        onPressed: () {
-                          showMyDialog(context);
+                        onPressed: () async {
+                          await showMyDialog(context);
+                          setState(() {});
                         },
                       ),
                     )
@@ -137,7 +139,9 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                         message: AppStrings.userAdded(AppStrings.feedings),
                         toastColor: Colors.green,
                       );
-                      Navigator.pop(context, 'add');
+                      Navigator.pop(
+                        context,
+                      );
                     }
                     if (state is ErorrAddFeedingTime) {
                       showFlutterToast(
@@ -169,6 +173,7 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                               }
                               if (_formKey.currentState!.validate()) {
                                 cubit.addFeedingTime(
+                                    baby: widget.model,
                                     babyId: widget.model.id ?? '',
                                     motherId: widget.model.motherId ?? '',
                                     model: FeedingTimesModel(
@@ -210,7 +215,7 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Details : ${details[index].feedingDetails.orEmpty()}',
+                    details[index].feedingDetails.orEmpty(),
                     style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -227,6 +232,28 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
+                  AppSizedBox.h1,
+                  Text(
+                    'Amount in (Milliliters) : ${details[index].feedingAmount.orEmpty()}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.almarai(
+                      color: Colors.grey,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  AppSizedBox.h1,
+                  Text(
+                    'Duration in (Minutes) : ${details[index].feedingDuration.orEmpty()}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.almarai(
+                      color: Colors.grey,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  )
                 ],
               ),
               trailing: IconButton(
@@ -249,126 +276,153 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
     await showDialog(
       context: context,
       builder: (context) => Dialog(
-        child: Form(
-          key: _formKey2,
-          child: SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.all(10),
-              height: 70.h,
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppSizedBox.h2,
-                  const Text(
-                    "Feeding time",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+        child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return Form(
+            key: _formKey2,
+            child: SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
+                height: 70.h,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Feeding Details",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  AppSizedBox.h2,
-                  AppTextFormFiledWidget(
-                    readOnly: true,
-                    controller: timeController,
-                    keyboardType: TextInputType.text,
-                    hintText: "Enter Feeding time",
-                    prefix: Icons.timelapse,
-                    onTap: () async {
-                      TimeOfDay? value = await showPicker(context);
-                      if (value != null) {
-                        timeController.text = value.format(context);
-                      }
-                    },
-                    validate: (value) {
-                      return Validations.normalValidation(value,
-                          name: 'Feeding time');
-                    },
-                  ),
-                  const Text(
-                    "Feeding amount in (Milliliters)",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  AppSizedBox.h2,
-                  AppTextFormFiledWidget(
-                    controller: amountDateController,
-                    keyboardType: TextInputType.number,
-                    hintText: "Enter Feeding amount",
-                    prefix: Icons.note,
-                    validate: (value) {
-                      return Validations.numberValidation(value,
-                          name: 'Feeding amount');
-                    },
-                  ),
-                  AppSizedBox.h2,
-                  const Text(
-                    "Feeding duration in (Minutes)",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  AppSizedBox.h2,
-                  AppTextFormFiledWidget(
-                    controller: durationDateController,
-                    keyboardType: TextInputType.number,
-                    hintText: "Enter Feeding duration",
-                    prefix: Icons.note,
-                    validate: (value) {
-                      return Validations.numberValidation(value,
-                          name: 'Feeding duration');
-                    },
-                  ),
-                  AppSizedBox.h2,
-                  findValue(feedQuality, 'feed Quality', (String val) {
-                    feedQuality = val;
-                  }),
-                  AppSizedBox.h2,
-                  const Spacer(),
-                  BottomComponent(
-                    child: const Text(
-                      'Add',
+                    AppSizedBox.h2,
+                    const Text(
+                      "Feeding time",
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
-                    onPressed: () {
-                      if (_formKey2.currentState!.validate()) {
-                        setState(() {
-                          details.add(Feedingdetails(
-                            feedingAmount: amountDateController.text,
-                            feedingDetails: feedQuality,
-                            feedingDuration: durationDateController.text,
-                            feedingTime: timeController.text,
-                          ));
-                        });
-                        amountDateController.text = '';
-                        durationDateController.text = '';
-                        timeController.text = '';
-                        Navigator.pop(context);
-                      }
-                    },
-                  )
-                ],
+                    AppSizedBox.h2,
+                    AppTextFormFiledWidget(
+                      readOnly: true,
+                      controller: timeController,
+                      keyboardType: TextInputType.text,
+                      hintText: "Enter Feeding time",
+                      prefix: Icons.timelapse,
+                      onTap: () async {
+                        TimeOfDay? value = await showPicker(context);
+                        if (value != null) {
+                          timeController.text = value.format(context);
+                        }
+                      },
+                      validate: (value) {
+                        return Validations.normalValidation(value,
+                            name: 'Feeding time');
+                      },
+                    ),
+                    AppSizedBox.h3,
+                    const Text(
+                      "Feeding amount in (Milliliters)",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSizedBox.h2,
+                    AppTextFormFiledWidget(
+                      controller: amountDateController,
+                      keyboardType: TextInputType.number,
+                      hintText: "Enter Feeding amount",
+                      prefix: Icons.note,
+                      validate: (value) {
+                        return Validations.numberValidation(value,
+                            name: 'Feeding amount');
+                      },
+                    ),
+                    AppSizedBox.h2,
+                    const Text(
+                      "Feeding duration in (Minutes)",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    AppSizedBox.h2,
+                    AppTextFormFiledWidget(
+                      controller: durationDateController,
+                      keyboardType: TextInputType.number,
+                      hintText: "Enter Feeding duration",
+                      prefix: Icons.note,
+                      validate: (value) {
+                        return Validations.numberValidation(value,
+                            name: 'Feeding duration');
+                      },
+                    ),
+                    AppSizedBox.h3,
+                    findValue(feedQuality, 'feed Quality', (String val) {
+                      setState(() {
+                        feedQuality = val;
+                      });
+                    }),
+                    AppSizedBox.h2,
+                    const Spacer(),
+                    BottomComponent(
+                      child: const Text(
+                        'Add',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () {
+                        if (feedQuality == null) {
+                          showFlutterToast(
+                            message: 'You must add feeding quality',
+                            toastColor: Colors.red,
+                          );
+                          return;
+                        }
+                        if (_formKey2.currentState!.validate()) {
+                          setState(() {
+                            details.add(Feedingdetails(
+                              feedingAmount: amountDateController.text,
+                              feedingDetails: feedQuality,
+                              feedingDuration: durationDateController.text,
+                              feedingTime: timeController.text,
+                            ));
+                          });
+                          amountDateController.text = '';
+                          durationDateController.text = '';
+                          timeController.text = '';
+                          Navigator.pop(context);
+                        }
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        }),
       ),
     );
     amountDateController.text = '';
 
     durationDateController.text = '';
     timeController.text = '';
+    feedQuality = null;
   }
 
-  Widget findValue(String data, String title, Function(String) onchange) {
+  Widget findValue(String? data, String title, Function(String) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

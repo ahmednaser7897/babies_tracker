@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/app_prefs.dart';
 import '../../../../controller/doctor/doctor_cubit.dart';
+import '../../../../controller/doctor/doctor_state.dart';
 import '../../../../controller/hospital/hospital_cubit.dart';
 import '../../../componnents/custom_button.dart';
 import '../../../componnents/widgets.dart';
@@ -36,144 +37,160 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppStrings.userDetails(AppStrings.baby)),
-        actions: [
-          if (!model.left.orFalse() &&
-              AppPreferences.userType == AppStrings.doctor &&
-              widget.model.doctorId == DoctorCubit.get(context).model!.id)
-            IconButton(
-                onPressed: () async {
-                  var value = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditBabyScreen(
-                        model: widget.model,
-                      ),
-                    ),
-                  );
-                  if (value == 'add') {
-                    Navigator.pop(context, 'add');
-                  }
-                },
-                icon: const Icon(Icons.edit)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(5.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppSizedBox.h1,
-              userImage(),
-              AppSizedBox.h1,
-              options(),
-              AppSizedBox.h1,
-              dataValue(
-                  name: "Name", value: model.name ?? '', prefix: Icons.person),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Height in(cm)",
-                  value: model.birthLength ?? '',
-                  prefix: Icons.height),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Weight in(kg)",
-                  value: model.birthWeight ?? '',
-                  prefix: Icons.monitor_weight),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Head Circumference in(cm)",
-                  value: model.headCircumference ?? '',
-                  prefix: Icons.numbers),
-              dataValue(
-                  name: "Birth Date",
-                  value: model.birthDate ?? '',
-                  prefix: Icons.date_range),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Gestational Age",
-                  value: model.gestationalAge != null
-                      ? '${model.gestationalAge!} month'
-                      : '',
-                  prefix: Icons.date_range),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Delivery Type",
-                  value: model.deliveryType ?? '',
-                  prefix: Icons.type_specimen_sharp),
-              AppSizedBox.h3,
-              Row(
-                children: [
-                  const Text(
-                    "APGAR Score !",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  AppSizedBox.w5,
-                  scoresIcon(context),
-                ],
-              ),
-              AppSizedBox.h1,
-              dataValue(
-                name: null,
-                value:
-                    '( ${model.appearance} , ${model.pulse} , ${model.grimace} , ${model.activity} , ${model.respiration} )',
-              ),
-              AppSizedBox.h3,
-              dataValue(
-                  name: "Doctor Notes",
-                  value: model.doctorNotes.toString(),
-                  prefix: Icons.note),
-              AppSizedBox.h3,
-              if (AppPreferences.userType == AppStrings.hospital)
-                BlocConsumer<HospitalCubit, HospitalState>(
-                  listener: (context, state) {},
-                  builder: (context, state) {
-                    return state is LoadingChangeBabyLeft
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : CustomButton(
-                            text: !model.left.orFalse()
-                                ? 'Check out the baby'
-                                : 'Recheck in the baby',
-                            width: 95,
-                            fontsize: 12,
-                            iconRight: const Icon(Icons.output),
-                            onTap: () async {
-                              checkSoutAlertDialog('baby', () {
-                                HospitalCubit.get(context).changeBabyLeft(
-                                    model, !model.left.orFalse());
-                                Navigator.of(context).pop();
-                              });
-                            },
-                          );
-                  },
-                ),
-              if (AppPreferences.userType == AppStrings.mother)
-                CustomButton(
-                  text: 'Healthy information pdf',
-                  width: 95,
-                  fontsize: 12,
-                  onTap: () async {
-                    var value = await BabyHealthPdf.generate(model);
-                    Navigator.push(
+    return BlocConsumer<DoctorCubit, DoctorState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              showBottomSheet(context);
+            },
+            backgroundColor: AppColors.primerColor,
+            child: const Icon(
+              Icons.more_horiz,
+            ),
+          ),
+          appBar: AppBar(
+            title: Text(AppStrings.userDetails(AppStrings.baby)),
+            actions: [
+              if (!model.left.orFalse() &&
+                  AppPreferences.userType == AppStrings.doctor &&
+                  widget.model.doctorId == DoctorCubit.get(context).model!.id)
+                IconButton(
+                    onPressed: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ShowPdf(file: value, uri: ''),
-                        ));
-                  },
-                ),
-              AppSizedBox.h3,
+                          builder: (context) => EditBabyScreen(
+                            model: widget.model,
+                          ),
+                        ),
+                      );
+
+                      Navigator.pop(context, '');
+                    },
+                    icon: const Icon(Icons.edit)),
             ],
           ),
-        ),
-      ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(5.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSizedBox.h1,
+                  userImage(),
+                  AppSizedBox.h1,
+                  // options(),
+                  // AppSizedBox.h1,
+                  dataValue(
+                      name: "Name",
+                      value: model.name ?? '',
+                      prefix: Icons.person),
+                  AppSizedBox.h3,
+                  dataValue(
+                      name: "Height in(cm)",
+                      value: model.birthLength ?? '',
+                      prefix: Icons.height),
+                  AppSizedBox.h3,
+                  dataValue(
+                      name: "Weight in(kg)",
+                      value: model.birthWeight ?? '',
+                      prefix: Icons.monitor_weight),
+                  AppSizedBox.h3,
+                  dataValue(
+                      name: "Head Circumference in(cm)",
+                      value: model.headCircumference ?? '',
+                      prefix: Icons.numbers),
+                  dataValue(
+                      name: "Birth Date",
+                      value: model.birthDate ?? '',
+                      prefix: Icons.date_range),
+                  AppSizedBox.h3,
+                  dataValue(
+                      name: "Gestational Age",
+                      value: model.gestationalAge != null
+                          ? '${model.gestationalAge!} month'
+                          : '',
+                      prefix: Icons.date_range),
+                  AppSizedBox.h3,
+                  dataValue(
+                      name: "Delivery Type",
+                      value: model.deliveryType ?? '',
+                      prefix: Icons.type_specimen_sharp),
+                  AppSizedBox.h3,
+                  Row(
+                    children: [
+                      const Text(
+                        "APGAR Score !",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      AppSizedBox.w5,
+                      scoresIcon(context),
+                    ],
+                  ),
+                  AppSizedBox.h1,
+                  dataValue(
+                    name: null,
+                    value:
+                        '( ${model.appearance} , ${model.pulse} , ${model.grimace} , ${model.activity} , ${model.respiration} )',
+                  ),
+                  AppSizedBox.h3,
+                  dataValue(
+                      name: "Doctor Notes",
+                      value: model.doctorNotes.toString(),
+                      prefix: Icons.note),
+                  AppSizedBox.h3,
+                  if (AppPreferences.userType == AppStrings.hospital)
+                    BlocConsumer<HospitalCubit, HospitalState>(
+                      listener: (context, state) {},
+                      builder: (context, state) {
+                        return state is LoadingChangeBabyLeft
+                            ? const Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : CustomButton(
+                                text: !model.left.orFalse()
+                                    ? 'Check out the baby'
+                                    : 'Recheck in the baby',
+                                width: 95,
+                                fontsize: 12,
+                                iconRight: const Icon(Icons.output),
+                                onTap: () async {
+                                  checkSoutAlertDialog('baby', () {
+                                    HospitalCubit.get(context).changeBabyLeft(
+                                        model, !model.left.orFalse());
+                                    Navigator.of(context).pop();
+                                  });
+                                },
+                              );
+                      },
+                    ),
+                  if (AppPreferences.userType == AppStrings.mother)
+                    CustomButton(
+                      text: 'Healthy information pdf',
+                      width: 95,
+                      fontsize: 12,
+                      onTap: () async {
+                        var value = await BabyHealthPdf.generate(model);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ShowPdf(file: value, uri: ''),
+                            ));
+                      },
+                    ),
+                  AppSizedBox.h3,
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -218,19 +235,29 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
     );
   }
 
-  Widget options() {
-    return Builder(builder: (context) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  void showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16.0)), // Custom border radius
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              CustomButton(
-                text: 'Vaccinations',
-                width: 40,
-                fontsize: 12,
+              ListTile(
+                leading: const Icon(
+                  Icons.vaccines,
+                  color: AppColors.primerColor,
+                  size: 30,
+                ),
+                title: const Text('Vaccinations'),
                 onTap: () async {
+                  Navigator.pop(context);
+                  // Handle option 1 action
                   var value = await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -244,12 +271,16 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                   }
                 },
               ),
-              CustomButton(
-                text: 'Sleep Details',
-                width: 40,
-                fontsize: 12,
-                // iconRight: const Icon(Icons.baby_changing_station),
+              ListTile(
+                leading: const Icon(
+                  Icons.bed,
+                  color: AppColors.primerColor,
+                  size: 30,
+                ),
+                title: const Text('Sleep Details'),
                 onTap: () async {
+                  Navigator.pop(context);
+                  // Handle option 2 action
                   var value = await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -263,30 +294,34 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                   }
                 },
               ),
+              ListTile(
+                leading: const Icon(
+                  Icons.food_bank,
+                  color: AppColors.primerColor,
+                  size: 30,
+                ),
+                title: const Text('Feeding Times'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  // Handle option 3 action
+                  var value = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ShowBabyFeedingDetailss(
+                        model: model,
+                      ),
+                    ),
+                  );
+                  if (value == 'add') {
+                    Navigator.pop(context, 'add');
+                  }
+                },
+              ),
             ],
           ),
-          AppSizedBox.h1,
-          CustomButton(
-            text: 'Feeding Times',
-            width: 60,
-            fontsize: 12,
-            onTap: () async {
-              var value = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ShowBabyFeedingDetailss(
-                    model: model,
-                  ),
-                ),
-              );
-              if (value == 'add') {
-                Navigator.pop(context, 'add');
-              }
-            },
-          ),
-        ],
-      );
-    });
+        );
+      },
+    );
   }
 
   Widget userImage() {

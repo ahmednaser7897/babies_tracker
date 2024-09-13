@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:babies_tracker/app/app_prefs.dart';
 import 'package:babies_tracker/ui/auth/login_screen.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../auth/widgets/build_auth_bottom.dart';
 import 'const_widget.dart';
@@ -36,6 +37,7 @@ class _LogOutButtonState extends State<LogOutButton> {
             onPressed: () async {
               widget.onTap();
               await FirebaseAuth.instance.signOut();
+              await OneSignal.logout();
               await AppPreferences.logOut();
               Navigator.pushAndRemoveUntil(
                 context,

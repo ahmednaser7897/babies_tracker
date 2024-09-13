@@ -47,7 +47,7 @@ class _DatesRowState extends State<DatesRow> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.startTitel ?? "start Date",
+                widget.startTitel ?? "Start Date",
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -79,16 +79,9 @@ class _DatesRowState extends State<DatesRow> {
                   },
                 ),
               ),
-            ],
-          ),
-        ),
-        AppSizedBox.w5,
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+              AppSizedBox.h3,
               Text(
-                widget.endTitel ?? "end Date",
+                widget.endTitel ?? "End Date",
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -122,7 +115,6 @@ class _DatesRowState extends State<DatesRow> {
                       );
                       return 'First Date must be last end Date';
                     }
-
                     return null;
                   },
                 ),
