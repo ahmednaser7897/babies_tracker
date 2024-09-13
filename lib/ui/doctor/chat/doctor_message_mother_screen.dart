@@ -28,16 +28,43 @@ class DoctorMessageMotherScreen extends StatefulWidget {
 class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
   TextEditingController messageController = TextEditingController();
 
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToEnd();
+    });
     super.initState();
+  }
+
+  void _scrollToEnd() {
+    // Use animateTo for smooth scrolling
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeInOut,
+    );
+
+    // Or use jumpTo for instant scrolling
+    // _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 
   File? file;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DoctorCubit, DoctorState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToEnd();
+        });
+      },
       builder: (context, state) {
         DoctorCubit cubit = DoctorCubit.get(context);
         return Scaffold(
@@ -53,6 +80,7 @@ class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
                       Expanded(
                         child: cubit.messages.isNotEmpty
                             ? ListView.separated(
+                                controller: _scrollController,
                                 physics: const BouncingScrollPhysics(),
                                 itemBuilder: (BuildContext context, int index) {
                                   MessageModel message = cubit.messages[index];
@@ -115,8 +143,8 @@ class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
                             maxLines: 999,
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(3),
-                              hintStyle: const TextStyle(fontSize: 13),
+                              //contentPadding: const EdgeInsets.all(3),
+                              //hintStyle: const TextStyle(fontSize: 13),
                               hintText: 'Type your message here...',
                               suffixIcon: Row(
                                 mainAxisSize: MainAxisSize.min,

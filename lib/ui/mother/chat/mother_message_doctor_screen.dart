@@ -28,12 +28,44 @@ class MotherMessageDoctorScreen extends StatefulWidget {
 class _MotherMessageDoctorScreenState extends State<MotherMessageDoctorScreen> {
   TextEditingController messageController = TextEditingController();
   File? file;
+  final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToEnd();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToEnd() {
+    // Use animateTo for smooth scrolling
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeInOut,
+    );
+
+    // Or use jumpTo for instant scrolling
+    // _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MotherCubit, MotherState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollToEnd();
+        });
+      },
       builder: (context, state) {
         MotherCubit cubit = MotherCubit.get(context);
+
         return Scaffold(
           appBar: AppBar(
             title: Text('${widget.doctor.name}'),
@@ -47,6 +79,7 @@ class _MotherMessageDoctorScreenState extends State<MotherMessageDoctorScreen> {
                       Expanded(
                         child: cubit.messages.isNotEmpty
                             ? ListView.separated(
+                                controller: _scrollController,
                                 physics: const BouncingScrollPhysics(),
                                 itemBuilder: (BuildContext context, int index) {
                                   MessageModel message = cubit.messages[index];
@@ -108,8 +141,8 @@ class _MotherMessageDoctorScreenState extends State<MotherMessageDoctorScreen> {
                             controller: messageController,
                             maxLines: 999,
                             decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(3),
-                              hintStyle: const TextStyle(fontSize: 13),
+                              //contentPadding: const EdgeInsets.all(3),
+                              // hintStyle: const TextStyle(fontSize: 13),
                               border: InputBorder.none,
                               hintText: 'Type your message here...',
                               suffixIcon: Row(

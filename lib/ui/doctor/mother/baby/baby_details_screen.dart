@@ -11,6 +11,7 @@ import '../../../../app/app_prefs.dart';
 import '../../../../controller/doctor/doctor_cubit.dart';
 import '../../../../controller/doctor/doctor_state.dart';
 import '../../../../controller/hospital/hospital_cubit.dart';
+import '../../../componnents/const_widget.dart';
 import '../../../componnents/custom_button.dart';
 import '../../../componnents/widgets.dart';
 import '../../../mother/pdfs/baby_health_pdf.dart';
@@ -35,6 +36,7 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
     super.initState();
   }
 
+  bool loding = false;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DoctorCubit, DoctorState>(
@@ -170,20 +172,28 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                       },
                     ),
                   if (AppPreferences.userType == AppStrings.mother)
-                    CustomButton(
-                      text: 'Healthy information pdf',
-                      width: 95,
-                      fontsize: 12,
-                      onTap: () async {
-                        var value = await BabyHealthPdf.generate(model);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ShowPdf(file: value, uri: ''),
-                            ));
-                      },
-                    ),
+                    loding
+                        ? const Center(child: CircularProgressComponent())
+                        : CustomButton(
+                            text: 'Healthy information pdf',
+                            width: 95,
+                            fontsize: 12,
+                            onTap: () async {
+                              setState(() {
+                                loding = true;
+                              });
+                              var value = await BabyHealthPdf.generate(model);
+                              setState(() {
+                                loding = false;
+                              });
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ShowPdf(file: value, uri: ''),
+                                  ));
+                            },
+                          ),
                   AppSizedBox.h3,
                 ],
               ),

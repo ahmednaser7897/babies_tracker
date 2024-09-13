@@ -10,6 +10,7 @@ import '../../../app/app_prefs.dart';
 import '../../../app/icon_broken.dart';
 import '../../../controller/mother/mother_cubit.dart';
 import '../../../controller/mother/mother_state.dart';
+import '../../componnents/const_widget.dart';
 import '../../componnents/log_out_button.dart';
 import '../../componnents/screen_builder.dart';
 import '../../componnents/widgets.dart';
@@ -25,6 +26,7 @@ class MotherSettingsScreen extends StatefulWidget {
 }
 
 class _MotherSettingsScreenState extends State<MotherSettingsScreen> {
+  bool loding = false;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MotherCubit, MotherState>(
@@ -128,24 +130,33 @@ class _MotherSettingsScreenState extends State<MotherSettingsScreen> {
                       ));
                 },
               ),
-              settingbuildListItem(
-                context,
-                title: 'Your health',
-                leadingIcon: Icons.health_and_safety,
-                subtitle: 'Print as PDF her healthy information',
-                onTap: () async {
-                  print(MotherCubit.get(context).model!.healthyHistory);
-                  print(MotherCubit.get(context).model!.postpartumHealth);
-                  print(MotherCubit.get(context).model!.medications);
-                  var value = await MotherHealthPdf.generate(
-                      MotherCubit.get(context).model!);
-                  Navigator.push(
+              loding
+                  ? const Center(child: CircularProgressComponent())
+                  : settingbuildListItem(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => ShowPdf(file: value, uri: ''),
-                      ));
-                },
-              ),
+                      title: 'Your health',
+                      leadingIcon: Icons.health_and_safety,
+                      subtitle: 'Print as PDF her healthy information',
+                      onTap: () async {
+                        print(MotherCubit.get(context).model!.healthyHistory);
+                        print(MotherCubit.get(context).model!.postpartumHealth);
+                        print(MotherCubit.get(context).model!.medications);
+                        setState(() {
+                          loding = true;
+                        });
+                        var value = await MotherHealthPdf.generate(
+                            MotherCubit.get(context).model!);
+                        setState(() {
+                          loding = false;
+                        });
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ShowPdf(file: value, uri: ''),
+                            ));
+                      },
+                    ),
               const Spacer(),
               LogOutButton(
                 onTap: () async {

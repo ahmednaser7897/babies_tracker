@@ -12,6 +12,7 @@ import 'package:babies_tracker/app/app_validation.dart';
 import 'package:babies_tracker/app/extensions.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../../app/app_assets.dart';
 import '../../../../../app/app_colors.dart';
 import '../../../../auth/widgets/build_auth_bottom.dart';
 import '../../../../componnents/app_textformfiled_widget.dart';
@@ -208,67 +209,85 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
     return ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemBuilder: (context, index) => ListTile(
-              tileColor: Colors.grey[100],
-              shape: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10.0),
-                ),
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                  width: 2,
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    details[index].sleepQuality.orEmpty(),
-                    style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black),
-                  ),
-                  AppSizedBox.h1,
-                  Row(
-                    children: [
-                      Text(
-                        'From : ${details[index].startTime.orEmpty()}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.almarai(
-                          color: Colors.grey,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      AppSizedBox.w3,
-                      Text(
-                        'To : ${details[index].endTime.orEmpty()}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.almarai(
-                          color: Colors.grey,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
+        itemBuilder: (context, index) => Container(
+              width: 100.w,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
                   ),
                 ],
               ),
-              trailing: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      details.remove(details[index]);
-                      calcToalSleepDuration();
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.delete_outlined,
-                    size: 18,
-                    color: AppColors.primerColor,
-                  )),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: AssetImage(
+                        AppAssets.sleeping,
+                      ),
+                    ),
+                    AppSizedBox.w5,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          details[index].sleepQuality.orEmpty(),
+                          style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        ),
+                        AppSizedBox.h1,
+                        Row(
+                          children: [
+                            Text(
+                              'From : ${details[index].startTime.orEmpty()}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.almarai(
+                                color: Colors.grey,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            AppSizedBox.w3,
+                            Text(
+                              'To : ${details[index].endTime.orEmpty()}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.almarai(
+                                color: Colors.grey,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            details.remove(details[index]);
+                            calcToalSleepDuration();
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.delete_outlined,
+                          size: 18,
+                          color: AppColors.primerColor,
+                        )),
+                  ],
+                ),
+              ),
             ),
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemCount: details.length);

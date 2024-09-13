@@ -42,18 +42,18 @@ class _ShowPdfState extends State<ShowPdf> {
               },
               icon: const Icon(
                 Icons.print,
-                color: AppColors.primer,
+                color: AppColors.white,
               )),
-          IconButton(
-              onPressed: () async {
-                // await Share.shareXFiles(
-                //   [XFile(widget.file.path)],
-                // );
-              },
-              icon: const Icon(
-                Icons.share,
-                color: AppColors.primer,
-              ))
+          // IconButton(
+          //     onPressed: () async {
+          //       // await Share.shareXFiles(
+          //       //   [XFile(widget.file.path)],
+          //       // );
+          //     },
+          //     icon: const Icon(
+          //       Icons.share,
+          //       color: AppColors.primer,
+          //     ))
         ],
       ),
       body: SfPdfViewer.file(

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:babies_tracker/app/extensions.dart';
 import 'package:babies_tracker/model/babies_model.dart';
 import 'package:babies_tracker/ui/mother/pdfs/pdf_api.dart';
 import 'package:pdf/pdf.dart';
@@ -119,8 +120,8 @@ class BabyHealthPdf {
         element.vaccineName,
         element.dose,
         element.administrationSite,
-        element.vaccinationDate,
-        element.nextDoseDate,
+        element.vaccinationDate.orEmpty().split('-')[0],
+        element.nextDoseDate.orEmpty().split('-')[0],
       ]);
     });
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -179,7 +180,7 @@ class BabyHealthPdf {
       children: List.generate(myList.length, (index) {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-            '${index + 1} - ${myList[index].date}',
+            myList[index].date.orEmpty().split('-')[0],
             style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -187,16 +188,16 @@ class BabyHealthPdf {
           ),
           SizedBox(height: 0.3 * PdfPageFormat.cm),
           Text(
-            'Total ${myList[index].totalSleepDuration} hours',
+            'Total hours : ${myList[index].totalSleepDuration} ',
             style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                fontWeight: FontWeight.normal,
                 color: PdfColors.black),
           ),
           SizedBox(height: 0.3 * PdfPageFormat.cm),
           ...List.generate(myList[index].details!.length, (index2) {
             return Text(
-              '${myList[index].details![index2].sleepQuality} ${myList[index].details![index2].startTime} - ${myList[index].details![index2].endTime}',
+              '${index2 + 1} - ${myList[index].details![index2].sleepQuality} - from : ${myList[index].details![index2].startTime} - to: ${myList[index].details![index2].endTime}',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.normal,
@@ -204,7 +205,7 @@ class BabyHealthPdf {
                   color: PdfColors.black),
             );
           }),
-          SizedBox(height: 0.3 * PdfPageFormat.cm),
+          SizedBox(height: 0.4 * PdfPageFormat.cm),
         ]);
       }),
     );
@@ -230,15 +231,7 @@ class BabyHealthPdf {
       children: List.generate(myList.length, (index) {
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-            '${index + 1} - ${myList[index].date}',
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: PdfColors.black),
-          ),
-          SizedBox(height: 0.3 * PdfPageFormat.cm),
-          Text(
-            '${index + 1} - ${myList[index].date}',
+            myList[index].date.orEmpty().split('-')[0],
             style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -247,7 +240,7 @@ class BabyHealthPdf {
           SizedBox(height: 0.3 * PdfPageFormat.cm),
           ...List.generate(myList[index].details!.length, (index2) {
             return Text(
-              '${myList[index].details![index2].feedingDetails} - ${myList[index].details![index2].feedingTime} - amount ${myList[index].details![index2].feedingAmount} (in ml) -  duration ${myList[index].details![index2].feedingDuration} (in m)',
+              '${index2 + 1} - ${myList[index].details![index2].feedingDetails} on ${myList[index].details![index2].feedingTime} - amount ${myList[index].details![index2].feedingAmount} (in ml) -  duration ${myList[index].details![index2].feedingDuration} (in m)',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.normal,
@@ -255,7 +248,7 @@ class BabyHealthPdf {
                   color: PdfColors.black),
             );
           }),
-          SizedBox(height: 0.3 * PdfPageFormat.cm),
+          SizedBox(height: 0.4 * PdfPageFormat.cm),
         ]);
       }),
     );

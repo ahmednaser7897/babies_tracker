@@ -164,7 +164,15 @@ class MotherCubit extends Cubit<MotherState> {
         }
       }
       User? currentUser = FirebaseAuth.instance.currentUser;
-      await currentUser!.updatePassword(model.password ?? '');
+      // Re-authenticate user with current password
+      final credential = EmailAuthProvider.credential(
+        email: this.model!.email!,
+        password: this.model!.password!,
+      );
+
+      await currentUser!.reauthenticateWithCredential(credential);
+      print('User re-authenticated successfully');
+      await currentUser.updatePassword(model.password ?? '');
       print(model.toJson());
       await FirebaseFirestore.instance
           .collection(AppStrings.hospital)

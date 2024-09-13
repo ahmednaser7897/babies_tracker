@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:babies_tracker/app/app_assets.dart';
 import 'package:babies_tracker/app/extensions.dart';
 import 'package:babies_tracker/controller/doctor/doctor_cubit.dart';
 import 'package:babies_tracker/controller/doctor/doctor_state.dart';
@@ -33,7 +34,7 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
       builder: (context, state) {
         return Scaffold(
             appBar: AppBar(
-              title: const Text('Show mother medicationss'),
+              title: const Text('Show mother meducations'),
               actions: [
                 if (!widget.model.leaft.orFalse() &&
                     AppPreferences.userType == AppStrings.doctor &&
@@ -119,7 +120,6 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
           duration: const Duration(milliseconds: 500),
           child: Container(
             width: 100.w,
-            //height: 17.h,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
@@ -134,16 +134,20 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
             ),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  AppSizedBox.w3,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(
+                      AppAssets.vaccination,
+                    ),
+                  ),
+                  AppSizedBox.w5,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
                           'Name : ${model.name.orEmpty()}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -154,27 +158,8 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                      ),
-                      AppSizedBox.w1,
-                      Text(
-                        'Start Date : ${model.startDate.orEmpty()}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.almarai(
-                          color: Colors.grey,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  AppSizedBox.h1,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
+                        AppSizedBox.h1,
+                        Text(
                           "Frequency : ${model.frequency.toString()}",
                           style: const TextStyle(
                             fontSize: 14,
@@ -182,18 +167,20 @@ class _ShowMotherMedicationssState extends State<ShowMotherMedicationss> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                      Text(
-                        'End Date : ${model.endDate.orEmpty()}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.almarai(
-                          color: Colors.grey,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
+                        AppSizedBox.h1,
+                        Text(
+                          'from :${model.startDate.orEmpty().split('-')[0]} - to :${model.startDate.orEmpty().split('-')[0]} ',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.almarai(
+                            color: Colors.grey,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                    ],
+                        AppSizedBox.h1,
+                      ],
+                    ),
                   ),
                 ],
               ),

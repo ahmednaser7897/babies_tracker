@@ -3,7 +3,6 @@ import 'package:babies_tracker/controller/mother/mother_state.dart';
 import 'package:babies_tracker/ui/componnents/const_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../app/app_sized_box.dart';
 import '../../../app/app_strings.dart';
 import '../../../app/app_validation.dart';
@@ -40,8 +39,8 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
   void initState() {
     MotherCubit cubit = MotherCubit.get(context);
     if (cubit.model != null) {
-      motherHealthyHistory = cubit.model!.healthyHistory ?? [];
-      motherPostpartumHealth = cubit.model!.postpartumHealth ?? [];
+      motherHealthyHistory.addAll(cubit.model!.healthyHistory ?? []);
+      motherPostpartumHealth.addAll(cubit.model!.postpartumHealth ?? []);
       phoneController.text = cubit.model!.phone ?? '';
 
       addressController.text = cubit.model!.address ?? '';
@@ -51,6 +50,28 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
       passwordController.text = cubit.model!.password ?? '';
     }
     super.initState();
+  }
+
+  bool isDataChanged(BuildContext context) {
+    MotherCubit cubit = MotherCubit.get(context);
+    return ImageCubit.get(context).image != null ||
+        cubit.model!.phone != phoneController.text ||
+        cubit.model!.name != nameController.text ||
+        cubit.model!.address != addressController.text ||
+        cubit.model!.doctorNotes != doctorNotesController.text ||
+        cubit.model!.password != passwordController.text ||
+        !(Set.from(motherHealthyHistory)
+                .difference(Set.from(cubit.model!.healthyHistory ?? []))
+                .isEmpty &&
+            Set.from(cubit.model!.healthyHistory ?? [])
+                .difference(Set.from(motherHealthyHistory))
+                .isEmpty) ||
+        !(Set.from(motherPostpartumHealth)
+                .difference(Set.from(cubit.model!.postpartumHealth ?? []))
+                .isEmpty &&
+            Set.from(cubit.model!.postpartumHealth ?? [])
+                .difference(Set.from(motherPostpartumHealth))
+                .isEmpty);
   }
 
   @override
@@ -228,23 +249,40 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
                                     ),
                                   ),
                                   onPressed: () {
+                                    if (motherHealthyHistory.isEmpty ||
+                                        motherPostpartumHealth.isEmpty) {
+                                      showFlutterToast(
+                                        message: 'You must add all mother data',
+                                        toastColor: Colors.red,
+                                      );
+                                      return;
+                                    }
                                     if (_formKey.currentState!.validate()) {
-                                      motherCubit.editMother(
-                                          image: ImageCubit.get(context).image,
-                                          model: MotherModel(
-                                            ban: false,
-                                            name: nameController.text,
-                                            password: passwordController.text,
-                                            phone: phoneController.text,
-                                            address: addressController.text,
-                                            doctorNotes:
-                                                doctorNotesController.text,
-                                            healthyHistory:
-                                                motherHealthyHistory,
-                                            postpartumHealth:
-                                                motherPostpartumHealth,
-                                            online: true,
-                                          ));
+                                      if (!isDataChanged(context)) {
+                                        showFlutterToast(
+                                          message: 'No data changed for now!',
+                                          toastColor: Colors.red,
+                                        );
+                                        print('No data changed for now!');
+                                      } else {
+                                        motherCubit.editMother(
+                                            image:
+                                                ImageCubit.get(context).image,
+                                            model: MotherModel(
+                                              ban: false,
+                                              name: nameController.text,
+                                              password: passwordController.text,
+                                              phone: phoneController.text,
+                                              address: addressController.text,
+                                              doctorNotes:
+                                                  doctorNotesController.text,
+                                              healthyHistory:
+                                                  motherHealthyHistory,
+                                              postpartumHealth:
+                                                  motherPostpartumHealth,
+                                              online: true,
+                                            ));
+                                      }
                                     }
                                   },
                                 );

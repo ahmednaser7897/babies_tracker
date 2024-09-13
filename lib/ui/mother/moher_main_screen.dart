@@ -29,6 +29,7 @@ class _MotherHomeScreenState extends State<MotherHomeScreen> {
   void initState() {
     if (widget.getHomeData) {
       MotherCubit.get(context).getCurrentMotherData();
+      MotherCubit.get(context).getHomeData();
       HospitalCubit.get(context).getHomeData();
     }
 

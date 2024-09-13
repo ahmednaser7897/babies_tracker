@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../../app/app_assets.dart';
+import '../../../../../app/app_colors.dart';
 import '../../../../../app/app_sized_box.dart';
 import '../../../../../app/app_strings.dart';
 import '../../../../componnents/screen_builder.dart';
@@ -32,7 +34,7 @@ class _ShowBabySleepDetailssState extends State<ShowBabySleepDetailss> {
       builder: (context, state) {
         return Scaffold(
             appBar: AppBar(
-              title: const Text('Show Baby Sleep Detailss'),
+              title: const Text('Show Baby sleep details'),
               actions: [
                 if (!widget.model.left.orFalse() &&
                     AppPreferences.userType == AppStrings.doctor &&
@@ -119,45 +121,66 @@ class _ShowBabySleepDetailssState extends State<ShowBabySleepDetailss> {
           duration: const Duration(milliseconds: 500),
           child: Container(
             width: 100.w,
-            margin: const EdgeInsets.symmetric(
-              vertical: 5,
-            ),
             decoration: BoxDecoration(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey[200]!,
+                  color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 1,
                   blurRadius: 7,
-                  offset: const Offset(0, 3),
+                  offset: const Offset(0, 3), // changes position of shadow
                 ),
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
                 children: [
-                  Text(
-                    'Total Hours : ${model.totalSleepDuration.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
-                    style: GoogleFonts.almarai(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w900,
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(
+                      AppAssets.sleeping,
                     ),
                   ),
-                  AppSizedBox.h1,
-                  Text(
-                    'Date : ${model.date.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
+                  AppSizedBox.w5,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total Hours : ${model.totalSleepDuration.orEmpty()}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                          style: GoogleFonts.almarai(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        AppSizedBox.h1,
+                        Text(
+                          'Date : ${model.date.orEmpty().split('-')[0]}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppColors.grey,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        AppSizedBox.h1,
+                        Text(
+                          'Number of naps : ${model.details.orEmpty().length} ',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.almarai(
+                            fontSize: 14,
+                            color: AppColors.grey,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        AppSizedBox.h1,
+                      ],
                     ),
                   ),
                 ],

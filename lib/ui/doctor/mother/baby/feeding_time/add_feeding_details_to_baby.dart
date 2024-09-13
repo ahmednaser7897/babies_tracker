@@ -10,6 +10,7 @@ import 'package:babies_tracker/app/app_validation.dart';
 import 'package:babies_tracker/app/extensions.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../../app/app_assets.dart';
 import '../../../../../app/app_colors.dart';
 import '../../../../../model/feeding_times_model.dart';
 import '../../../../auth/widgets/build_auth_bottom.dart';
@@ -200,73 +201,91 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
     return ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemBuilder: (context, index) => ListTile(
-              tileColor: Colors.grey[100],
-              shape: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10.0),
-                ),
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                  width: 2,
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    details[index].feedingDetails.orEmpty(),
-                    style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black),
+        itemBuilder: (context, index) => Container(
+              width: 100.w,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
                   ),
-                  AppSizedBox.h1,
-                  Text(
-                    'Time : ${details[index].feedingTime.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  AppSizedBox.h1,
-                  Text(
-                    'Amount in (Milliliters) : ${details[index].feedingAmount.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  AppSizedBox.h1,
-                  Text(
-                    'Duration in (Minutes) : ${details[index].feedingDuration.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  )
                 ],
               ),
-              trailing: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      details.remove(details[index]);
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.delete_outlined,
-                    size: 18,
-                    color: AppColors.primerColor,
-                  )),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: AssetImage(
+                        AppAssets.feeding,
+                      ),
+                    ),
+                    AppSizedBox.w5,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          details[index].feedingDetails.orEmpty(),
+                          style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black),
+                        ),
+                        AppSizedBox.h1,
+                        Text(
+                          'Time : ${details[index].feedingTime.orEmpty()}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.almarai(
+                            color: Colors.grey,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        AppSizedBox.h1,
+                        Text(
+                          'Amount in (Milliliters) : ${details[index].feedingAmount.orEmpty()}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.almarai(
+                            color: Colors.grey,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        AppSizedBox.h1,
+                        Text(
+                          'Duration in (Minutes) : ${details[index].feedingDuration.orEmpty()}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.almarai(
+                            color: Colors.grey,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    ),
+                    const Spacer(),
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            details.remove(details[index]);
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.delete_outlined,
+                          size: 18,
+                          color: AppColors.primerColor,
+                        )),
+                  ],
+                ),
+              ),
             ),
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemCount: details.length);

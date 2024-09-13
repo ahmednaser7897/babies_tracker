@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../../app/app_assets.dart';
 import '../../../../../app/app_colors.dart';
 import '../../../../../app/app_prefs.dart';
 import '../../../../../app/app_sized_box.dart';
@@ -117,15 +118,12 @@ class _ShowBabyVaccinationssState extends State<ShowBabyVaccinationss> {
           duration: const Duration(milliseconds: 500),
           child: Container(
             width: 100.w,
-            margin: const EdgeInsets.symmetric(
-              vertical: 5,
-            ),
             decoration: BoxDecoration(
-              //color: model..orFalse() ? Colors.white : Colors.grey[200],
+              color: Colors.white,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey[200]!,
+                  color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 1,
                   blurRadius: 7,
                   offset: const Offset(0, 3), // changes position of shadow
@@ -133,18 +131,22 @@ class _ShowBabyVaccinationssState extends State<ShowBabyVaccinationss> {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
                 children: [
-                  AppSizedBox.w3,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'name : ${model.vaccineName.orEmpty()}',
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage(
+                      AppAssets.vaccination,
+                    ),
+                  ),
+                  AppSizedBox.w5,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Name : ${model.vaccineName.orEmpty()}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
@@ -154,17 +156,8 @@ class _ShowBabyVaccinationssState extends State<ShowBabyVaccinationss> {
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                      ),
-                      AppSizedBox.w1,
-                    ],
-                  ),
-                  AppSizedBox.h1,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
+                        AppSizedBox.h1,
+                        Text(
                           "Site : ${model.administrationSite.toString()}",
                           style: const TextStyle(
                             fontSize: 14,
@@ -172,29 +165,19 @@ class _ShowBabyVaccinationssState extends State<ShowBabyVaccinationss> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  AppSizedBox.h1,
-                  Text(
-                    'Vaccination Date : ${model.vaccinationDate.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  AppSizedBox.h1,
-                  Text(
-                    'Next Dose Date : ${model.nextDoseDate.orEmpty()}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.almarai(
-                      color: Colors.grey,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
+                        AppSizedBox.h1,
+                        Text(
+                          'date : ${model.vaccinationDate.orEmpty().split('-')[0]} - next date :${model.nextDoseDate.orEmpty().split('-')[0]} ',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.almarai(
+                            color: Colors.grey,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        AppSizedBox.h1,
+                      ],
                     ),
                   ),
                 ],

@@ -127,30 +127,10 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               ),
               Hero(
                 tag: model.id.orEmpty(),
-                child: SizedBox(
-                  width: 30.w,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: CircleAvatar(
-                          backgroundColor:
-                              model.online ?? false ? Colors.green : Colors.red,
-                          radius: 2.w,
-                        ),
-                      ),
-                      CircleAvatar(
-                        radius: 15.w,
-                        backgroundImage:
-                            (model.image != null && model.image!.isNotEmpty)
-                                ? NetworkImage(model.image.orEmpty())
-                                : AssetImage(
-                                    AppAssets.doctor,
-                                  ) as ImageProvider,
-                      ),
-                    ],
-                  ),
-                ),
+                child: imageWithOnlineState(
+                    uri: model.image,
+                    type: AppAssets.doctor,
+                    isOnline: model.online.orFalse()),
               ),
               AppSizedBox.h2,
               if (AppPreferences.userType == AppStrings.hospital)

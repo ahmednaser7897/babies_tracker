@@ -68,7 +68,6 @@ class _ShowMotherBabysState extends State<ShowMotherBabys> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AppSizedBox.h2,
                             buildBabyList(baby: widget.model.babys ?? []),
                             AppSizedBox.h2,
                           ],

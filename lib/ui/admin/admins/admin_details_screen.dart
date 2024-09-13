@@ -97,30 +97,10 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
               ),
               Hero(
                 tag: model.id.orEmpty(),
-                child: SizedBox(
-                  width: 30.w,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: CircleAvatar(
-                          backgroundColor:
-                              model.online ?? false ? Colors.green : Colors.red,
-                          radius: 2.w,
-                        ),
-                      ),
-                      CircleAvatar(
-                        radius: 15.w,
-                        backgroundImage:
-                            (model.image != null && model.image!.isNotEmpty)
-                                ? NetworkImage(model.image.orEmpty())
-                                : AssetImage(
-                                    AppAssets.admin,
-                                  ) as ImageProvider,
-                      ),
-                    ],
-                  ),
-                ),
+                child: imageWithOnlineState(
+                    uri: model.image,
+                    type: AppAssets.admin,
+                    isOnline: model.online.orFalse()),
               ),
               AppSizedBox.h2,
               if (canBan)

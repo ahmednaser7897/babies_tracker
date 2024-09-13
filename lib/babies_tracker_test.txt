@@ -1,21 +1,20 @@
 @ Gloabal :
-    => Put suitable icon for each input into UI of all forms.-->DONE IN ADMIN , Hospital
-    => Increase the height of bio input into UI.-->DONE IN ADMIN, Hospital
-    => Make email of any account must to be gmail acccount.-->DONE IN ADMIN, Hospital
-    => location input must make validation into it to take correct Google map link.-->DONE IN ADMIN, Hospital
-    => If there is no data to show, show alert that say there is no data into all pages.-->DONE IN ADMIN, Hospital
-    => Make any select box is empty untill user select any value -->DONE IN ADMIN, Hospital
-    => Fix the problem of excessive loading into system.-->DONE IN ADMIN, Hospital
-    => Design of (vaccination, sleep, Feeding) of boby is not suitable (use photos that i sent it)
-    => use all default images that i sent to you
-    => into any page that show data of all users show online icon into each card like (Doctors Page, Hospital Page, ....)-->DONE IN ADMIN, Hospital
-    => make width of any select box is 100% like inputs--> DONE IN ADMIN, Hospital
-    => make any user can update his email.
-    => Find awesome package for popup alerts to use it into all applications--> DONE IN ADMIN, Hospital
-    => Any doctor notes input make it like textarea "its height is bigger" into form and data show page-->DONE IN ADMIN, Hospital
-    => Focus on your writing in English.-->DONE IN ADMIN, Hospital
-    => UI of info icon into each card of any user not suitable, try to make better design ( Problem 9 )DONE IN ADMIN, Hospital
-    => It is not possible that when I enter any data in anything, it returns me to the first page, Exp: when i enter vaccination to baby back me to mothers page-->DONE IN ADMIN, Hospital
+    => Put suitable icon for each input into UI of all forms.-->DONE IN ADMIN , Hospital,Mother
+    => Increase the height of bio input into UI.-->DONE IN ADMIN, Hospital,Mother
+    => Make email of any account must to be gmail acccount.-->DONE IN ADMIN, Hospital,Mother
+    => location input must make validation into it to take correct Google map link.-->DONE IN ADMIN, Hospital,Mother
+    => If there is no data to show, show alert that say there is no data into all pages.-->DONE IN ADMIN, Hospital,Mother
+    => Make any select box is empty untill user select any value -->DONE IN ADMIN, Hospital,Mother
+    => Fix the problem of excessive loading into system.-->DONE IN ADMIN, Hospital,Mother
+    => Design of (vaccination, sleep, Feeding) of boby is not suitable (use photos that i sent it),-->DONE IN ADMIN, Hospital,Mother
+    => use all default images that i sent to you-->DONE IN ADMIN, Hospital,Mother
+    => into any page that show data of all users show online icon into each card like (Doctors Page, Hospital Page, ....)-->DONE IN ADMIN, Hospital,Mother
+    => make width of any select box is 100% like inputs-->DONE IN ADMIN, Hospital,Mother
+    => Find awesome package for popup alerts to use it into all applications-->DONE IN ADMIN, Hospital,Mother
+    => Any doctor notes input make it like textarea "its height is bigger" into form and data show page-->DONE IN ADMIN, Hospital,Mother
+    => Focus on your writing in English.-->DONE IN ADMIN, Hospital,Mother
+    => UI of info icon into each card of any user not suitable, try to make better design ( Problem 9 )-->DONE IN ADMIN, Hospital,Mother
+    => It is not possible that when I enter any data in anything, it returns me to the first page, Exp: when i enter vaccination to baby back me to mothers page-->DONE IN ADMIN, Hospital,Mother
 
 @ Admin Section :-->DONE
         # hospital details page-->DONE
@@ -40,21 +39,21 @@
             => Show APGAR Score into one cell like that (0, 1, 0, 0, 0)-->DONE
             => Make icon of photo of APGAR_score smaller and put it after name of info "APGAR Score !"-->DONE
 
-        # Show Baby vaccinations 
+        # Show Baby vaccinations-->DONE 
             => Write name of page correct-->DONE
-            => Update UI of page and use default image that i sent before
+            => Update UI of page and use default image that i sent before-->DONE
 
-        # Show Baby sleep details
-            => Write name of page correct
-            => Update UI of page and use default image that i sent before
+        # Show Baby sleep details-->DONE
+            => Write name of page correct-->DONE
+            => Update UI of page and use default image that i sent before-->DONE
 
-        # Show Baby Feeding details
-            => Write name of page correct
-            => Update UI of page and use default image that i sent before
+        # Show Baby Feeding details-->DONE
+            => Write name of page correct-->DONE
+            => Update UI of page and use default image that i sent before-->DONE
 
-        # Show mother meducations 
-            => Write name of page correct
-            => Update UI of page and use default image that i sent before
+        # Show mother meducations -->DONE
+            => Write name of page correct-->DONE
+            => Update UI of page and use default image that i sent before-->DONE
 
         # Doctors Page-->DONE
             => data of doctors is dublicated ( Problem 5 )-->DONE
@@ -86,20 +85,20 @@
     # baby details-->DONE
         => Try to decorate buttons into better design, what about fixed bottom navbar and using icons ( Problem 11 )-->DONE
 
-    # Add new sleep details page (Same thing to "Add new feeding page")
+    # Add new sleep details page (Same thing to "Add new feeding page")-->DONE
         => Edit design of popup of details, try to add header and padding trying to make it better ( Problem 12 )-->DONE
-        => Edit design of details that add to be like i sent into photo ( Probelm 13 )
+        => Edit design of details that add to be like i sent into photo ( Probelm 13 )-->DONE
     
 
 
-@ Mother Section :
+@ Mother Section :-->DONE
 
 
 
 
-@ Chat Section :
-    => It's not necessary to send text message with file
-    => Fix ( Problem 14 )
+@ Chat Section :-->DONE
+    => It's not necessary to send text message with file-->DONE
+    => Fix ( Problem 14 )-->DONE
 
 
 

@@ -38,7 +38,7 @@ Widget dataValue(
             width: 2,
           ),
         ),
-        contentPadding: EdgeInsets.all(5),
+        contentPadding: const EdgeInsets.all(2),
         title: Text(
           value,
           style: const TextStyle(

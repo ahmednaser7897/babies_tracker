@@ -3,6 +3,7 @@ import 'package:babies_tracker/model/mother_model.dart';
 import 'package:babies_tracker/ui/mother/pdfs/pdf_api.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:babies_tracker/app/extensions.dart';
 
 class MotherHealthPdf {
   static Future<File> generate(MotherModel model) async {
@@ -128,8 +129,8 @@ class MotherHealthPdf {
         //element.purpose,
         element.frequency,
         element.dosage,
-        element.startDate,
-        element.endDate,
+        element.startDate.orEmpty().split('-')[0],
+        element.endDate.orEmpty().split('-')[0],
       ]);
     });
 
@@ -165,24 +166,6 @@ class MotherHealthPdf {
       )
     ]);
   }
-
-  //  Widget userImage(MothermyList[index] model)pw.async {
-  //   final image = await imageFromAssetBundle(AppAssets.mother);
-  //   final provider = await flutterImageProvider(
-  //       NetworkImage(uri.toString()));
-  //   return Column(
-  //     children: [
-  //       Container(
-  //         height: 15.w,
-  //        child:
-  //          (model.image != null && model.image!.isNotEmpty)
-  //                 ?pw.Image(image)
-  //                 :pw.Image(image) ,
-  //         decoration:const BoxDecoration(shape: BoxShape.circle),
-  //       )
-  //     ],
-  //   );
-  // }
 
   static buildSimpleText({
     required String title,
