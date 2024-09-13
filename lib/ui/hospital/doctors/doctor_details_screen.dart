@@ -1,3 +1,4 @@
+import 'package:babies_tracker/app/app_colors.dart';
 import 'package:babies_tracker/app/app_strings.dart';
 import 'package:babies_tracker/controller/hospital/hospital_cubit.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
                   ),
                 );
               },
-              backgroundColor: Colors.teal.withOpacity(0.8),
+              backgroundColor: AppColors.primerColor,
               child: const Icon(
                 IconBroken.Chat,
                 color: Colors.white,

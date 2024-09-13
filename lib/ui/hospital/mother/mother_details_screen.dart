@@ -56,7 +56,7 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
                   ),
                 );
               },
-              backgroundColor: Colors.teal.withOpacity(0.8),
+              backgroundColor: AppColors.primerColor,
               child: const Icon(
                 IconBroken.Chat,
                 color: Colors.white,
