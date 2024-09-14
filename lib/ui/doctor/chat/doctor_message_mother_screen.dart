@@ -45,6 +45,7 @@ class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
   }
 
   void _scrollToEnd() {
+    //if(WidgetsBinding.instance.isRootWidgetAttached){
     // Use animateTo for smooth scrolling
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
@@ -55,6 +56,7 @@ class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
     // Or use jumpTo for instant scrolling
     // _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
+  // }
 
   File? file;
   @override

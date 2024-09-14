@@ -54,7 +54,7 @@ class HospitalCubit extends Cubit<HospitalState> {
           .get();
       hospitalModel = HospitalModel.fromJson(value.data() ?? {});
       changeHospitalOnline(hospitalModel!.id ?? '', true);
-      saveFvmToken(hospitalModel!.id ?? '');
+      //saveFvmToken(hospitalModel!.id ?? '');
       emit(ScGetHospital());
     } catch (e) {
       print('Get Hospital Data Error: $e');

@@ -33,7 +33,6 @@ class _AllMothersScreenState extends State<AllMothersScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppSizedBox.h2,
                     buildMothersList(mothers: cubit.mothers),
                     AppSizedBox.h2,
                   ],

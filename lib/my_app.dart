@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_prefs.dart';
 import 'package:babies_tracker/ui/admin/admin_main_screen.dart';
-
-import 'app/notification/firebase_notification.dart';
-import 'app/notification/local_notification.dart';
 import 'app/style.dart';
 import 'controller/admin/admin_cubit.dart';
 import 'controller/doctor/doctor_cubit.dart';
@@ -23,9 +20,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // HandleFirebaseNotification.handleNotifications(context);
-    // HandleLocalNotification notification = HandleLocalNotification();
-    //notification.initializeFlutterNotification(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -57,6 +51,9 @@ class MyApp extends StatelessWidget {
   }
 
   Widget getInitialRoute() {
+    //her we check type of user to navigat to his main screen if you loged in brfor
+    //else got to logein screen
+
     Widget widget = const LoginScreen();
 
     if (AppPreferences.userType == AppStrings.admin) {

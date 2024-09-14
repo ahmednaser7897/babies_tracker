@@ -62,7 +62,7 @@ class MotherCubit extends Cubit<MotherState> {
 
       //get evrey users babys
       await getMotherBabys(model!);
-      saveFvmToken(model!.id ?? '');
+      //saveFvmToken(model!.id ?? '');
       changeMotherOnline(model!.id ?? '', AppPreferences.hospitalUid, true);
       getHomeData();
       emit(ScGetMother());

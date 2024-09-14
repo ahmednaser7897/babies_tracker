@@ -6,14 +6,14 @@ import '../../../controller/admin/admin_cubit.dart';
 import '../../componnents/screen_builder.dart';
 import '../../componnents/users_lists.dart';
 
-class AdminGyms extends StatefulWidget {
-  const AdminGyms({super.key});
+class AdminHospitals extends StatefulWidget {
+  const AdminHospitals({super.key});
 
   @override
-  State<AdminGyms> createState() => _AdminGymsState();
+  State<AdminHospitals> createState() => _AdminHospitalsState();
 }
 
-class _AdminGymsState extends State<AdminGyms> {
+class _AdminHospitalsState extends State<AdminHospitals> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AdminCubit, AdminState>(
@@ -33,7 +33,6 @@ class _AdminGymsState extends State<AdminGyms> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppSizedBox.h2,
                     buildHospitalsList(hospitels: cubit.hospitals),
                     AppSizedBox.h2,
                   ],

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../app/app_sized_box.dart';
 import '../../../controller/hospital/hospital_cubit.dart';
 import '../../componnents/screen_builder.dart';
 import '../../componnents/users_lists.dart';
@@ -35,9 +34,7 @@ class _AllDoctorsScreenState extends State<AllDoctorsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppSizedBox.h2,
                     buildDoctorsList(doctors: cubit.doctors),
-                    AppSizedBox.h2,
                   ],
                 ),
               ),

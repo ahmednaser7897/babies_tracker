@@ -34,7 +34,6 @@ class _DoctorMothersScreenState extends State<DoctorMothersScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppSizedBox.h2,
                     buildMothersList(mothers: cubit.mothers),
                     AppSizedBox.h2,
                   ],

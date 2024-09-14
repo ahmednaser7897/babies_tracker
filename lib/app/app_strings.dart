@@ -31,4 +31,9 @@ class AppStrings {
   static String userDetails(userType) => '$userType details';
   static String userIsBaned(userType) => '$userType baned';
   static String userIsunBaned(userType) => '$userType unbaned';
+
+  //external ID to send notifications
+  static const String oneSignalAppId = '87259bef-e9d0-4ca8-88ab-6c4fb5360d2c';
+  static const String oneSignalApiKey =
+      'NjZiNGY5YTktNmRjNi00ZTMxLWI2YzItNTU4Njg1ZDkzOGFh';
 }

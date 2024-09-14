@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    emailController.text = 'ahmed11@me.com';
+    emailController.text = 'ahmed@gmail.com';
     passwordController.text = '12345678';
 
     return BlocProvider(
@@ -49,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
               message: 'Login Successfully ${state.message}',
               toastColor: Colors.green,
             );
+            //her we check type of user to navigat to his main screen
             if (state.message == AppStrings.admin) {
               Navigator.pushAndRemoveUntil(
                 context,
@@ -155,6 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
+                                          // email must not has any space
                                           emailController.text = emailController
                                               .text
                                               .replaceAll(' ', '')

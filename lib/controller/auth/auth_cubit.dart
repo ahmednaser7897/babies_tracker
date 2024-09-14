@@ -1,13 +1,13 @@
+// ignore_for_file: avoid_print
+
 import 'package:babies_tracker/app/app_strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../../app/app_prefs.dart';
-import '../../model/tokens_model.dart';
 
 part 'auth_state.dart';
 
@@ -15,7 +15,6 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
   static AuthCubit get(context) => BlocProvider.of(context);
 
-  //TokensModel? tokenModel;
   String userId = '';
   //login function that check this email type and login as this type
   void login({required String email, required String password}) async {
@@ -30,6 +29,7 @@ class AuthCubit extends Cubit<AuthState> {
       //check this user type
       await getUserType(userId);
     }).catchError((error) {
+      //handel login erorrs
       catchError(error);
       return;
     });
@@ -38,33 +38,30 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> getUserType(String userId) async {
     try {
       if (userId != '') {
-        //save token to firebase to send notifications
-        await saveFvmToken(userId);
-
         if (await isAdmin(userId)) {
           await OneSignal.login(
-              userId); // This will set the user ID as the external ID
+              userId); // This will set the user ID as the external ID to send notifications
           userId = '';
           print('User is an admin😎');
           AppPreferences.userType = AppStrings.admin;
           emit(AuthGetUserAfterLoginSuccessState(message: AppStrings.admin));
         } else if (await isHospital(userId)) {
           await OneSignal.login(
-              userId); // This will set the user ID as the external ID
+              userId); // This will set the user ID as the external ID to send notifications
           userId = '';
           print('User is a hospital');
           AppPreferences.userType = AppStrings.hospital;
           emit(AuthGetUserAfterLoginSuccessState(message: AppStrings.hospital));
         } else if (await isMother(userId)) {
           await OneSignal.login(
-              userId); // This will set the user ID as the external ID
+              userId); // This will set the user ID as the external ID to send notifications
           userId = '';
           print('User is a moter');
           AppPreferences.userType = AppStrings.mother;
           emit(AuthGetUserAfterLoginSuccessState(message: AppStrings.mother));
         } else if (await isDoctor(userId)) {
           await OneSignal.login(
-              userId); // This will set the user ID as the external ID
+              userId); // This will set the user ID as the external ID to send notifications
           AppPreferences.userType = AppStrings.doctor;
           emit(AuthGetUserAfterLoginSuccessState(message: AppStrings.doctor));
           userId = '';
@@ -115,7 +112,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> isAdmin(String userId) async {
-    print('check if user admin');
+    print('check if user is a admin');
     final adminRef =
         FirebaseFirestore.instance.collection(AppStrings.admin).doc(userId);
     final adminDocExit = await adminRef.get().then((value) => value.exists);
@@ -136,13 +133,15 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> isHospital(String userId) async {
-    final parentRef =
+    print('check if user is a hospital');
+    final hospitalRef =
         FirebaseFirestore.instance.collection(AppStrings.hospital).doc(userId);
-    final parentDocExit = await parentRef.get().then((value) => value.exists);
-    final parentDoc = await parentRef.get();
-    if (parentDocExit) {
+    final hospitalDocExit =
+        await hospitalRef.get().then((value) => value.exists);
+    final hospitalDoc = await hospitalRef.get();
+    if (hospitalDocExit) {
       //check if this hospital baned
-      if (parentDoc.data()!['ban']) {
+      if (hospitalDoc.data()!['ban']) {
         emit(AuthGetUserAfterLoginErrorState(error: 'hospital is banned'));
         return false;
       } else {
@@ -156,6 +155,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> isMother(String userId) async {
+    print('check if user is a mother');
     final hospitalsQuerySnapshot =
         await FirebaseFirestore.instance.collection(AppStrings.hospital).get();
     for (final hospitals in hospitalsQuerySnapshot.docs) {
@@ -164,18 +164,19 @@ class AuthCubit extends Cubit<AuthState> {
       final coachDocExit = await coachRef.get().then((value) => value.exists);
       final coachDoc = await coachRef.get();
       if (coachDocExit == true) {
-        //check if this coach is baned
+        //check if this mother is baned
         if (coachDoc.data()!['ban']) {
           emit(AuthGetUserAfterLoginErrorState(error: 'mother is banned'));
           return false;
         } else {
-          //check if this coachs hospital is baned
+          //check if this mother's hospital is baned
           if (hospitals.data()['ban']) {
             emit(AuthGetUserAfterLoginErrorState(error: 'hospital is banned'));
             return false;
           } else {
             AppPreferences.userType = AppStrings.mother;
             AppPreferences.uId = userId;
+            //use this in mother and doctor to know his hospital
             AppPreferences.hospitalUid = hospitals.id;
             return true;
           }
@@ -186,6 +187,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<bool> isDoctor(String userId) async {
+    print('check if user is a doctor');
     final hospitalsQuerySnapshot =
         await FirebaseFirestore.instance.collection(AppStrings.hospital).get();
     for (final hospitals in hospitalsQuerySnapshot.docs) {
@@ -199,13 +201,14 @@ class AuthCubit extends Cubit<AuthState> {
           emit(AuthGetUserAfterLoginErrorState(error: 'doctor is banned'));
           return false;
         } else {
-          //check if this doctors hospital is baned
+          //check if this doctor's hospital is baned
           if (hospitals.data()['ban']) {
             emit(AuthGetUserAfterLoginErrorState(error: 'hospital is banned'));
             return false;
           } else {
             AppPreferences.userType = AppStrings.doctor;
             AppPreferences.uId = userId;
+            //use this in mother and doctor to know his hospital
             AppPreferences.hospitalUid = hospitals.id;
             return true;
           }
@@ -214,14 +217,4 @@ class AuthCubit extends Cubit<AuthState> {
     }
     return false;
   }
-}
-
-Future<void> saveFvmToken(String userId) async {
-  TokensModel? tokenModel;
-  //save token to firebase to send notifications
-  var token = await FirebaseMessaging.instance.getToken();
-  tokenModel = TokensModel(id: userId, token: token!);
-  await FirebaseFirestore.instance.collection('tokens').doc(userId).set(
-        tokenModel.toMap(),
-      );
 }

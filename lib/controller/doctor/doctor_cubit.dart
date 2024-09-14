@@ -58,7 +58,7 @@ class DoctorCubit extends Cubit<DoctorState> {
           .get();
       model = DoctorModel.fromJson(value.data() ?? {});
       changeDoctorOnline(model!.id ?? '', AppPreferences.hospitalUid, true);
-      saveFvmToken(model!.id ?? '');
+      //saveFvmToken(model!.id ?? '');
       if (homeData) {
         getHomeData();
       }
@@ -686,9 +686,9 @@ Future<void> sendNotification(
     required String dis,
     required Map<String, dynamic> data}) async {
   String oneSignalAppId =
-      '87259bef-e9d0-4ca8-88ab-6c4fb5360d2c'; // Replace with your OneSignal App ID
+      AppStrings.oneSignalAppId; // Replace with your OneSignal App ID
   String oneSignalApiKey =
-      'NjZiNGY5YTktNmRjNi00ZTMxLWI2YzItNTU4Njg1ZDkzOGFh'; // Replace with your OneSignal REST API Key
+      AppStrings.oneSignalApiKey; // Replace with your OneSignal REST API Key
 
   final url = Uri.parse('https://onesignal.com/api/v1/notifications');
   final headers = {

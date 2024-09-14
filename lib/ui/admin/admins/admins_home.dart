@@ -33,7 +33,6 @@ class _AdminsHomeState extends State<AdminsHome> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppSizedBox.h2,
                     buildAdminList(cubit.admins),
                     AppSizedBox.h2,
                   ],
