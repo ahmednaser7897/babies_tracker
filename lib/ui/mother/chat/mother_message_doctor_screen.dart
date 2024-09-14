@@ -44,15 +44,11 @@ class _MotherMessageDoctorScreenState extends State<MotherMessageDoctorScreen> {
   }
 
   void _scrollToEnd() {
-    // Use animateTo for smooth scrolling
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 100),
       curve: Curves.easeInOut,
     );
-
-    // Or use jumpTo for instant scrolling
-    // _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 
   @override
@@ -141,8 +137,8 @@ class _MotherMessageDoctorScreenState extends State<MotherMessageDoctorScreen> {
                             controller: messageController,
                             maxLines: 999,
                             decoration: InputDecoration(
-                              //contentPadding: const EdgeInsets.all(3),
-                              // hintStyle: const TextStyle(fontSize: 13),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 3),
                               border: InputBorder.none,
                               hintText: 'Type your message here...',
                               suffixIcon: Row(

@@ -16,10 +16,10 @@ import '../../../componnents/custom_button.dart';
 import '../../../componnents/widgets.dart';
 import '../../../mother/pdfs/baby_health_pdf.dart';
 import '../../../mother/pdfs/show_pdf_screen.dart';
-import 'feeding_time/show_bayb_feeding_details.dart';
-import 'sleep_details/show_bayb_sleep_details.dart';
+import 'feeding_time/show_baby_feeding_details.dart';
+import 'sleep_details/show_baby_sleep_details.dart';
 import 'update_mother_baby.dart';
-import 'vaccinations/show_bayb_vaccinations.dart';
+import 'vaccinations/show_baby_vaccinations.dart';
 
 class BabyDetailsScreen extends StatefulWidget {
   const BabyDetailsScreen({super.key, required this.model});
@@ -69,7 +69,9 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                         ),
                       );
 
-                      Navigator.pop(context, '');
+                      Navigator.pop(
+                        context,
+                      );
                     },
                     icon: const Icon(Icons.edit)),
             ],
@@ -83,8 +85,6 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                   AppSizedBox.h1,
                   userImage(),
                   AppSizedBox.h1,
-                  // options(),
-                  // AppSizedBox.h1,
                   dataValue(
                       name: "Name",
                       value: model.name ?? '',
@@ -104,6 +104,7 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                       name: "Head Circumference in(cm)",
                       value: model.headCircumference ?? '',
                       prefix: Icons.numbers),
+                  AppSizedBox.h3,
                   dataValue(
                       name: "Birth Date",
                       value: model.birthDate ?? '',
@@ -112,7 +113,7 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                   dataValue(
                       name: "Gestational Age",
                       value: model.gestationalAge != null
-                          ? '${model.gestationalAge!} month'
+                          ? '${model.gestationalAge!} week'
                           : '',
                       prefix: Icons.date_range),
                   AppSizedBox.h3,
@@ -146,6 +147,8 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                       value: model.doctorNotes.toString(),
                       prefix: Icons.note),
                   AppSizedBox.h3,
+                  //only hospital can Check(IN/OUT) baby
+                  //if baby checked out this prevent doctor to add vaccinations,sleep details or Feeding details to this baby
                   if (AppPreferences.userType == AppStrings.hospital)
                     BlocConsumer<HospitalCubit, HospitalState>(
                       listener: (context, state) {},
@@ -171,6 +174,7 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                               );
                       },
                     ),
+                  //only baby's mother can see his Healthy information pdf
                   if (AppPreferences.userType == AppStrings.mother)
                     loding
                         ? const Center(child: CircularProgressComponent())
@@ -242,6 +246,31 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
           ],
         );
       },
+    );
+  }
+
+  Widget userImage() {
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+        ),
+        Hero(
+          tag: model.id.orEmpty(),
+          child: SizedBox(
+            width: 30.w,
+            child: CircleAvatar(
+              radius: 15.w,
+              backgroundImage: (model.photo != null && model.photo!.isNotEmpty)
+                  ? NetworkImage(model.photo.orEmpty())
+                  : AssetImage(
+                      AppAssets.baby,
+                    ) as ImageProvider,
+            ),
+          ),
+        ),
+        AppSizedBox.h2,
+      ],
     );
   }
 
@@ -331,31 +360,6 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
           ),
         );
       },
-    );
-  }
-
-  Widget userImage() {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-        ),
-        Hero(
-          tag: model.id.orEmpty(),
-          child: SizedBox(
-            width: 30.w,
-            child: CircleAvatar(
-              radius: 15.w,
-              backgroundImage: (model.photo != null && model.photo!.isNotEmpty)
-                  ? NetworkImage(model.photo.orEmpty())
-                  : AssetImage(
-                      AppAssets.baby,
-                    ) as ImageProvider,
-            ),
-          ),
-        ),
-        AppSizedBox.h2,
-      ],
     );
   }
 }

@@ -33,7 +33,25 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
   TextEditingController gestationalAgeController = TextEditingController();
   var deliveryType = ["Natural", "Cesarean"];
   String delivery = "Natural";
-  var gestationalAge = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  var gestationalAge = [
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+  ];
+
   var gestational = 0;
   final _formKey = GlobalKey<FormState>();
   List<int> values = [0, 1, 2];
@@ -61,6 +79,25 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
     pulse = model.pulse ?? 0;
     respiration = model.respiration ?? 0;
     super.initState();
+  }
+
+  //Make sure that something has changed in the data so that it can be updated.
+  // Otherwise, the data will not be updated
+  bool isDataChanged(BuildContext context) {
+    return ImageCubit.get(context).image != null ||
+        model.name != nameController.text ||
+        model.birthLength != heightController.text ||
+        model.birthWeight != weightController.text ||
+        model.headCircumference != headCircumferenceController.text ||
+        model.birthDate != dateController.text ||
+        model.gestationalAge != gestational.toString() ||
+        model.deliveryType != delivery ||
+        model.doctorNotes != docNoatesController.text ||
+        model.activity != activity ||
+        model.appearance != appearance ||
+        model.pulse != pulse ||
+        model.grimace != grimace ||
+        model.respiration != respiration;
   }
 
   @override
@@ -215,19 +252,19 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        findValue(activity, 'Activity', (int val) {
-                          activity = val;
-                        }),
-                        findValue(appearance, 'Appearance', (int val) {
+                        findAPGARValue(appearance, 'Appearance', (int val) {
                           appearance = val;
                         }),
-                        findValue(grimace, 'Grimace', (int val) {
-                          grimace = val;
-                        }),
-                        findValue(pulse, 'Pulse', (int val) {
+                        findAPGARValue(pulse, 'Pulse', (int val) {
                           pulse = val;
                         }),
-                        findValue(respiration, 'Respiration', (int val) {
+                        findAPGARValue(grimace, 'Grimace', (int val) {
+                          grimace = val;
+                        }),
+                        findAPGARValue(activity, 'Activity', (int val) {
+                          activity = val;
+                        }),
+                        findAPGARValue(respiration, 'Respiration', (int val) {
                           respiration = val;
                         }),
                       ],
@@ -285,33 +322,43 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                                 ),
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    cubit.editBaby(
-                                        mainBaby: widget.model,
-                                        image: ImageCubit.get(context).image,
-                                        motherId: widget.model.motherId ?? '',
-                                        model: BabieModel(
-                                            birthDate: dateController.text,
-                                            deliveryType: delivery,
-                                            gestationalAge:
-                                                gestational.toString(),
-                                            activity: activity,
-                                            appearance: appearance,
-                                            grimace: grimace,
-                                            pulse: pulse,
-                                            respiration: respiration,
-                                            headCircumference:
-                                                headCircumferenceController
-                                                    .text,
-                                            doctorNotes:
-                                                docNoatesController.text,
-                                            birthLength: heightController.text,
-                                            birthWeight: weightController.text,
-                                            left: false,
-                                            motherId: widget.model.motherId,
-                                            doctorId: widget.model.doctorId,
-                                            name: nameController.text,
-                                            photo: model.photo,
-                                            id: model.id));
+                                    //if nothing has changed in the data
+                                    if (!isDataChanged(context)) {
+                                      showFlutterToast(
+                                        message: 'No data changed for now!',
+                                        toastColor: Colors.red,
+                                      );
+                                      print('No data changed for now!');
+                                    } else {
+                                      cubit.editBaby(
+                                          image: ImageCubit.get(context).image,
+                                          motherId: widget.model.motherId ?? '',
+                                          model: BabieModel(
+                                              birthDate: dateController.text,
+                                              deliveryType: delivery,
+                                              gestationalAge:
+                                                  gestational.toString(),
+                                              activity: activity,
+                                              appearance: appearance,
+                                              grimace: grimace,
+                                              pulse: pulse,
+                                              respiration: respiration,
+                                              headCircumference:
+                                                  headCircumferenceController
+                                                      .text,
+                                              doctorNotes:
+                                                  docNoatesController.text,
+                                              birthLength:
+                                                  heightController.text,
+                                              birthWeight:
+                                                  weightController.text,
+                                              left: false,
+                                              motherId: widget.model.motherId,
+                                              doctorId: widget.model.doctorId,
+                                              name: nameController.text,
+                                              photo: model.photo,
+                                              id: model.id));
+                                    }
                                   }
                                 },
                               );
@@ -395,18 +442,10 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
     );
   }
 
-  Widget findValue(int data, String title, Function(int) onchange) {
+  Widget findAPGARValue(int data, String title, Function(int) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   title,
-        //   style: const TextStyle(
-        //     fontSize: 16,
-        //     fontWeight: FontWeight.w400,
-        //   ),
-        // ),
-        // AppSizedBox.h2,
         Container(
           width: 15.w,
           height: 5.h,
@@ -508,7 +547,7 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                     return DropdownMenuItem(
                       value: value,
                       child: Text(
-                        '$value month',
+                        '$value week',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

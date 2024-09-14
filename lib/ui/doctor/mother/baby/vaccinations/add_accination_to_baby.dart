@@ -172,6 +172,7 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
                                 ),
                               ),
                               onPressed: () {
+                                //if you didn't choose administration site
                                 if (site == null) {
                                   showFlutterToast(
                                     message: 'You must add administration site',
@@ -182,7 +183,6 @@ class _AddVaccinationsScreenState extends State<AddVaccinationsScreen> {
                                 if (_formKey.currentState!.validate()) {
                                   cubit.addVaccination(
                                       baby: widget.model,
-                                      babyId: widget.model.id ?? '',
                                       motherId: widget.model.motherId ?? '',
                                       model: VaccinationsHistoriesModel(
                                         nextDoseDate: endDateController.text,

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:babies_tracker/app/app_strings.dart';
 import 'package:babies_tracker/controller/doctor/doctor_cubit.dart';
 import 'package:babies_tracker/controller/doctor/doctor_state.dart';
@@ -171,6 +173,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                               ),
                             ),
                             onPressed: () {
+                              //if you did not add sleep details
                               if (details.isEmpty) {
                                 showFlutterToast(
                                   message: 'add sleep details',
@@ -181,7 +184,6 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                               if (_formKey.currentState!.validate()) {
                                 cubit.addSleepDetails(
                                     baby: widget.model,
-                                    babyId: widget.model.id ?? '',
                                     motherId: widget.model.motherId ?? '',
                                     model: SleepDetailsModel(
                                       totalSleepDuration:
@@ -392,7 +394,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
 
   void calcToalSleepDuration() {
     totalSleepDuration = 0;
-    details.forEach((element) {
+    for (var element in details) {
       var start = parseTimeOfDay(element.startTime!);
 
       var end = parseTimeOfDay(element.endTime!);
@@ -404,7 +406,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
       print(endvalue);
       totalSleepDuration += (startvalue - endvalue).abs();
       print('calcToalSleepDuration $totalSleepDuration');
-    });
+    }
   }
 
   Widget findValue(String? data, String title, Function(String) onchange) {

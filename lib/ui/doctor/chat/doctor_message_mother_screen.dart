@@ -45,18 +45,12 @@ class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
   }
 
   void _scrollToEnd() {
-    //if(WidgetsBinding.instance.isRootWidgetAttached){
-    // Use animateTo for smooth scrolling
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 100),
       curve: Curves.easeInOut,
     );
-
-    // Or use jumpTo for instant scrolling
-    // _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
-  // }
 
   File? file;
   @override
@@ -140,67 +134,70 @@ class _DoctorMessageMotherScreenState extends State<DoctorMessageMotherScreen> {
                               border: Border.all(
                                 color: Colors.grey,
                               )),
-                          child: TextFormField(
-                            controller: messageController,
-                            maxLines: 999,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              //contentPadding: const EdgeInsets.all(3),
-                              //hintStyle: const TextStyle(fontSize: 13),
-                              hintText: 'Type your message here...',
-                              suffixIcon: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  (state is LoadingUploadFile)
-                                      ? const Padding(
-                                          padding: EdgeInsets.all(8),
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      : IconButton(
-                                          onPressed: () async {
-                                            var documentHelper =
-                                                DocumentHelper();
-                                            var value =
-                                                await documentHelper.pickFile();
-                                            if (value != null) {
-                                              print(value.path);
-                                              setState(() {
-                                                file = value;
-                                              });
-                                            }
-                                          },
-                                          icon: const Icon(
-                                              Icons.attachment_sharp)),
-                                  MaterialButton(
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () async {
-                                      print(file);
-                                      if (messageController.text.isNotEmpty ||
-                                          file != null) {
-                                        cubit.sendMessage(
-                                          file: file,
-                                          messageModel: MessageModel(
-                                            motherId: widget.model.id,
-                                            doctorId: AppPreferences.uId,
-                                            message: messageController.text,
-                                            dateTime: DateTime.now().toString(),
-                                            type: AppStrings.doctor,
-                                          ),
-                                        );
-                                        file = null;
-                                        messageController.clear();
-                                      }
-                                    },
-                                    color: AppColors.primer,
-                                    elevation: 2,
-                                    height: 10.h,
-                                    minWidth: 15.w,
-                                    child: const Icon(
-                                      IconBroken.Send,
-                                      color: Colors.white,
+                          child: Center(
+                            child: TextFormField(
+                              controller: messageController,
+                              maxLines: 999,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 3),
+                                hintText: 'Type your message here...',
+                                suffixIcon: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    (state is LoadingUploadFile)
+                                        ? const Padding(
+                                            padding: EdgeInsets.all(8),
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : IconButton(
+                                            onPressed: () async {
+                                              var documentHelper =
+                                                  DocumentHelper();
+                                              var value = await documentHelper
+                                                  .pickFile();
+                                              if (value != null) {
+                                                print(value.path);
+                                                setState(() {
+                                                  file = value;
+                                                });
+                                              }
+                                            },
+                                            icon: const Icon(
+                                                Icons.attachment_sharp)),
+                                    MaterialButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () async {
+                                        print(file);
+                                        if (messageController.text.isNotEmpty ||
+                                            file != null) {
+                                          cubit.sendMessage(
+                                            file: file,
+                                            messageModel: MessageModel(
+                                              motherId: widget.model.id,
+                                              doctorId: AppPreferences.uId,
+                                              message: messageController.text,
+                                              dateTime:
+                                                  DateTime.now().toString(),
+                                              type: AppStrings.doctor,
+                                            ),
+                                          );
+                                          file = null;
+                                          messageController.clear();
+                                        }
+                                      },
+                                      color: AppColors.primer,
+                                      elevation: 2,
+                                      height: 10.h,
+                                      minWidth: 15.w,
+                                      child: const Icon(
+                                        IconBroken.Send,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),

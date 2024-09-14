@@ -213,19 +213,19 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        findValue(activity, 'Activity', (int val) {
-                          activity = val;
-                        }),
-                        findValue(appearance, 'Appearance', (int val) {
+                        findAPGARValue(appearance, 'Appearance', (int val) {
                           appearance = val;
                         }),
-                        findValue(grimace, 'Grimace', (int val) {
-                          grimace = val;
-                        }),
-                        findValue(pulse, 'Pulse', (int val) {
+                        findAPGARValue(pulse, 'Pulse', (int val) {
                           pulse = val;
                         }),
-                        findValue(respiration, 'Respiration', (int val) {
+                        findAPGARValue(grimace, 'Grimace', (int val) {
+                          grimace = val;
+                        }),
+                        findAPGARValue(activity, 'Activity', (int val) {
+                          activity = val;
+                        }),
+                        findAPGARValue(respiration, 'Respiration', (int val) {
                           respiration = val;
                         }),
                       ],
@@ -282,6 +282,7 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  //if you didn't choose all data for baby
                                   if (delivery == null ||
                                       gestational == null ||
                                       activity == null ||
@@ -300,7 +301,6 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
                                     cubit.addBaby(
                                         image: ImageCubit.get(context).image,
                                         motherModel: widget.model,
-                                        motherId: widget.model.id ?? '',
                                         model: BabieModel(
                                           birthDate: dateController.text,
                                           deliveryType: delivery,
@@ -401,23 +401,15 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
             ),
           ],
         ),
-        AppSizedBox.h2,
+        AppSizedBox.h1,
       ],
     );
   }
 
-  Widget findValue(int? data, String title, Function(int) onchange) {
+  Widget findAPGARValue(int? data, String title, Function(int) onchange) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   title,
-        //   style: const TextStyle(
-        //     fontSize: 16,
-        //     fontWeight: FontWeight.w400,
-        //   ),
-        // ),
-        // AppSizedBox.h2,
         Container(
           width: 15.w,
           height: 5.h,
@@ -433,13 +425,6 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
           child: DropdownButtonHideUnderline(
             child: DropdownButton(
               isExpanded: true,
-              // hint: const Text(
-              //   "Select value",
-              //   style: TextStyle(
-              //     fontSize: 16,
-              //     fontWeight: FontWeight.w400,
-              //   ),
-              // ),
               value: data,
               onChanged: (int? value) {
                 if (value != null) {
@@ -532,7 +517,7 @@ class _AddBabyScreenState extends State<AddBabyScreen> {
             ),
           ],
         ),
-        AppSizedBox.h2,
+        AppSizedBox.h1,
       ],
     );
   }

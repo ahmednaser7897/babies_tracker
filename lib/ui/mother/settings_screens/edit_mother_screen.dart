@@ -52,6 +52,8 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
     super.initState();
   }
 
+//Make sure that something has changed in the data so that it can be updated.
+  // Otherwise, the data will not be updated
   bool isDataChanged(BuildContext context) {
     MotherCubit cubit = MotherCubit.get(context);
     return ImageCubit.get(context).image != null ||
@@ -249,6 +251,7 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
                                     ),
                                   ),
                                   onPressed: () {
+                                    //if you didn't choose all data
                                     if (motherHealthyHistory.isEmpty ||
                                         motherPostpartumHealth.isEmpty) {
                                       showFlutterToast(
@@ -258,6 +261,7 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
                                       return;
                                     }
                                     if (_formKey.currentState!.validate()) {
+                                      //if nothing has changed in the data
                                       if (!isDataChanged(context)) {
                                         showFlutterToast(
                                           message: 'No data changed for now!',

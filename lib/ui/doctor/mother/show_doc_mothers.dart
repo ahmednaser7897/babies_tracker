@@ -7,14 +7,16 @@ import '../../../controller/doctor/doctor_cubit.dart';
 import '../../componnents/screen_builder.dart';
 import '../../componnents/users_lists.dart';
 
-class DoctorMothersScreen extends StatefulWidget {
-  const DoctorMothersScreen({super.key});
+class ShowALLDoctorMothersScreen extends StatefulWidget {
+  const ShowALLDoctorMothersScreen({super.key});
 
   @override
-  State<DoctorMothersScreen> createState() => _DoctorMothersScreenState();
+  State<ShowALLDoctorMothersScreen> createState() =>
+      _ShowALLDoctorMothersScreenState();
 }
 
-class _DoctorMothersScreenState extends State<DoctorMothersScreen> {
+class _ShowALLDoctorMothersScreenState
+    extends State<ShowALLDoctorMothersScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DoctorCubit, DoctorState>(

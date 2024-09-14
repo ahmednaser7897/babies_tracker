@@ -1,4 +1,4 @@
-import 'package:babies_tracker/ui/doctor/mother/current_medications/show_medications_baybs.dart';
+import 'package:babies_tracker/ui/doctor/mother/current_medications/show_mother_medications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_sized_box.dart';

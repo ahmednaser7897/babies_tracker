@@ -17,7 +17,7 @@ import '../componnents/show_flutter_toast.dart';
 import '../componnents/widgets.dart';
 import '../doctor/mother/baby/show_mother_baybs.dart';
 import '../doctor/chat/doctor_message_mother_screen.dart';
-import '../doctor/mother/current_medications/show_medications_baybs.dart';
+import '../doctor/mother/current_medications/show_mother_medications.dart';
 
 class MotherDetailsScreen extends StatefulWidget {
   const MotherDetailsScreen({super.key, required this.model});

@@ -31,7 +31,6 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
 
   TextEditingController phoneController = TextEditingController();
 
-  //TextEditingController genderController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
@@ -41,7 +40,7 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
     DoctorCubit cubit = DoctorCubit.get(context);
     if (cubit.model != null) {
       gender = cubit.model!.gender;
-      // genderController.text = cubit.model!.gender ?? 'male';
+
       phoneController.text = cubit.model!.phone ?? '';
 
       nameController.text = cubit.model!.name ?? '';
@@ -51,6 +50,8 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
     super.initState();
   }
 
+  //Make sure that something has changed in the data so that it can be updated.
+  // Otherwise, the data will not be updated
   bool isDataChanged(BuildContext context) {
     DoctorCubit cubit = DoctorCubit.get(context);
     return ImageCubit.get(context).image != null ||
@@ -212,6 +213,7 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
                                     ),
                                   ),
                                   onPressed: () {
+                                    //if you didn't choose gender
                                     if (gender == null) {
                                       showFlutterToast(
                                         message: 'You must add gender',
@@ -220,6 +222,7 @@ class _EditeDoctorScreenState extends State<EditeDoctorScreen> {
                                       return;
                                     }
                                     if (_formKey.currentState!.validate()) {
+                                      //if nothing has changed in the data
                                       if (!isDataChanged(context)) {
                                         showFlutterToast(
                                           message: 'No data changed for now!',

@@ -109,34 +109,6 @@ class _DoctorSettingsScreenState extends State<DoctorSettingsScreen> {
                   ],
                 ),
               ),
-              AppSizedBox.h3,
-              // settingbuildListItem(
-              //   context,
-              //   title: AppStrings.newUser(AppStrings.doctor),
-              //   leadingIcon: IconBroken.Profile,
-              //   subtitle: AppStrings.createNewUser(AppStrings.doctor),
-              //   onTap: () async {
-              //     // await Navigator.push(
-              //     //     context,
-              //     //     MaterialPageRoute(
-              //     //       builder: (context) => const CreateNewDoctor(),
-              //     //     ));
-              //   },
-              // ),
-              // settingbuildListItem(
-              //   context,
-              //   title: AppStrings.newUser(AppStrings.Doctor),
-              //   leadingIcon: IconBroken.Profile,
-              //   subtitle: AppStrings.createNewUser(AppStrings.Doctor),
-              //   onTap: () {
-              //     Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //           builder: (context) => const AddNewDoctorScreen(),
-              //         ));
-              //   },
-              // ),
-
               const Spacer(),
               LogOutButton(
                 onTap: () async {

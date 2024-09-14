@@ -175,7 +175,6 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                               if (_formKey.currentState!.validate()) {
                                 cubit.addFeedingTime(
                                     baby: widget.model,
-                                    babyId: widget.model.id ?? '',
                                     motherId: widget.model.motherId ?? '',
                                     model: FeedingTimesModel(
                                       details: details,

@@ -66,7 +66,6 @@ class Validations {
   }
 
   static String? emailValidation(String? value, {required String name}) {
-    return null;
     RegExp specialcharactersRegex =
         RegExp(r'^(?=.*[*"!@#$%^&(){}:;<>,?/~_+-]).{1,}$');
     // print(value);

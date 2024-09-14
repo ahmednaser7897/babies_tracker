@@ -47,6 +47,8 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
     super.initState();
   }
 
+//Make sure that something has changed in the data so that it can be updated.
+  // Otherwise, the data will not be updated
   bool isDataChanged(BuildContext context) {
     HospitalCubit cubit = HospitalCubit.get(context);
     return ImageCubit.get(context).image != null ||

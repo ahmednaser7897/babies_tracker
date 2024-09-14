@@ -23,21 +23,21 @@ class _ShowMotherBabysState extends State<ShowMotherBabys> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<DoctorCubit, DoctorState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
             appBar: AppBar(
               title: const Text('Show Mother\'s Babies'),
               actions: [
+                //doctor can add baby to mother if this doctor is her doctor
+                //and if hospital dose not check her out
                 if (!widget.model.leaft.orFalse() &&
                     AppPreferences.userType == AppStrings.doctor &&
                     widget.model.docyorlId ==
                         DoctorCubit.get(context).model!.id)
                   IconButton(
                       onPressed: () async {
-                        var value = await Navigator.push(
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => AddBabyScreen(
@@ -45,9 +45,6 @@ class _ShowMotherBabysState extends State<ShowMotherBabys> {
                             ),
                           ),
                         );
-                        if (value == 'add') {
-                          Navigator.pop(context, 'add');
-                        }
                       },
                       icon: const Icon(Icons.add))
               ],

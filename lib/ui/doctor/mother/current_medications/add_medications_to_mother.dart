@@ -123,7 +123,7 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
                     findValue(frequency, 'Frequency', (int val) {
                       frequency = val;
                     }),
-                    AppSizedBox.h3,
+                    AppSizedBox.h2,
                     const Text(
                       "Doctor notes",
                       style: TextStyle(
@@ -176,6 +176,7 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  //if you didn't choose frequency
                                   if (frequency == null) {
                                     showFlutterToast(
                                       message: 'You must add frequency',
@@ -186,7 +187,6 @@ class _AddMedicationsScreenState extends State<AddMedicationsScreen> {
                                   if (_formKey.currentState!.validate()) {
                                     cubit.addMedications(
                                         motherModel: widget.model,
-                                        motherId: widget.model.id ?? '',
                                         model: CurrentMedicationsModel(
                                           endDate: endDateController.text,
                                           startDate: startDateController.text,

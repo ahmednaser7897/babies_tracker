@@ -1,8 +1,10 @@
-import 'dart:convert';
+// ignore_for_file: avoid_print
+
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:babies_tracker/app/app_strings.dart';
+import 'package:babies_tracker/app/extensions.dart';
 import 'package:babies_tracker/controller/doctor/doctor_state.dart';
 import 'package:babies_tracker/model/babies_model.dart';
 import 'package:babies_tracker/model/doctor_model.dart';
@@ -15,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_prefs.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
+import '../../app/notification/onesignal_notifications.dart';
 import '../../model/current_medications_model.dart';
 import '../../model/feeding_times_model.dart';
 import '../../model/message_model.dart';
@@ -22,9 +25,6 @@ import '../../model/sleep_details_model.dart';
 import '../../ui/Doctor/settings_screens/Doctor_settings.dart';
 import '../../ui/doctor/mother/show_doc_mothers.dart';
 import '../../ui/hospital/doctors/show_all_doctors.dart';
-import 'package:http/http.dart' as http;
-
-import '../auth/auth_cubit.dart';
 
 class DoctorCubit extends Cubit<DoctorState> {
   DoctorCubit() : super(DoctorInitial());
@@ -32,7 +32,7 @@ class DoctorCubit extends Cubit<DoctorState> {
   int currentIndex = 0;
   List<Widget> screens = [
     const ShowAllDoctorsScreen(),
-    const DoctorMothersScreen(),
+    const ShowALLDoctorMothersScreen(),
     const DoctorSettingsScreen(),
   ];
   List titles = [
@@ -46,6 +46,7 @@ class DoctorCubit extends Cubit<DoctorState> {
     emit(ScChangeHomeIndex());
   }
 
+  //DOCTOR FUNCTIONS AND DATA FILDES
   DoctorModel? model;
   Future<void> getCurrentDoctorData({bool homeData = false}) async {
     emit(LoadingGetDoctor());
@@ -58,7 +59,6 @@ class DoctorCubit extends Cubit<DoctorState> {
           .get();
       model = DoctorModel.fromJson(value.data() ?? {});
       changeDoctorOnline(model!.id ?? '', AppPreferences.hospitalUid, true);
-      //saveFvmToken(model!.id ?? '');
       if (homeData) {
         getHomeData();
       }
@@ -74,6 +74,7 @@ class DoctorCubit extends Cubit<DoctorState> {
       {required DoctorModel model, required File? image}) async {
     try {
       emit(LoadingEditDoctor());
+      //check if the new phone number is not used
       var value =
           await FirebaseFirestore.instance.collection('phoneNumbers').get();
       if (model.phone != model.phone) {
@@ -81,6 +82,7 @@ class DoctorCubit extends Cubit<DoctorState> {
           emit(ErorrEditDoctor('Phone number is already used'));
           return;
         } else {
+          //save the number in firebas
           await FirebaseFirestore.instance
               .collection('phoneNumbers')
               .doc()
@@ -129,6 +131,27 @@ class DoctorCubit extends Cubit<DoctorState> {
     }
   }
 
+  Future<void> changeDoctorOnline(
+      String id, String hospitalUid, bool value) async {
+    emit(LoadingChangeDoctorOnline());
+    try {
+      print(hospitalUid);
+      print(id);
+      await FirebaseFirestore.instance
+          .collection(AppStrings.hospital)
+          .doc(hospitalUid)
+          .collection(AppStrings.doctor)
+          .doc(id)
+          .update({
+        'online': value,
+      });
+      emit(ScChangeDoctorOnline());
+    } catch (e) {
+      print('change Doctor Online $e');
+      emit(ErorrChangeDoctorOnline(e.toString()));
+    }
+  }
+
   Future<void> addImageSub(
       {required String type,
       required String userId,
@@ -154,39 +177,80 @@ class DoctorCubit extends Cubit<DoctorState> {
     }
   }
 
-  Future<String?> addBabyImage(
-      {required String type,
-      required String userId,
-      required String motherId,
-      required File parentImageFile}) async {
+  //MOTHER FUNCTIONS AND DATA FILDES
+  List<MotherModel> mothers = [];
+  Future<void> getAllMothers() async {
     try {
-      var parentImageUrl = parentImageFile.path;
-      var value = await firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child('photo/$userId')
-          .putFile(parentImageFile);
-      var value2 = await value.ref.getDownloadURL();
-      parentImageUrl = value2;
-      await FirebaseFirestore.instance
+      var value = await FirebaseFirestore.instance
           .collection(AppStrings.hospital)
-          .doc(AppPreferences.hospitalUid)
+          .doc(AppPreferences.hospitalUid.isEmpty
+              ? AppPreferences.uId
+              : AppPreferences.hospitalUid)
           .collection(AppStrings.mother)
-          .doc(motherId)
-          .collection(type)
-          .doc(userId)
-          .update({
-        'photo': parentImageUrl,
-      });
-      return parentImageUrl;
+          .where('docyorlId', isEqualTo: model?.id)
+          .get();
+      print("value.docs");
+      print(value.docs.length);
+      for (var element in value.docs) {
+        var mother = MotherModel.fromJson(element.data());
+        //get mother's doctor
+        var value = await FirebaseFirestore.instance
+            .collection(AppStrings.hospital)
+            .doc(AppPreferences.uId)
+            .collection(AppStrings.doctor)
+            .doc(mother.docyorlId)
+            .get();
+        mother.doctorModel = DoctorModel.fromJson(value.data() ?? {});
+        print('mother.doctorModel');
+        print(mother.doctorModel);
+        mother.babys = [];
+        mother.medications = [];
+        //get evrey mother medications
+        await getMotherMedication(element, mother);
+
+        //get evrey users babys
+        await getMotherBabys(element, mother);
+        mothers.add(mother);
+      }
     } catch (e) {
-      print('Error: $e');
+      print('Get all mothers Data Error: $e');
+      emit(ErorrGetHomeData(e.toString()));
     }
-    return null;
   }
 
+  Future<void> getMotherBabys(
+      QueryDocumentSnapshot<Map<String, dynamic>> element,
+      MotherModel mother) async {
+    //get evrey users babys
+    var babys = await element.reference.collection(AppStrings.baby).get();
+    for (var element in babys.docs) {
+      var baby = BabieModel.fromJson(element.data());
+      baby.sleepDetailsModel = [];
+      baby.vaccinations = [];
+      baby.feedingTimes = [];
+      //get   baby DATA
+      await getBabyVaccination(element, baby);
+      await getSleepBetails(element, baby);
+      await getBabyfeedingTimes(element, baby);
+      mother.babys!.add(baby);
+    }
+  }
+
+  Future<void> getMotherMedication(
+      QueryDocumentSnapshot<Map<String, dynamic>> element,
+      MotherModel mother) async {
+    //get evrey users medications
+    var medications =
+        await element.reference.collection(AppStrings.medication).get();
+    for (var element in medications.docs) {
+      var medication = CurrentMedicationsModel.fromJson(element.data());
+      mother.medications!.add(medication);
+    }
+  }
+
+  //BABY FUNCTIONS AND DATA FILDES
   Future<void> addBaby(
       {required BabieModel model,
-      required String motherId,
       required MotherModel motherModel,
       required File? image}) async {
     try {
@@ -195,7 +259,7 @@ class DoctorCubit extends Cubit<DoctorState> {
           .collection(AppStrings.hospital)
           .doc(AppPreferences.hospitalUid)
           .collection(AppStrings.mother)
-          .doc(motherId)
+          .doc(motherModel.id)
           .collection(AppStrings.baby)
           .doc();
       model.id = value.id;
@@ -205,12 +269,12 @@ class DoctorCubit extends Cubit<DoctorState> {
         imageUri = await addBabyImage(
           type: AppStrings.baby,
           userId: model.id ?? '',
-          motherId: motherId,
+          motherId: motherModel.id.orEmpty(),
           parentImageFile: image,
         );
       }
       model.photo = imageUri;
-      motherModel.babys!.add(model);
+      motherModel.babys!.insert(0, model);
       emit(ScAddBaby());
     } catch (error) {
       if (error
@@ -227,7 +291,6 @@ class DoctorCubit extends Cubit<DoctorState> {
 
   Future<void> editBaby(
       {required BabieModel model,
-      required BabieModel mainBaby,
       required String motherId,
       required File? image}) async {
     try {
@@ -273,10 +336,39 @@ class DoctorCubit extends Cubit<DoctorState> {
     }
   }
 
+  Future<String?> addBabyImage(
+      {required String type,
+      required String userId,
+      required String motherId,
+      required File parentImageFile}) async {
+    try {
+      var parentImageUrl = parentImageFile.path;
+      var value = await firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('photo/$userId')
+          .putFile(parentImageFile);
+      var value2 = await value.ref.getDownloadURL();
+      parentImageUrl = value2;
+      await FirebaseFirestore.instance
+          .collection(AppStrings.hospital)
+          .doc(AppPreferences.hospitalUid)
+          .collection(AppStrings.mother)
+          .doc(motherId)
+          .collection(type)
+          .doc(userId)
+          .update({
+        'photo': parentImageUrl,
+      });
+      return parentImageUrl;
+    } catch (e) {
+      print('Error: $e');
+    }
+    return null;
+  }
+
   Future<void> addMedications({
     required CurrentMedicationsModel model,
     required MotherModel motherModel,
-    required String motherId,
   }) async {
     try {
       emit(LoadingAddMedications());
@@ -284,13 +376,14 @@ class DoctorCubit extends Cubit<DoctorState> {
           .collection(AppStrings.hospital)
           .doc(AppPreferences.hospitalUid)
           .collection(AppStrings.mother)
-          .doc(motherId)
+          .doc(motherModel.id.orEmpty())
           .collection(AppStrings.medication)
           .doc();
       model.id = value.id;
       await value.set(model.toJson());
-      await sendNewMedicationNotificationsMother(motherId, model);
-      (motherModel.medications ?? []).add(model);
+      await sendNewMedicationNotificationsMother(
+          motherModel.id.orEmpty(), model);
+      (motherModel.medications ?? []).insert(0, model);
       emit(ScAddMedications());
     } catch (error) {
       if (error
@@ -309,7 +402,7 @@ class DoctorCubit extends Cubit<DoctorState> {
       String motherId, CurrentMedicationsModel medicationsModel) async {
     try {
       print('send notfi1');
-      print('motherId :${motherId}');
+      print('motherId :$motherId');
       Map<String, dynamic> data = medicationsModel.toJson();
       data.addAll({'type': 'medication'});
       log('go tO medication1');
@@ -327,7 +420,6 @@ class DoctorCubit extends Cubit<DoctorState> {
   Future<void> addVaccination({
     required VaccinationsHistoriesModel model,
     required String motherId,
-    required String babyId,
     required BabieModel baby,
   }) async {
     try {
@@ -338,14 +430,14 @@ class DoctorCubit extends Cubit<DoctorState> {
           .collection(AppStrings.mother)
           .doc(motherId)
           .collection(AppStrings.baby)
-          .doc(babyId)
+          .doc(baby.id)
           .collection(AppStrings.vaccination)
           .doc();
       model.id = value.id;
       await value.set(model.toJson());
       print(baby.vaccinations!.length);
       print('baby.vaccinations!.length');
-      baby.vaccinations!.add(model);
+      baby.vaccinations!.insert(0, model);
       print(baby.vaccinations!.length);
       emit(ScAddVaccination());
     } catch (error) {
@@ -364,7 +456,6 @@ class DoctorCubit extends Cubit<DoctorState> {
   Future<void> addFeedingTime({
     required FeedingTimesModel model,
     required String motherId,
-    required String babyId,
     required BabieModel baby,
   }) async {
     try {
@@ -375,14 +466,14 @@ class DoctorCubit extends Cubit<DoctorState> {
           .collection(AppStrings.mother)
           .doc(motherId)
           .collection(AppStrings.baby)
-          .doc(babyId)
+          .doc(baby.id)
           .collection(AppStrings.feeding)
           .doc();
       model.id = value.id;
       await value.set(model.toJson());
       print(baby.feedingTimes!.length);
       print('baby.feedingTimes!.length');
-      baby.feedingTimes!.add(model);
+      baby.feedingTimes!.insert(0, model);
       print(baby.feedingTimes!.length);
       emit(ScAddFeedingTime());
     } catch (error) {
@@ -401,7 +492,6 @@ class DoctorCubit extends Cubit<DoctorState> {
   Future<void> addSleepDetails({
     required SleepDetailsModel model,
     required String motherId,
-    required String babyId,
     required BabieModel baby,
   }) async {
     try {
@@ -412,14 +502,14 @@ class DoctorCubit extends Cubit<DoctorState> {
           .collection(AppStrings.mother)
           .doc(motherId)
           .collection(AppStrings.baby)
-          .doc(babyId)
+          .doc(baby.id)
           .collection(AppStrings.sleep)
           .doc();
       model.id = value.id;
       await value.set(model.toJson());
       print(baby.sleepDetailsModel!.length);
       print('baby.sleepDetailsModel!.length');
-      baby.sleepDetailsModel!.add(model);
+      baby.sleepDetailsModel!.insert(0, model);
       print(baby.sleepDetailsModel!.length);
       emit(ScAddSleepDetails());
     } catch (error) {
@@ -432,64 +522,6 @@ class DoctorCubit extends Cubit<DoctorState> {
         emit(ErorrAddSleepDetails(error.toString()));
       }
       print('Error: $error');
-    }
-  }
-
-  List<MotherModel> mothers = [];
-  Future<void> getAllMothers() async {
-    try {
-      var value = await FirebaseFirestore.instance
-          .collection(AppStrings.hospital)
-          .doc(AppPreferences.hospitalUid.isEmpty
-              ? AppPreferences.uId
-              : AppPreferences.hospitalUid)
-          .collection(AppStrings.mother)
-          .where('docyorlId', isEqualTo: model?.id)
-          .get();
-      print("value.docs");
-      print(value.docs.length);
-      for (var element in value.docs) {
-        var mother = MotherModel.fromJson(element.data());
-
-        var value = await FirebaseFirestore.instance
-            .collection(AppStrings.hospital)
-            .doc(AppPreferences.uId)
-            .collection(AppStrings.doctor)
-            .doc(mother.docyorlId)
-            .get();
-        mother.doctorModel = DoctorModel.fromJson(value.data() ?? {});
-        print('mother.doctorModel');
-        print(mother.doctorModel);
-        mother.babys = [];
-        mother.medications = [];
-        //get evrey users medications
-        await getMotherMedication(element, mother);
-
-        //get evrey users babys
-        await getMotherBabys(element, mother);
-        mothers.add(mother);
-      }
-    } catch (e) {
-      print('Get all mothers Data Error: $e');
-      emit(ErorrGetHomeData(e.toString()));
-    }
-  }
-
-  Future<void> getMotherBabys(
-      QueryDocumentSnapshot<Map<String, dynamic>> element,
-      MotherModel mother) async {
-    //get evrey users babys
-    var babys = await element.reference.collection(AppStrings.baby).get();
-    for (var element in babys.docs) {
-      var baby = BabieModel.fromJson(element.data());
-      baby.sleepDetailsModel = [];
-      baby.vaccinations = [];
-      baby.feedingTimes = [];
-      //get   baby DATA
-      await getBabyVaccination(element, baby);
-      await getSleepBetails(element, baby);
-      await getBabyfeedingTimes(element, baby);
-      mother.babys!.add(baby);
     }
   }
 
@@ -526,18 +558,7 @@ class DoctorCubit extends Cubit<DoctorState> {
     }
   }
 
-  Future<void> getMotherMedication(
-      QueryDocumentSnapshot<Map<String, dynamic>> element,
-      MotherModel mother) async {
-    //get evrey users medications
-    var medications =
-        await element.reference.collection(AppStrings.medication).get();
-    for (var element in medications.docs) {
-      var medication = CurrentMedicationsModel.fromJson(element.data());
-      mother.medications!.add(medication);
-    }
-  }
-
+  //HOME FUNCTIONS
   Future<void> getHomeData() async {
     mothers = [];
     emit(LoadingGetHomeData());
@@ -550,39 +571,20 @@ class DoctorCubit extends Cubit<DoctorState> {
     }
   }
 
-  Future<void> changeDoctorOnline(
-      String id, String hospitalUid, bool value) async {
-    emit(LoadingChangeDoctorOnline());
-    try {
-      print("object");
-      print(hospitalUid);
-      print(id);
-      await FirebaseFirestore.instance
-          .collection(AppStrings.hospital)
-          .doc(hospitalUid)
-          .collection(AppStrings.doctor)
-          .doc(id)
-          .update({
-        'online': value,
-      });
-      emit(ScChangeDoctorOnline());
-    } catch (e) {
-      print('change Doctor Online $e');
-      emit(ErorrChangeDoctorOnline(e.toString()));
-    }
-  }
-
+  //CHAT FUNCTIONS AND DATA FILDES
   Future<void> sendMessage(
       {required MessageModel messageModel, File? file}) async {
     try {
       emit(LoadingSendMessage());
+      //if message has file upload it to firebase
       if (file != null) {
         messageModel.file = await uploadFile(file);
       }
-
+      //get time as Time stamp
       var time = FieldValue.serverTimestamp();
       Map<String, dynamic> data = messageModel.toMap();
       data.addAll({'timestamp': time});
+      //send masage to the doctor
       var value = FirebaseFirestore.instance
           .collection(AppStrings.hospital)
           .doc(AppPreferences.hospitalUid)
@@ -595,7 +597,7 @@ class DoctorCubit extends Cubit<DoctorState> {
 
       data['id'] = value.id;
       await value.set(data);
-
+      //send masage to the mother
       var value1 = FirebaseFirestore.instance
           .collection(AppStrings.hospital)
           .doc(AppPreferences.hospitalUid)
@@ -608,6 +610,7 @@ class DoctorCubit extends Cubit<DoctorState> {
 
       data['id'] = value1.id;
       await value1.set(data);
+      //send Notifications to the MOTHER
       await sendNotificationsMother(messageModel.motherId ?? '');
       emit(ScSendMessage());
     } catch (error) {
@@ -635,6 +638,7 @@ class DoctorCubit extends Cubit<DoctorState> {
   Future<void> getMessages({required MotherModel model}) async {
     try {
       messages = [];
+      //listen to messages orderd by time stamp
       emit(LoadingGetdMessages());
       FirebaseFirestore.instance
           .collection(AppStrings.hospital)
@@ -666,9 +670,11 @@ class DoctorCubit extends Cubit<DoctorState> {
   Future<void> sendNotificationsMother(String motherId) async {
     try {
       print('send notfi1');
-      print('motherId :${motherId}');
+      print('motherId :$motherId');
+
       Map<String, dynamic> data = model!.toJson();
       data.addAll({'type': 'chat'});
+      //send notification to mother with doctor info(sender)
       sendNotification(
           playerId: motherId,
           message: 'A New Message',
@@ -678,58 +684,6 @@ class DoctorCubit extends Cubit<DoctorState> {
       print("erorr $e");
     }
   }
-}
-
-Future<void> sendNotification(
-    {required String playerId,
-    required String message,
-    required String dis,
-    required Map<String, dynamic> data}) async {
-  String oneSignalAppId =
-      AppStrings.oneSignalAppId; // Replace with your OneSignal App ID
-  String oneSignalApiKey =
-      AppStrings.oneSignalApiKey; // Replace with your OneSignal REST API Key
-
-  final url = Uri.parse('https://onesignal.com/api/v1/notifications');
-  final headers = {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Authorization': 'Basic $oneSignalApiKey',
-  };
-  final body = jsonEncode({
-    "app_id": oneSignalAppId,
-    "include_aliases": {
-      "external_id": [playerId]
-    },
-    "target_channel": "push",
-    "headings": {"en": message},
-    'data': data,
-    "contents": {
-      "en": dis,
-    }
-  });
-
-  final response = await http.post(url, headers: headers, body: body);
-  if (response.statusCode == 200) {
-    print('Notification sent successfully.');
-  } else {
-    print('Failed to send notification: ${response.body}');
-  }
-  //https://youtu.be/v2BzkbCC8CM?si=Blunqz89Kvcb85zm
-  /**
-      Select Your App:
-      Once logged in, you will see a dashboard listing your apps. Click on the app for which you want to find the REST API Key.
-      Navigate to Settings:
-
-      In the left-hand sidebar, find and click on "Settings".
-      Go to the "Keys & IDs" Section:
-
-      Under the "Settings" menu, click on "Keys & IDs".
-      Find the REST API Key:
-
-      In the "Keys & IDs" section, you will find the "REST API Key". This key is used for server-side requests to the OneSignal API.
-
-      The page will display both the "REST API Key" and the "App ID". You will use the REST API Key for making API requests to OneSignal.
-     */
 }
 
 bool checkPhone(String phone, List<dynamic>? documents) {

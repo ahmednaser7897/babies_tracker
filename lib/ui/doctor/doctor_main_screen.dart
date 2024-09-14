@@ -11,8 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_assets.dart';
 import 'package:babies_tracker/app/extensions.dart';
+import 'package:get/get.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import '../../app/app_prefs.dart';
 import '../../app/icon_broken.dart';
 
 class DoctorHomeScreen extends StatefulWidget {
@@ -22,22 +24,50 @@ class DoctorHomeScreen extends StatefulWidget {
   State<DoctorHomeScreen> createState() => _DoctorHomeScreenState();
 }
 
-class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
+class _DoctorHomeScreenState extends State<DoctorHomeScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     if (widget.getHomeData) {
       DoctorCubit.get(context).getCurrentDoctorData(homeData: true);
       HospitalCubit.get(context).getHomeData();
     }
-
+    //Listener to coming notifications
     messagesListener();
     super.initState();
   }
 
+  //this fun handels the (on/off)line system
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print('did change');
+    var cubit = DoctorCubit.get(Get.context);
+    if (state == AppLifecycleState.resumed) {
+      print('state1');
+      print(state);
+      cubit.changeDoctorOnline(
+          cubit.model!.id.orEmpty(), AppPreferences.hospitalUid, true);
+    } else if (state == AppLifecycleState.paused) {
+      print('state2');
+      print(state);
+      cubit.changeDoctorOnline(
+          cubit.model!.id.orEmpty(), AppPreferences.hospitalUid, false);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   void messagesListener() {
-    OneSignal.Notifications.addClickListener((event) {
+    OneSignal.Notifications.addClickListener((event) async {
       try {
         log('NOTIFICATION CLICK LISTENER CALLED WITH EVENT: $event');
+        //clear data
         String myjson = event.notification
             .jsonRepresentation()
             .replaceAll(' ', '')
@@ -45,17 +75,20 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
             .replaceAll('"{', '{')
             .replaceAll('}"', '}');
         log("Clicked notification: \n $myjson");
+        //convert data to json
         Map<String, dynamic> data = (json.decode(myjson)
             as Map<String, dynamic>)['custom']['a'] as Map<String, dynamic>;
         log("data");
         log(data.toString());
+        //check the filed 'type' if it is ='chat'
+        //go to chat screen with this mother
         if (data['type'] == 'chat') {
           log('go tO chat');
           MotherModel doc = MotherModel.fromJson(data);
           DoctorCubit.get(context).getMessages(
             model: doc,
           );
-          Navigator.push(
+          await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => DoctorMessageMotherScreen(model: doc),
@@ -92,9 +125,6 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
             currentIndex: cubit.currentIndex,
             onTap: (index) {
               cubit.changeBottomNavBar(index);
-              // if (index == 1) {
-              //   cubit.getHomeData();
-              // }
             },
             items: [
               BottomNavigationBarItem(
