@@ -230,7 +230,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                 child: Row(
                   children: [
                     CircleAvatar(
-                      radius: 30,
+                      radius: 25,
                       backgroundImage: AssetImage(
                         AppAssets.sleeping,
                       ),
@@ -241,8 +241,9 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                       children: [
                         Text(
                           details[index].sleepQuality.orEmpty(),
+                          maxLines: 2,
                           style: const TextStyle(
-                              fontSize: 17,
+                              fontSize: 15,
                               fontWeight: FontWeight.w400,
                               color: Colors.black),
                         ),
@@ -255,7 +256,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.almarai(
                                 color: Colors.grey,
-                                fontSize: 15,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -274,19 +275,20 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
                         ),
                       ],
                     ),
-                    const Spacer(),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            details.remove(details[index]);
-                            calcToalSleepDuration();
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.delete_outlined,
-                          size: 18,
-                          color: AppColors.primerColor,
-                        )),
+                    Expanded(
+                      child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              details.remove(details[index]);
+                              calcToalSleepDuration();
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.delete_outlined,
+                            size: 18,
+                            color: AppColors.primerColor,
+                          )),
+                    ),
                   ],
                 ),
               ),
@@ -424,7 +426,7 @@ class _AddSleepDetailsScreenState extends State<AddSleepDetailsScreen> {
         Row(
           children: [
             Container(
-              width: 65.w,
+              width: 60.w,
               height: 5.h,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               decoration: BoxDecoration(

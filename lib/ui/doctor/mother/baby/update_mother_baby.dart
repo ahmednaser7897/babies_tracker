@@ -261,9 +261,16 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
                         findAPGARValue(grimace, 'Grimace', (int val) {
                           grimace = val;
                         }),
+                      ],
+                    ),
+                    AppSizedBox.h1,
+                    Row(
+                      children: [
                         findAPGARValue(activity, 'Activity', (int val) {
                           activity = val;
                         }),
+                        AppSizedBox.w10,
+                        AppSizedBox.w7,
                         findAPGARValue(respiration, 'Respiration', (int val) {
                           respiration = val;
                         }),
@@ -447,7 +454,7 @@ class _EditBabyScreenState extends State<EditBabyScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 15.w,
+          width: 20.w,
           height: 5.h,
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           decoration: BoxDecoration(

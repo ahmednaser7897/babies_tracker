@@ -99,43 +99,30 @@ class _SleepsDetailsScreenState extends State<SleepsDetailsScreen> {
                       ),
                     ),
                     AppSizedBox.w5,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          details[index].sleepQuality.orEmpty(),
-                          style: const TextStyle(
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            details[index].sleepQuality.orEmpty(),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                          ),
+                          AppSizedBox.h1,
+                          Text(
+                            'From : ${details[index].startTime.orEmpty()} - To : ${details[index].endTime.orEmpty()}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.almarai(
+                              color: Colors.grey,
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
-                              color: Colors.black),
-                        ),
-                        AppSizedBox.h1,
-                        Row(
-                          children: [
-                            Text(
-                              'From : ${details[index].startTime.orEmpty()}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.almarai(
-                                color: Colors.grey,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                              ),
                             ),
-                            AppSizedBox.w3,
-                            Text(
-                              'To : ${details[index].endTime.orEmpty()}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.almarai(
-                                color: Colors.grey,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

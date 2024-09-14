@@ -219,7 +219,7 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                 child: Row(
                   children: [
                     CircleAvatar(
-                      radius: 30,
+                      radius: 25,
                       backgroundImage: AssetImage(
                         AppAssets.feeding,
                       ),
@@ -270,18 +270,19 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                         )
                       ],
                     ),
-                    const Spacer(),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            details.remove(details[index]);
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.delete_outlined,
-                          size: 18,
-                          color: AppColors.primerColor,
-                        )),
+                    Expanded(
+                      child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              details.remove(details[index]);
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.delete_outlined,
+                            size: 18,
+                            color: AppColors.primerColor,
+                          )),
+                    ),
                   ],
                 ),
               ),
@@ -300,9 +301,10 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
             key: _formKey2,
             child: SingleChildScrollView(
               child: Container(
+                width: 90.w,
                 margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.all(10),
-                height: 70.h,
+                height: 80.h,
                 decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
                 child: Column(
@@ -390,7 +392,6 @@ class _AddFeedingDetailsScreenState extends State<AddFeedingDetailsScreen> {
                         feedQuality = val;
                       });
                     }),
-                    AppSizedBox.h2,
                     const Spacer(),
                     BottomComponent(
                       child: const Text(

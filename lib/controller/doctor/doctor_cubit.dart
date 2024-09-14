@@ -196,7 +196,7 @@ class DoctorCubit extends Cubit<DoctorState> {
         //get mother's doctor
         var value = await FirebaseFirestore.instance
             .collection(AppStrings.hospital)
-            .doc(AppPreferences.uId)
+            .doc(AppPreferences.hospitalUid)
             .collection(AppStrings.doctor)
             .doc(mother.docyorlId)
             .get();

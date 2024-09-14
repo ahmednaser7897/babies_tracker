@@ -144,9 +144,7 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
                                 : 'Recheck in the mother',
                             width: 95,
                             fontsize: 12,
-                            iconRight: Icon((model.leaft.orFalse())
-                                ? Icons.check_box_rounded
-                                : Icons.check_box_outline_blank),
+                            iconRight: const Icon(Icons.check_box_outlined),
                             onTap: () async {
                               checkSoutAlertDialog('mother', () {
                                 HospitalCubit.get(context).changeMotherLeft(
@@ -273,14 +271,17 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
         return AlertDialog(
           title: Row(
             children: [
-              Text(!model.leaft.orFalse()
-                  ? "Check out the $user"
-                  : 'Recheck in the $user'),
-              const Spacer(),
-              Icon(
-                (model.leaft.orFalse())
-                    ? Icons.check_box_rounded
-                    : Icons.check_box_outline_blank,
+              Expanded(
+                child: Text(
+                  !model.leaft.orFalse()
+                      ? "Check out the $user"
+                      : 'Recheck in the $user',
+                  maxLines: 2,
+                  style: const TextStyle(fontSize: 17),
+                ),
+              ),
+              const Icon(
+                Icons.check_box_outlined,
                 size: 20,
                 color: AppColors.primerColor,
               ),

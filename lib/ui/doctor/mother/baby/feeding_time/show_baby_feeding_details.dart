@@ -152,7 +152,7 @@ class _ShowBabyFeedingDetailssState extends State<ShowBabyFeedingDetailss> {
                           textAlign: TextAlign.start,
                           style: GoogleFonts.almarai(
                             color: Colors.black,
-                            fontSize: 17,
+                            fontSize: 15,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -162,7 +162,7 @@ class _ShowBabyFeedingDetailssState extends State<ShowBabyFeedingDetailss> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.almarai(
-                            fontSize: 14,
+                            fontSize: 13,
                             color: AppColors.grey,
                             fontWeight: FontWeight.w600,
                           ),

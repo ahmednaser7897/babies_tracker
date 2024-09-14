@@ -163,7 +163,7 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                                     : 'Recheck in the baby',
                                 width: 95,
                                 fontsize: 12,
-                                iconRight: const Icon(Icons.output),
+                                iconRight: const Icon(Icons.check_box_outlined),
                                 onTap: () async {
                                   checkSoutAlertDialog('baby', () {
                                     HospitalCubit.get(context).changeBabyLeft(
@@ -215,12 +215,13 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
         return AlertDialog(
           title: Row(
             children: [
-              Text(!model.left.orFalse()
-                  ? "Check out the $user"
-                  : 'Recheck in the $user'),
-              const Spacer(),
+              Expanded(
+                child: Text(!model.left.orFalse()
+                    ? "Check out the $user"
+                    : 'Recheck in the $user'),
+              ),
               const Icon(
-                Icons.check_box_rounded,
+                Icons.check_box_outlined,
                 size: 20,
                 color: AppColors.primerColor,
               ),
