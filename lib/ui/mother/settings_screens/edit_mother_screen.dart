@@ -252,14 +252,14 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
                                   ),
                                   onPressed: () {
                                     //if you didn't choose all data
-                                    if (motherHealthyHistory.isEmpty ||
-                                        motherPostpartumHealth.isEmpty) {
-                                      showFlutterToast(
-                                        message: 'You must add all mother data',
-                                        toastColor: Colors.red,
-                                      );
-                                      return;
-                                    }
+                                    // if (motherHealthyHistory.isEmpty ||
+                                    //     motherPostpartumHealth.isEmpty) {
+                                    //   showFlutterToast(
+                                    //     message: 'You must add all mother data',
+                                    //     toastColor: Colors.red,
+                                    //   );
+                                    //   return;
+                                    // }
                                     if (_formKey.currentState!.validate()) {
                                       //if nothing has changed in the data
                                       if (!isDataChanged(context)) {

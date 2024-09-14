@@ -239,9 +239,11 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
                                   ),
                                   onPressed: () {
                                     //if you didn't choose gender
-                                    if (doc == null ||
-                                        motherHealthyHistory.isEmpty ||
-                                        motherPostpartumHealth.isEmpty) {
+                                    if (doc == null
+                                        // ||
+                                        //     motherHealthyHistory.isEmpty ||
+                                        //     motherPostpartumHealth.isEmpty
+                                        ) {
                                       showFlutterToast(
                                         message: 'You must add all mother data',
                                         toastColor: Colors.red,
