@@ -43,6 +43,12 @@ class _AdminHomeScreenState extends State<AdminHomeScreen>
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<AdminCubit, AdminState>(
       listener: (context, state) {},

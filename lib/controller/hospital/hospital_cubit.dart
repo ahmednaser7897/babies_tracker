@@ -17,10 +17,10 @@ import '../../model/current_medications_model.dart';
 import '../../model/feeding_times_model.dart';
 import '../../model/sleep_details_model.dart';
 import '../../model/vaccinations_histories_model.dart';
-import '../../ui/hospital/doctors/all_doctors.dart';
-import '../../ui/hospital/mother/all_mother.dart';
+import '../../ui/hospital/doctors/show_all_doctors.dart';
+import '../../ui/hospital/mother/show_all_mother_screen.dart';
 import '../../ui/hospital/settings_screens/hospitl_settings.dart';
-import '../auth/auth_cubit.dart';
+import '../admin/admin_cubit.dart';
 
 part 'hospital_state.dart';
 
@@ -29,8 +29,8 @@ class HospitalCubit extends Cubit<HospitalState> {
   static HospitalCubit get(context) => BlocProvider.of(context);
   int currentIndex = 0;
   List<Widget> screens = [
-    const AllDoctorsScreen(),
-    const AllMothersScreen(),
+    const ShowAllDoctorsScreen(),
+    const ShowAllMothersScreen(),
     const HospitalSettingsScreen(),
   ];
   List titles = [
@@ -44,6 +44,7 @@ class HospitalCubit extends Cubit<HospitalState> {
     emit(ScChangeHomeIndex());
   }
 
+  //HOSPITAL FUNCTIONS AND DATA FILDES
   HospitalModel? hospitalModel;
   Future<void> getCurrentHospitalData() async {
     emit(LoadingGetHospital());
@@ -54,7 +55,6 @@ class HospitalCubit extends Cubit<HospitalState> {
           .get();
       hospitalModel = HospitalModel.fromJson(value.data() ?? {});
       changeHospitalOnline(hospitalModel!.id ?? '', true);
-      //saveFvmToken(hospitalModel!.id ?? '');
       emit(ScGetHospital());
     } catch (e) {
       print('Get Hospital Data Error: $e');
@@ -66,6 +66,7 @@ class HospitalCubit extends Cubit<HospitalState> {
       {required HospitalModel model, required File? image}) async {
     try {
       emit(LoadingEditHospital());
+      //check if the new phone number is not used
       var value =
           await FirebaseFirestore.instance.collection('phoneNumbers').get();
       if (model.phone != hospitalModel!.phone) {
@@ -73,6 +74,7 @@ class HospitalCubit extends Cubit<HospitalState> {
           emit(ErorrEditHospital('Phone number is already used'));
           return;
         } else {
+          //save the number in firebas
           await FirebaseFirestore.instance
               .collection('phoneNumbers')
               .doc()
@@ -94,9 +96,6 @@ class HospitalCubit extends Cubit<HospitalState> {
       await currentUser!.reauthenticateWithCredential(credential);
       print('User re-authenticated successfully');
       await currentUser.updatePassword(model.password.orEmpty());
-      // await currentUser.verifyBeforeUpdateEmail(model.email.orEmpty());
-      // await currentUser.updateEmail(model.email.orEmpty());
-
       print(model.toJson());
       await FirebaseFirestore.instance
           .collection(AppStrings.hospital)
@@ -174,10 +173,28 @@ class HospitalCubit extends Cubit<HospitalState> {
     return null;
   }
 
+  Future<void> changeHospitalOnline(String hospitalId, bool value) async {
+    emit(LoadingChangeHospitalOnline());
+    try {
+      await FirebaseFirestore.instance
+          .collection(AppStrings.hospital)
+          .doc(hospitalId)
+          .update({
+        'online': value,
+      });
+      emit(ScChangeHospitalOnline());
+    } catch (e) {
+      print('change Hospital Online $e');
+      emit(ErorrChangeHospitalOnline(e.toString()));
+    }
+  }
+
+//DOCTOR FUNCTIONS AND DATA FILDES
   Future<void> addDoctor(
       {required DoctorModel model, required File? image}) async {
     try {
       emit(LoadingAddDoctor());
+      //check if the new phone number is not used
       var value =
           await FirebaseFirestore.instance.collection('phoneNumbers').get();
       if (checkPhone(model.phone ?? '', value.docs)) {
@@ -188,6 +205,7 @@ class HospitalCubit extends Cubit<HospitalState> {
           email: model.email ?? '',
           password: model.password ?? '',
         );
+        //save the number in firebase
         FirebaseFirestore.instance
             .collection('phoneNumbers')
             .doc(value1.user!.uid)
@@ -210,7 +228,9 @@ class HospitalCubit extends Cubit<HospitalState> {
             parentImageFile: image,
           );
         }
-        setNewDoctor(model, imageUri);
+        //save this doctor in the list of doctors
+        model.image = imageUri;
+        doctors.insert(0, model);
         emit(ScAddDoctor());
       }
     } catch (error) {
@@ -226,27 +246,53 @@ class HospitalCubit extends Cubit<HospitalState> {
     }
   }
 
-  void setNewDoctor(DoctorModel model, String? imageUri) {
-    DoctorModel newDoctor = DoctorModel(
-      ban: false,
-      email: model.email,
-      id: model.id,
-      image: imageUri,
-      name: model.name,
-      online: false,
-      password: model.password,
-      phone: model.phone,
-      bio: model.bio,
-      gender: model.gender,
-      hospitalId: model.hospitalId,
-    );
-    doctors.add(newDoctor);
+  Future<void> changeDoctorBan(String doctorId, bool value) async {
+    emit(LoadingChangeDoctorBan());
+    try {
+      await FirebaseFirestore.instance
+          .collection(AppStrings.hospital)
+          .doc(AppPreferences.uId)
+          .collection(AppStrings.doctor)
+          .doc(doctorId)
+          .update({
+        'ban': value,
+      });
+      emit(ScChangeDoctorBan());
+    } catch (e) {
+      print('change Doctor Ban $e');
+      emit(ErorrChangeDoctorBan(e.toString()));
+    }
   }
 
+  List<DoctorModel> doctors = [];
+  Future<void> getAllDoctors() async {
+    emit(LoadingGetHospital());
+    try {
+      var value = await FirebaseFirestore.instance
+          .collection(AppStrings.hospital)
+          .doc(AppPreferences.hospitalUid.isEmpty
+              ? AppPreferences.uId
+              : AppPreferences.hospitalUid)
+          .collection(AppStrings.doctor)
+          .get();
+
+      for (var element in value.docs) {
+        var doctor = DoctorModel.fromJson(element.data());
+        doctors.add(doctor);
+      }
+      emit(ScGetHospital());
+    } catch (e) {
+      print('Get all Doctors1 Data Error: $e');
+      emit(ErorrGetHospital(e.toString()));
+    }
+  }
+
+//MOTHER FUNCTIONS AND DATA FILDES
   Future<void> addMother(
       {required MotherModel model, required File? image}) async {
     try {
       emit(LoadingAddMother());
+      //check if the new phone number is not used
       var value =
           await FirebaseFirestore.instance.collection('phoneNumbers').get();
       if (checkPhone(model.phone ?? '', value.docs)) {
@@ -257,6 +303,7 @@ class HospitalCubit extends Cubit<HospitalState> {
           email: model.email ?? '',
           password: model.password ?? '',
         );
+        //save the number in firebase
         FirebaseFirestore.instance
             .collection('phoneNumbers')
             .doc(value1.user!.uid)
@@ -278,7 +325,18 @@ class HospitalCubit extends Cubit<HospitalState> {
             parentImageFile: image,
           );
         }
-        setNewMother(model, imageUri);
+        //get mother's doctor
+        var doc = await FirebaseFirestore.instance
+            .collection(AppStrings.hospital)
+            .doc(AppPreferences.uId)
+            .collection(AppStrings.doctor)
+            .doc(model.docyorlId)
+            .get();
+        model.doctorModel = DoctorModel.fromJson(doc.data() ?? {});
+
+        //save this mother in the list of mothers
+        model.image = imageUri;
+        mothers.insert(0, model);
         emit(ScAddMother());
       }
     } catch (error) {
@@ -294,27 +352,22 @@ class HospitalCubit extends Cubit<HospitalState> {
     }
   }
 
-  void setNewMother(MotherModel model, String? imageUri) {
-    MotherModel newMother = MotherModel(
-      ban: false,
-      email: model.email,
-      id: model.id,
-      image: imageUri,
-      name: model.name,
-      online: false,
-      password: model.password,
-      phone: model.phone,
-      hospitalId: model.hospitalId,
-      address: model.address,
-      doctorNotes: model.docyorlId,
-      docyorlId: model.docyorlId,
-      healthyHistory: model.healthyHistory,
-      leaft: false,
-      postpartumHealth: model.postpartumHealth,
-    );
-    newMother.doctorModel =
-        doctors.firstWhere((element) => element.id == newMother.docyorlId);
-    mothers.add(newMother);
+  Future<void> changeMotherBan(String id, bool value) async {
+    emit(LoadingChangeMotherBan());
+    try {
+      await FirebaseFirestore.instance
+          .collection(AppStrings.hospital)
+          .doc(AppPreferences.uId)
+          .collection(AppStrings.mother)
+          .doc(id)
+          .update({
+        'ban': value,
+      });
+      emit(ScChangeMotherBan());
+    } catch (e) {
+      print('change Mother Ban $e');
+      emit(ErorrChangeMotherBan(e.toString()));
+    }
   }
 
   Future<void> changeMotherLeft(MotherModel model, bool value) async {
@@ -359,30 +412,6 @@ class HospitalCubit extends Cubit<HospitalState> {
     }
   }
 
-  List<DoctorModel> doctors = [];
-  Future<void> getAllDoctors() async {
-    emit(LoadingGetHospital());
-    try {
-      var value = await FirebaseFirestore.instance
-          .collection(AppStrings.hospital)
-          .doc(AppPreferences.hospitalUid.isEmpty
-              ? AppPreferences.uId
-              : AppPreferences.hospitalUid)
-          .collection(AppStrings.doctor)
-          .get();
-
-      for (var element in value.docs) {
-        var doctor = DoctorModel.fromJson(element.data());
-
-        doctors.add(doctor);
-      }
-      emit(ScGetHospital());
-    } catch (e) {
-      print('Get all Doctors1 Data Error: $e');
-      emit(ErorrGetHospital(e.toString()));
-    }
-  }
-
   List<MotherModel> mothers = [];
   Future<void> getAllMothers() async {
     emit(LoadingGetHospital());
@@ -394,23 +423,25 @@ class HospitalCubit extends Cubit<HospitalState> {
               : AppPreferences.hospitalUid)
           .collection(AppStrings.mother)
           .get();
-
+      //map every doc to mother
       for (var element in value.docs) {
         var mother = MotherModel.fromJson(element.data());
         mother.doctorModel =
             doctors.firstWhere((element) => element.id == mother.docyorlId);
+
+        //get evrey users medications
+        mother.medications = [];
+        await getMotherMedication(element, mother);
+
         //get evrey mother baby
         var bays = await element.reference.collection(AppStrings.baby).get();
-        mother.medications = [];
-        //get evrey users medications
-        await getMotherMedication(element, mother);
         mother.babys = [];
         for (var element in bays.docs) {
           var baby = BabieModel.fromJson(element.data());
           baby.sleepDetailsModel = [];
           baby.vaccinations = [];
           baby.feedingTimes = [];
-          //get   baby DATA
+          //get every baby data
           await getBabyVaccination(element, baby);
           await getSleepBetails(element, baby);
           await getBabyfeedingTimes(element, baby);
@@ -428,7 +459,7 @@ class HospitalCubit extends Cubit<HospitalState> {
   Future<void> getMotherMedication(
       QueryDocumentSnapshot<Map<String, dynamic>> element,
       MotherModel mother) async {
-    //get evrey users medications
+    //get mother medications
     var medications =
         await element.reference.collection(AppStrings.medication).get();
     for (var element in medications.docs) {
@@ -470,6 +501,7 @@ class HospitalCubit extends Cubit<HospitalState> {
     }
   }
 
+  //HOME FUNCTIONS
   Future<void> getHomeData() async {
     mothers = [];
     doctors = [];
@@ -483,68 +515,4 @@ class HospitalCubit extends Cubit<HospitalState> {
       emit(ErorrGetHomeData(e.toString()));
     }
   }
-
-  Future<void> changeDoctorBan(String doctorId, bool value) async {
-    emit(LoadingChangeDoctorBan());
-    try {
-      await FirebaseFirestore.instance
-          .collection(AppStrings.hospital)
-          .doc(AppPreferences.uId)
-          .collection(AppStrings.doctor)
-          .doc(doctorId)
-          .update({
-        'ban': value,
-      });
-      emit(ScChangeDoctorBan());
-    } catch (e) {
-      print('change Doctor Ban $e');
-      emit(ErorrChangeDoctorBan(e.toString()));
-    }
-  }
-
-  Future<void> changeMotherBan(String id, bool value) async {
-    emit(LoadingChangeMotherBan());
-    try {
-      await FirebaseFirestore.instance
-          .collection(AppStrings.hospital)
-          .doc(AppPreferences.uId)
-          .collection(AppStrings.mother)
-          .doc(id)
-          .update({
-        'ban': value,
-      });
-      emit(ScChangeMotherBan());
-    } catch (e) {
-      print('change Mother Ban $e');
-      emit(ErorrChangeMotherBan(e.toString()));
-    }
-  }
-
-  Future<void> changeHospitalOnline(String hospitalId, bool value) async {
-    emit(LoadingChangeHospitalOnline());
-    try {
-      await FirebaseFirestore.instance
-          .collection(AppStrings.hospital)
-          .doc(hospitalId)
-          .update({
-        'online': value,
-      });
-      emit(ScChangeHospitalOnline());
-    } catch (e) {
-      print('change Hospital Online $e');
-      emit(ErorrChangeHospitalOnline(e.toString()));
-    }
-  }
-}
-
-bool checkPhone(String phone, List<dynamic>? documents) {
-  if (documents == null) {
-    return false;
-  }
-  for (var doc in documents) {
-    if (doc.data()?['phone'] == phone) {
-      return true;
-    }
-  }
-  return false;
 }

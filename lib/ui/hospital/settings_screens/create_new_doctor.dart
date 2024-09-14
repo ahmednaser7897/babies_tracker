@@ -31,17 +31,10 @@ class _CreateNewDoctorState extends State<CreateNewDoctor> {
   TextEditingController passwordController = TextEditingController();
 
   TextEditingController phoneController = TextEditingController();
-  //TextEditingController genderController = TextEditingController();
 
   TextEditingController bioController = TextEditingController();
   String? gender;
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    // genderController.text = 'male';
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,13 +201,16 @@ class _CreateNewDoctorState extends State<CreateNewDoctor> {
                                     ),
                                   ),
                                   onPressed: () {
+                                    //if you didn't choose gender
                                     if (gender == null) {
                                       showFlutterToast(
                                         message: 'you must enter gender',
                                         toastColor: Colors.red,
                                       );
+                                      return;
                                     }
                                     if (_formKey.currentState!.validate()) {
+                                      // email must not has any space
                                       emailController.text = emailController
                                           .text
                                           .replaceAll(' ', '')

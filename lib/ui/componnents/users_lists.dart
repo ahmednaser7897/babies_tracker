@@ -17,8 +17,8 @@ import '../../model/admin_model.dart';
 import '../admin/admins/admin_details_screen.dart';
 import '../hospital/hospitel_details_screen.dart';
 import '../doctor/mother/baby/baby_details_screen.dart';
-import '../hospital/doctors/doctor_details_screen.dart';
-import '../hospital/mother/mother_details_screen.dart';
+import '../doctor/doctor_details_screen.dart';
+import '../mother/mother_details_screen.dart';
 
 Widget buildAdminList(List<AdminModel> admins) {
   return Builder(builder: (context) {
@@ -205,7 +205,7 @@ Widget buildBabyList({required List<BabieModel> baby, bool canEdit = true}) {
                     ban: false,
                     leaft: baby[index].left.orFalse(),
                     name: baby[index].name.orEmpty(),
-                    des: 'Birth Date : ' + baby[index].birthDate.orEmpty(),
+                    des: 'Birth Date : ${baby[index].birthDate.orEmpty()}',
                     id: baby[index].id.orEmpty(),
                     image: baby[index].photo,
                     assetImage: AppAssets.baby,

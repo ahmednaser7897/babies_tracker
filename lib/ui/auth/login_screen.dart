@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    emailController.text = 'ahmed@gmail.com';
+    emailController.text = 'ahmed11@me.com';
     passwordController.text = '12345678';
 
     return BlocProvider(

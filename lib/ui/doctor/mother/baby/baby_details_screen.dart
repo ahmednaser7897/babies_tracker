@@ -213,7 +213,7 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
             children: [
               Text(!model.left.orFalse()
                   ? "Check out the $user"
-                  : 'Recheck in the $user"'),
+                  : 'Recheck in the $user'),
               const Spacer(),
               const Icon(
                 Icons.check_box_rounded,
@@ -224,7 +224,7 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
           ),
           content: Text(!model.left.orFalse()
               ? "Are you sour you want Check out the $user ?"
-              : 'Are you sour you want Recheck in the $user ?"'),
+              : 'Are you sour you want Recheck in the $user ?'),
           elevation: 10,
           actions: [
             TextButton(

@@ -16,7 +16,7 @@ import '../../model/feeding_times_model.dart';
 import '../../model/message_model.dart';
 import '../../model/sleep_details_model.dart';
 import '../../model/vaccinations_histories_model.dart';
-import '../../ui/hospital/doctors/all_doctors.dart';
+import '../../ui/hospital/doctors/show_all_doctors.dart';
 import '../../ui/mother/baby/show_my_baybs.dart';
 import '../../ui/mother/settings_screens/mother_settings.dart';
 import '../auth/auth_cubit.dart';
@@ -27,7 +27,7 @@ class MotherCubit extends Cubit<MotherState> {
   static MotherCubit get(context) => BlocProvider.of(context);
   int currentIndex = 0;
   List<Widget> screens = [
-    const AllDoctorsScreen(),
+    const ShowAllDoctorsScreen(),
     const ShowMyBabys(),
     const MotherSettingsScreen(),
   ];

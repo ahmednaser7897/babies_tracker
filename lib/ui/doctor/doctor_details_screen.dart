@@ -8,13 +8,13 @@ import 'package:babies_tracker/app/app_sized_box.dart';
 import 'package:babies_tracker/app/extensions.dart';
 import 'package:babies_tracker/ui/componnents/const_widget.dart';
 
-import '../../../app/app_prefs.dart';
-import '../../../app/icon_broken.dart';
-import '../../../controller/mother/mother_cubit.dart';
-import '../../../model/doctor_model.dart';
-import '../../componnents/show_flutter_toast.dart';
-import '../../componnents/widgets.dart';
-import '../../mother/chat/mother_message_doctor_screen.dart';
+import '../../app/app_prefs.dart';
+import '../../app/icon_broken.dart';
+import '../../controller/mother/mother_cubit.dart';
+import '../../model/doctor_model.dart';
+import '../componnents/show_flutter_toast.dart';
+import '../componnents/widgets.dart';
+import '../mother/chat/mother_message_doctor_screen.dart';
 
 class DoctorDetailsScreen extends StatefulWidget {
   const DoctorDetailsScreen(
@@ -35,11 +35,11 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(AppPreferences.userType);
     return Scaffold(
       appBar: AppBar(
         title: Text(AppStrings.userDetails(AppStrings.doctor)),
       ),
+      //doctor can chat with mother only
       floatingActionButton: (AppPreferences.userType == AppStrings.mother)
           ? FloatingActionButton(
               onPressed: () {
@@ -70,6 +70,9 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
             children: [
               AppSizedBox.h1,
               userImage(),
+              AppSizedBox.h2,
+              //only hospital can ban doctor
+              if (AppPreferences.userType == AppStrings.hospital) banWidget(),
               dataValue(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
@@ -99,6 +102,23 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
   }
 
   Widget userImage() {
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+        ),
+        Hero(
+          tag: model.id.orEmpty(),
+          child: imageWithOnlineState(
+              uri: model.image,
+              type: AppAssets.doctor,
+              isOnline: model.online.orFalse()),
+        ),
+      ],
+    );
+  }
+
+  Widget banWidget() {
     return Builder(builder: (context) {
       return BlocConsumer<HospitalCubit, HospitalState>(
         listener: (context, state) {
@@ -120,35 +140,19 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              Container(
-                width: double.infinity,
-              ),
-              Hero(
-                tag: model.id.orEmpty(),
-                child: imageWithOnlineState(
-                    uri: model.image,
-                    type: AppAssets.doctor,
-                    isOnline: model.online.orFalse()),
-              ),
-              AppSizedBox.h2,
-              if (AppPreferences.userType == AppStrings.hospital)
-                (state is LoadingChangeDoctorBan)
-                    ? const CircularProgressComponent()
-                    : Center(
-                        child: Switch(
-                          value: model.ban.orFalse(),
-                          activeColor: Colors.red,
-                          splashRadius: 18.0,
-                          onChanged: (value) async {
-                            await HospitalCubit.get(context).changeDoctorBan(
-                                model.id.orEmpty(), !model.ban.orFalse());
-                          },
-                        ),
-                      ),
-            ],
-          );
+          return (state is LoadingChangeDoctorBan)
+              ? const CircularProgressComponent()
+              : Center(
+                  child: Switch(
+                    value: model.ban.orFalse(),
+                    activeColor: Colors.red,
+                    splashRadius: 18.0,
+                    onChanged: (value) async {
+                      await HospitalCubit.get(context).changeDoctorBan(
+                          model.id.orEmpty(), !model.ban.orFalse());
+                    },
+                  ),
+                );
         },
       );
     });

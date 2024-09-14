@@ -39,14 +39,6 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
   List<String> motherHealthyHistory = [];
   List<String> motherPostpartumHealth = [];
   DoctorModel? doc;
-  @override
-  void initState() {
-    // if (HospitalCubit.get(context).doctors.isNotEmpty) {
-    //   doc = HospitalCubit.get(context).doctors[0];
-    // }
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +238,18 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
                                     ),
                                   ),
                                   onPressed: () {
+                                    //if you didn't choose gender
+                                    if (doc == null ||
+                                        motherHealthyHistory.isEmpty ||
+                                        motherPostpartumHealth.isEmpty) {
+                                      showFlutterToast(
+                                        message: 'You must add all mother data',
+                                        toastColor: Colors.red,
+                                      );
+                                      return;
+                                    }
                                     if (_formKey.currentState!.validate()) {
+                                      // email must not has any space
                                       emailController.text = emailController
                                           .text
                                           .replaceAll(' ', '')

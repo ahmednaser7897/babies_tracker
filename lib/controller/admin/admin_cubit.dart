@@ -48,7 +48,6 @@ class AdminCubit extends Cubit<AdminState> {
           .get();
       adminModel = AdminModel.fromJson(value.data() ?? {});
       changeAdminOnline(adminModel!.id ?? '', true);
-      //saveFvmToken(adminModel!.id ?? '');
       emit(ScGetAdmin());
     } catch (e) {
       print('Get admin Data Error: $e');

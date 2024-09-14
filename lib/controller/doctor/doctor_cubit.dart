@@ -21,7 +21,7 @@ import '../../model/message_model.dart';
 import '../../model/sleep_details_model.dart';
 import '../../ui/Doctor/settings_screens/Doctor_settings.dart';
 import '../../ui/doctor/mother/show_doc_mothers.dart';
-import '../../ui/hospital/doctors/all_doctors.dart';
+import '../../ui/hospital/doctors/show_all_doctors.dart';
 import 'package:http/http.dart' as http;
 
 import '../auth/auth_cubit.dart';
@@ -31,7 +31,7 @@ class DoctorCubit extends Cubit<DoctorState> {
   static DoctorCubit get(context) => BlocProvider.of(context);
   int currentIndex = 0;
   List<Widget> screens = [
-    const AllDoctorsScreen(),
+    const ShowAllDoctorsScreen(),
     const DoctorMothersScreen(),
     const DoctorSettingsScreen(),
   ];

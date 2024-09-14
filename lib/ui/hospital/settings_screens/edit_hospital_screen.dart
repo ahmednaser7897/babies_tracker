@@ -23,13 +23,8 @@ class EditHospitalScreen extends StatefulWidget {
 
 class _EditHospitalScreenState extends State<EditHospitalScreen> {
   TextEditingController nameController = TextEditingController();
-
-  //TextEditingController emailController = TextEditingController();
-
   TextEditingController passwordController = TextEditingController();
-
   TextEditingController phoneController = TextEditingController();
-
   TextEditingController cityController = TextEditingController();
   TextEditingController bioController = TextEditingController();
   TextEditingController locationController = TextEditingController();
@@ -47,7 +42,6 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
       cityController.text = cubit.hospitalModel!.city ?? '';
       nameController.text = cubit.hospitalModel!.name ?? '';
       passwordController.text = cubit.hospitalModel!.password ?? '';
-      // emailController.text = cubit.hospitalModel!.email ?? '';
     }
 
     super.initState();
@@ -107,25 +101,6 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
                             name: ' name');
                       },
                     ),
-                    AppSizedBox.h3,
-                    // const Text(
-                    //   "Email",
-                    //   style: TextStyle(
-                    //     fontSize: 16,
-                    //     fontWeight: FontWeight.w400,
-                    //   ),
-                    // ),
-                    // AppSizedBox.h2,
-                    // AppTextFormFiledWidget(
-                    //   controller: emailController,
-                    //   keyboardType: TextInputType.text,
-                    //   hintText: "Enter Email",
-                    //   prefix: Icons.person,
-                    //   validate: (value) {
-                    //     return Validations.emailValidation(value,
-                    //         name: 'Email');
-                    //   },
-                    // ),
                     AppSizedBox.h3,
                     const Text(
                       "Password",
@@ -256,9 +231,8 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  print("object1");
                                   if (_formKey.currentState!.validate()) {
-                                    print("object2");
+                                    //if nothing has changed in the data
                                     if (!isDataChanged(context)) {
                                       showFlutterToast(
                                         message: 'No data changed for now!',
@@ -276,7 +250,6 @@ class _EditHospitalScreenState extends State<EditHospitalScreen> {
                                               bio: bioController.text,
                                               city: cityController.text,
                                               location: locationController.text,
-                                              //email: emailController.text,
                                               online: true));
                                     }
                                   }
