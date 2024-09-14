@@ -20,11 +20,13 @@ class AdminDetailsScreen extends StatefulWidget {
 
 class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
   late AdminModel model;
+  //The current login admin can stop this admin only if it was created before him
   late bool canBan;
   @override
   void initState() {
     model = widget.model;
     super.initState();
+    //check if The current login admin was created before this admin
     var date1 = DateTime.parse(model.createdAt.toString());
     var date2 = DateTime.parse(
         AdminCubit.get(context).adminModel!.createdAt.toString());
@@ -44,7 +46,11 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppSizedBox.h1,
+
               userImage(),
+              AppSizedBox.h2,
+              //check if The current login admin was created before this admin
+              if (canBan) banWidget(),
               dataValue(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
@@ -69,6 +75,23 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
   }
 
   Widget userImage() {
+    return Column(
+      children: [
+        const SizedBox(
+          width: double.infinity,
+        ),
+        Hero(
+          tag: model.id.orEmpty(),
+          child: imageWithOnlineState(
+              uri: model.image,
+              type: AppAssets.admin,
+              isOnline: model.online.orFalse()),
+        ),
+      ],
+    );
+  }
+
+  Widget banWidget() {
     return Builder(builder: (context) {
       return BlocConsumer<AdminCubit, AdminState>(
         listener: (context, state) {
@@ -90,35 +113,19 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              const SizedBox(
-                width: double.infinity,
-              ),
-              Hero(
-                tag: model.id.orEmpty(),
-                child: imageWithOnlineState(
-                    uri: model.image,
-                    type: AppAssets.admin,
-                    isOnline: model.online.orFalse()),
-              ),
-              AppSizedBox.h2,
-              if (canBan)
-                (state is LoadingChangeAdminBan)
-                    ? const CircularProgressComponent()
-                    : Center(
-                        child: Switch(
-                          value: model.ban.orFalse(),
-                          activeColor: Colors.red,
-                          splashRadius: 18.0,
-                          onChanged: (value) async {
-                            await AdminCubit.get(context).changeAdminBan(
-                                model.id.orEmpty(), !model.ban.orFalse());
-                          },
-                        ),
-                      ),
-            ],
-          );
+          return ((state is LoadingChangeAdminBan)
+              ? const CircularProgressComponent()
+              : Center(
+                  child: Switch(
+                    value: model.ban.orFalse(),
+                    activeColor: Colors.red,
+                    splashRadius: 18.0,
+                    onChanged: (value) async {
+                      await AdminCubit.get(context).changeAdminBan(
+                          model.id.orEmpty(), !model.ban.orFalse());
+                    },
+                  ),
+                ));
         },
       );
     });

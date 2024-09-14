@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:babies_tracker/app/app_strings.dart';
 import 'package:babies_tracker/model/doctor_model.dart';
 import 'package:babies_tracker/model/hospital_model.dart';
-import 'package:babies_tracker/ui/admin/hospitels_screen/admin_hospitels.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
@@ -13,9 +12,9 @@ import 'package:babies_tracker/app/extensions.dart';
 import 'package:babies_tracker/model/admin_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-import '../../ui/admin/admins/admins_home.dart';
+import '../../ui/admin/admins/show_all_admins.dart';
+import '../../ui/admin/hospitels_screen/show_all_hospitals_screen.dart';
 import '../../ui/admin/settings_screens/admin_settings.dart';
-import '../auth/auth_cubit.dart';
 part 'admin_state.dart';
 
 class AdminCubit extends Cubit<AdminState> {
@@ -23,8 +22,8 @@ class AdminCubit extends Cubit<AdminState> {
   static AdminCubit get(context) => BlocProvider.of(context);
   int currentIndex = 0;
   List<Widget> screens = [
-    const AdminsHome(),
-    const AdminHospitals(),
+    const ShowAllAdminScreen(),
+    const ShowAllHospitalsScreen(),
     const AdminSettingsScreen(),
   ];
   List titles = [
@@ -37,6 +36,7 @@ class AdminCubit extends Cubit<AdminState> {
     currentIndex = index;
     emit(ScChangeHomeIndex());
   }
+  //ADMIN FUNCTIONS AND DATA FILDES
 
   AdminModel? adminModel;
   Future<void> getCurrentAdminData() async {
@@ -93,7 +93,8 @@ class AdminCubit extends Cubit<AdminState> {
           );
         }
         //save this admin in the list of admins
-        setNewAdmin(model, imageUri);
+        model.image = imageUri;
+        admins.insert(0, model);
         emit(ScAddAdmin());
       }
     } catch (error) {
@@ -107,21 +108,6 @@ class AdminCubit extends Cubit<AdminState> {
       }
       print('Error: $error');
     }
-  }
-
-  void setNewAdmin(AdminModel model, String? imageUri) {
-    AdminModel newAdmin = AdminModel(
-        ban: false,
-        createdAt: model.createdAt,
-        email: model.email,
-        gender: model.gender,
-        id: model.id,
-        image: imageUri,
-        name: model.name,
-        online: false,
-        password: model.password,
-        phone: model.phone);
-    admins.add(newAdmin);
   }
 
   Future<void> editAdmin(
@@ -206,16 +192,48 @@ class AdminCubit extends Cubit<AdminState> {
     return null;
   }
 
+  Future<void> changeAdminBan(String adminId, bool value) async {
+    emit(LoadingChangeAdminBan());
+    try {
+      await FirebaseFirestore.instance
+          .collection(AppStrings.admin)
+          .doc(adminId)
+          .update({
+        'ban': value,
+      });
+      emit(ScChangeAdminBan());
+    } catch (e) {
+      print('change Admin Ban $e');
+      emit(ErorrChangeAdminBan(e.toString()));
+    }
+  }
+
+  Future<void> changeAdminOnline(String adminId, bool value) async {
+    emit(LoadingChangeAdminOnline());
+    try {
+      await FirebaseFirestore.instance
+          .collection(AppStrings.admin)
+          .doc(adminId)
+          .update({
+        'online': value,
+      });
+      emit(ScChangeAdminOnline());
+    } catch (e) {
+      print('change Admin Online $e');
+      emit(ErorrChangeAdminOnline(e.toString()));
+    }
+  }
+
   List<AdminModel> admins = [];
   Future<void> getAllAdmins() async {
     try {
       var value =
           await FirebaseFirestore.instance.collection(AppStrings.admin).get();
       for (var element in value.docs) {
+        //THE Current LOGEIN ADMIN
         if (element.id == AppPreferences.uId) {
           continue;
         }
-
         admins.add(AdminModel.fromJson(element.data()));
       }
     } catch (e) {
@@ -223,6 +241,7 @@ class AdminCubit extends Cubit<AdminState> {
     }
   }
 
+  //HOSPITAL FUNCTIONS AND DATA FILDES
   Future<void> addHospital(
       {required HospitalModel model, required File? image}) async {
     try {
@@ -259,7 +278,8 @@ class AdminCubit extends Cubit<AdminState> {
           );
         }
         //save this hospital in the list of hospitals
-        setNewHospital(model, imageUri);
+        model.image = imageUri;
+        hospitals.insert(0, model);
         emit(ScAddHospital());
       }
     } catch (error) {
@@ -272,62 +292,6 @@ class AdminCubit extends Cubit<AdminState> {
         emit(ErorrAddHospital(error.toString()));
       }
       print('Error: $error');
-    }
-  }
-
-  void setNewHospital(HospitalModel model, String? imageUri) {
-    HospitalModel newHospital = HospitalModel(
-      ban: false,
-      email: model.email,
-      id: model.id,
-      image: imageUri,
-      name: model.name,
-      online: false,
-      password: model.password,
-      phone: model.phone,
-      bio: model.bio,
-      city: model.city,
-      location: model.location,
-    );
-    hospitals.add(newHospital);
-  }
-
-  List<HospitalModel> hospitals = [];
-  Future<void> getAllHospitals() async {
-    emit(LoadingGetAdmin());
-    try {
-      var value = await FirebaseFirestore.instance
-          .collection(AppStrings.hospital)
-          .get();
-      for (var element in value.docs) {
-        var hospital = HospitalModel.fromJson(element.data());
-        //get evrey Hospitals doctor
-        var doctors =
-            await element.reference.collection(AppStrings.doctor).get();
-        hospital.doctors = [];
-        for (var element in doctors.docs) {
-          hospital.doctors!.add(DoctorModel.fromJson(element.data()));
-        }
-        hospitals.add(hospital);
-      }
-      emit(ScGetAdmin());
-    } catch (e) {
-      print('Get all Hospitals Data Error: $e');
-      emit(ErorrGetAdmin(e.toString()));
-    }
-  }
-
-  Future<void> getHomeData() async {
-    admins = [];
-    hospitals = [];
-    emit(LoadingGetHomeData());
-    try {
-      await getAllAdmins();
-      await getAllHospitals();
-      emit(ScGetHomeData());
-    } catch (e) {
-      print('Get home Data Error: $e');
-      emit(ErorrGetHomeData(e.toString()));
     }
   }
 
@@ -363,35 +327,43 @@ class AdminCubit extends Cubit<AdminState> {
     }
   }
 
-  Future<void> changeAdminBan(String adminId, bool value) async {
-    emit(LoadingChangeAdminBan());
+  List<HospitalModel> hospitals = [];
+  Future<void> getAllHospitals() async {
+    emit(LoadingGetAdmin());
     try {
-      await FirebaseFirestore.instance
-          .collection(AppStrings.admin)
-          .doc(adminId)
-          .update({
-        'ban': value,
-      });
-      emit(ScChangeAdminBan());
+      var value = await FirebaseFirestore.instance
+          .collection(AppStrings.hospital)
+          .get();
+      for (var element in value.docs) {
+        var hospital = HospitalModel.fromJson(element.data());
+        //get evrey Hospitals doctor
+        var doctors =
+            await element.reference.collection(AppStrings.doctor).get();
+        hospital.doctors = [];
+        for (var element in doctors.docs) {
+          hospital.doctors!.add(DoctorModel.fromJson(element.data()));
+        }
+        hospitals.add(hospital);
+      }
+      emit(ScGetAdmin());
     } catch (e) {
-      print('change Admin Ban $e');
-      emit(ErorrChangeAdminBan(e.toString()));
+      print('Get all Hospitals Data Error: $e');
+      emit(ErorrGetAdmin(e.toString()));
     }
   }
 
-  Future<void> changeAdminOnline(String adminId, bool value) async {
-    emit(LoadingChangeAdminOnline());
+  //HOME FUNCTIONS
+  Future<void> getHomeData() async {
+    admins = [];
+    hospitals = [];
+    emit(LoadingGetHomeData());
     try {
-      await FirebaseFirestore.instance
-          .collection(AppStrings.admin)
-          .doc(adminId)
-          .update({
-        'online': value,
-      });
-      emit(ScChangeAdminOnline());
+      await getAllAdmins();
+      await getAllHospitals();
+      emit(ScGetHomeData());
     } catch (e) {
-      print('change Admin Online $e');
-      emit(ErorrChangeAdminOnline(e.toString()));
+      print('Get home Data Error: $e');
+      emit(ErorrGetHomeData(e.toString()));
     }
   }
 }

@@ -6,14 +6,14 @@ import '../../../controller/admin/admin_cubit.dart';
 import '../../componnents/screen_builder.dart';
 import '../../componnents/users_lists.dart';
 
-class AdminsHome extends StatefulWidget {
-  const AdminsHome({super.key});
+class ShowAllAdminScreen extends StatefulWidget {
+  const ShowAllAdminScreen({super.key});
 
   @override
-  State<AdminsHome> createState() => _AdminsHomeState();
+  State<ShowAllAdminScreen> createState() => _ShowAllAdminScreenState();
 }
 
-class _AdminsHomeState extends State<AdminsHome> {
+class _ShowAllAdminScreenState extends State<ShowAllAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AdminCubit, AdminState>(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_prefs.dart';
 import 'package:babies_tracker/ui/admin/admin_main_screen.dart';
+import 'package:get/get.dart';
 import 'app/style.dart';
 import 'controller/admin/admin_cubit.dart';
 import 'controller/doctor/doctor_cubit.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: Builder(builder: (mycontext) {
-        return MaterialApp(
+        return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme(),
             darkTheme: AppTheme.darkTheme(),

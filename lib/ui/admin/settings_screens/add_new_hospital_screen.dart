@@ -227,6 +227,7 @@ class _AddNewHospitalScreenState extends State<AddNewHospitalScreen> {
                                 ),
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
+                                    // email must not has any space
                                     emailController.text = emailController.text
                                         .replaceAll(' ', '')
                                         .toLowerCase();

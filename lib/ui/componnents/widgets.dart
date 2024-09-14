@@ -69,15 +69,15 @@ Widget emptListWidget(String? title) {
           const Icon(
             Icons.no_sim_outlined,
             size: 50,
-            color: AppColors.primerColor,
+            color: Colors.black45,
           ),
           AppSizedBox.h3,
           Text(
             'There  is no ${title ?? 'data'} to show for now!',
             style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-              color: AppColors.primerColor,
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+              color: Colors.black45,
             ),
             textAlign: TextAlign.center,
           ),

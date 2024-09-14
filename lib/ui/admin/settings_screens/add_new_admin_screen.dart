@@ -31,15 +31,8 @@ class _AddNewAdminScreenState extends State<AddNewAdminScreen> {
 
   TextEditingController phoneController = TextEditingController();
 
-  //TextEditingController genderController = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
   String? gender;
-  @override
-  void initState() {
-    //genderController.text = 'male';
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -184,6 +177,7 @@ class _AddNewAdminScreenState extends State<AddNewAdminScreen> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  //if you didn't choose gender
                                   if (gender == null) {
                                     showFlutterToast(
                                       message: 'You must add gender',
@@ -192,6 +186,7 @@ class _AddNewAdminScreenState extends State<AddNewAdminScreen> {
                                     return;
                                   }
                                   if (_formKey.currentState!.validate()) {
+                                    // email must not has any space
                                     emailController.text = emailController.text
                                         .replaceAll(' ', '')
                                         .toLowerCase();

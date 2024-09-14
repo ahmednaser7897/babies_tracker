@@ -24,14 +24,8 @@ class EditNewAdminScreen extends StatefulWidget {
 
 class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
   TextEditingController nameController = TextEditingController();
-
-  //TextEditingController emailController = TextEditingController();
-
   TextEditingController passwordController = TextEditingController();
-
   TextEditingController phoneController = TextEditingController();
-
-  //TextEditingController genderController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   String? gender;
@@ -40,16 +34,16 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
     AdminCubit cubit = AdminCubit.get(context);
     if (cubit.adminModel != null) {
       gender = cubit.adminModel!.gender;
-      // genderController.text = cubit.adminModel!.gender ?? 'male';
       phoneController.text = cubit.adminModel!.phone ?? '';
       nameController.text = cubit.adminModel!.name ?? '';
       passwordController.text = cubit.adminModel!.password ?? '';
-      //emailController.text = cubit.adminModel!.email ?? '';
     }
 
     super.initState();
   }
 
+  //Make sure that something has changed in the data so that it can be updated.
+  // Otherwise, the data will not be updated
   bool isDataChanged(BuildContext context) {
     AdminCubit cubit = AdminCubit.get(context);
     return ImageCubit.get(context).image != null ||
@@ -102,25 +96,6 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
                       },
                     ),
                     AppSizedBox.h3,
-                    // const Text(
-                    //   "Email",
-                    //   style: TextStyle(
-                    //     fontSize: 16,
-                    //     fontWeight: FontWeight.w400,
-                    //   ),
-                    // ),
-                    // AppSizedBox.h2,
-                    // AppTextFormFiledWidget(
-                    //   controller: emailController,
-                    //   keyboardType: TextInputType.text,
-                    //   hintText: "Enter Email",
-                    //   prefix: Icons.person,
-                    //   validate: (value) {
-                    //     return Validations.emailValidation(value,
-                    //         name: ' Email');
-                    //   },
-                    // ),
-                    //AppSizedBox.h3,
                     const Text(
                       "Password",
                       style: TextStyle(
@@ -206,6 +181,7 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  //if you didn't choose gender
                                   if (gender == null) {
                                     showFlutterToast(
                                       message: 'You must add gender',
@@ -214,6 +190,7 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
                                     return;
                                   }
                                   if (_formKey.currentState!.validate()) {
+                                    //if nothing has changed in the data
                                     if (!isDataChanged(context)) {
                                       showFlutterToast(
                                         message: 'No data changed for now!',
@@ -230,7 +207,6 @@ class _EditNewAdminScreenState extends State<EditNewAdminScreen> {
                                             password: passwordController.text,
                                             phone: phoneController.text,
                                             gender: gender,
-                                            // email: emailController.text
                                           ));
                                     }
                                   }

@@ -10,11 +10,11 @@ import 'package:babies_tracker/app/extensions.dart';
 import 'package:babies_tracker/controller/admin/admin_cubit.dart';
 import 'package:babies_tracker/ui/componnents/const_widget.dart';
 
-import '../../../app/app_colors.dart';
-import '../../componnents/custom_button.dart';
-import '../../componnents/show_flutter_toast.dart';
-import '../../componnents/users_lists.dart';
-import '../../componnents/widgets.dart';
+import '../../app/app_colors.dart';
+import '../componnents/custom_button.dart';
+import '../componnents/show_flutter_toast.dart';
+import '../componnents/users_lists.dart';
+import '../componnents/widgets.dart';
 
 class HospitelDetailsScreen extends StatefulWidget {
   const HospitelDetailsScreen({super.key, required this.model});
@@ -45,6 +45,11 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
             children: [
               AppSizedBox.h1,
               userImage(),
+              AppSizedBox.h2,
+              banWidget(),
+              AppSizedBox.h2,
+              options(),
+              AppSizedBox.h2,
               dataValue(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
@@ -57,9 +62,7 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
                   name: "Phone", value: model.phone ?? '', prefix: Icons.call),
               AppSizedBox.h3,
               dataValue(
-                  name: "City",
-                  value: model.city ?? '',
-                  prefix: Icons.location_city),
+                  name: "City", value: model.city ?? '', prefix: Icons.home),
               AppSizedBox.h3,
               dataValue(
                 name: "Location",
@@ -88,62 +91,24 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
     );
   }
 
-  Widget options() {
-    return Builder(builder: (context) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          CustomButton(
-            text: 'Doctors',
-            width: AppPreferences.userType != AppStrings.admin ? 40 : 90,
-            fontsize: 12,
-            onTap: () async {
-              var value = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Scaffold(
-                    appBar: AppBar(
-                      title: const Text('Show doctors'),
-                    ),
-                    body: (model.doctors ?? []).isEmpty
-                        ? emptListWidget(AppStrings.doctors)
-                        : buildDoctorsList(doctors: model.doctors ?? []),
-                  ),
-                ),
-              );
-              if (value == 'add') {
-                Navigator.pop(context, 'add');
-              }
-            },
-          ),
-          if (AppPreferences.userType != AppStrings.admin)
-            CustomButton(
-              text: 'Mothers',
-              width: 40,
-              fontsize: 12,
-              onTap: () async {
-                var value = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                      appBar: AppBar(
-                        title: const Text('Show mothers'),
-                      ),
-                      body: buildMothersList(mothers: model.mothers ?? []),
-                    ),
-                  ),
-                );
-                if (value == 'add') {
-                  Navigator.pop(context, 'add');
-                }
-              },
-            ),
-        ],
-      );
-    });
+  Widget userImage() {
+    return Column(
+      children: [
+        const SizedBox(
+          width: double.infinity,
+        ),
+        Hero(
+          tag: model.id.orEmpty(),
+          child: imageWithOnlineState(
+              uri: model.image,
+              type: AppAssets.hospital,
+              isOnline: model.online.orFalse()),
+        ),
+      ],
+    );
   }
 
-  Widget userImage() {
+  Widget banWidget() {
     return Builder(builder: (context) {
       return BlocConsumer<AdminCubit, AdminState>(
         listener: (context, state) {
@@ -165,38 +130,70 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              const SizedBox(
-                width: double.infinity,
-              ),
-              Hero(
-                tag: model.id.orEmpty(),
-                child: imageWithOnlineState(
-                    uri: model.image,
-                    type: AppAssets.hospital,
-                    isOnline: model.online.orFalse()),
-              ),
-              AppSizedBox.h2,
-              (state is LoadingChangeHospitalBan)
-                  ? const CircularProgressComponent()
-                  : Center(
-                      child: Switch(
-                        value: model.ban.orFalse(),
-                        activeColor: Colors.red,
-                        splashRadius: 18.0,
-                        onChanged: (value) async {
-                          await AdminCubit.get(context).changeHospitalBan(
-                              model.id.orEmpty(), !model.ban.orFalse());
-                        },
-                      ),
-                    ),
-              AppSizedBox.h2,
-              options(),
-              AppSizedBox.h2,
-            ],
-          );
+          return (state is LoadingChangeHospitalBan)
+              ? const CircularProgressComponent()
+              : Center(
+                  child: Switch(
+                    value: model.ban.orFalse(),
+                    activeColor: Colors.red,
+                    splashRadius: 18.0,
+                    onChanged: (value) async {
+                      await AdminCubit.get(context).changeHospitalBan(
+                          model.id.orEmpty(), !model.ban.orFalse());
+                    },
+                  ),
+                );
         },
+      );
+    });
+  }
+
+  Widget options() {
+    return Builder(builder: (context) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CustomButton(
+            text: 'Doctors',
+            width: AppPreferences.userType != AppStrings.admin ? 40 : 90,
+            fontsize: 12,
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Show doctors'),
+                    ),
+                    body: (model.doctors ?? []).isEmpty
+                        ? emptListWidget(AppStrings.doctors)
+                        : buildDoctorsList(doctors: model.doctors ?? []),
+                  ),
+                ),
+              );
+            },
+          ),
+          // admin can not see hospital mothers
+          if (AppPreferences.userType != AppStrings.admin)
+            CustomButton(
+              text: 'Mothers',
+              width: 40,
+              fontsize: 12,
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: const Text('Show mothers'),
+                      ),
+                      body: buildMothersList(mothers: model.mothers ?? []),
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       );
     });
   }

@@ -15,7 +15,7 @@ import '../../model/doctor_model.dart';
 import '../../model/admin_model.dart';
 
 import '../admin/admins/admin_details_screen.dart';
-import '../admin/hospitels_screen/hospitel_details_screen.dart';
+import '../hospital/hospitel_details_screen.dart';
 import '../doctor/mother/baby/baby_details_screen.dart';
 import '../hospital/doctors/doctor_details_screen.dart';
 import '../hospital/mother/mother_details_screen.dart';

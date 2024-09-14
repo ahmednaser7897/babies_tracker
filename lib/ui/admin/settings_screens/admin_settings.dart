@@ -129,7 +129,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
               settingbuildListItem(
                 context,
                 title: AppStrings.newUser(AppStrings.hospital),
-                leadingIcon: IconBroken.Profile,
+                leadingIcon: IconBroken.Heart,
                 subtitle: AppStrings.createNewUser(AppStrings.hospital),
                 onTap: () {
                   Navigator.push(
