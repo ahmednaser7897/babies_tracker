@@ -37,11 +37,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    emailController.text = 'soha@gmail.com';
-    emailController.text = 'rasha@gmail.com';
-    emailController.text = 'jeddah@gmail.com';
+    //admin
+    // emailController.text = 'ahmed@gmail.com';
+    //mother
+    // emailController.text = 'soha@gmail.com';
+    //doctor
+    // emailController.text = 'rasha@gmail.com';
+    //hospital
+    // emailController.text = 'jeddah@gmail.com';
 
-    passwordController.text = '12345678';
+    // passwordController.text = '12345678';
 
     return BlocProvider(
       create: (context) => AuthCubit(),

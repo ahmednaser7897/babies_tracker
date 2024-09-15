@@ -55,6 +55,22 @@ class AdminCubit extends Cubit<AdminState> {
     }
   }
 
+  Future<void> changeAdminOnline(String adminId, bool value) async {
+    emit(LoadingChangeAdminOnline());
+    try {
+      await FirebaseFirestore.instance
+          .collection(AppStrings.admin)
+          .doc(adminId)
+          .update({
+        'online': value,
+      });
+      emit(ScChangeAdminOnline());
+    } catch (e) {
+      print('change Admin Online $e');
+      emit(ErorrChangeAdminOnline(e.toString()));
+    }
+  }
+
   Future<void> addAdmin(
       {required AdminModel model, required File? image}) async {
     try {
@@ -207,22 +223,6 @@ class AdminCubit extends Cubit<AdminState> {
     }
   }
 
-  Future<void> changeAdminOnline(String adminId, bool value) async {
-    emit(LoadingChangeAdminOnline());
-    try {
-      await FirebaseFirestore.instance
-          .collection(AppStrings.admin)
-          .doc(adminId)
-          .update({
-        'online': value,
-      });
-      emit(ScChangeAdminOnline());
-    } catch (e) {
-      print('change Admin Online $e');
-      emit(ErorrChangeAdminOnline(e.toString()));
-    }
-  }
-
   List<AdminModel> admins = [];
   Future<void> getAllAdmins() async {
     try {
@@ -307,22 +307,6 @@ class AdminCubit extends Cubit<AdminState> {
     } catch (e) {
       print('change Hospital Ban $e');
       emit(ErorrChangeHospitalBan(e.toString()));
-    }
-  }
-
-  Future<void> changeHospitalOnline(String hospitalId, bool value) async {
-    emit(LoadingChangeHospitalOnline());
-    try {
-      await FirebaseFirestore.instance
-          .collection(AppStrings.hospital)
-          .doc(hospitalId)
-          .update({
-        'online': value,
-      });
-      emit(ScChangeHospitalOnline());
-    } catch (e) {
-      print('change Hospital Online $e');
-      emit(ErorrChangeHospitalOnline(e.toString()));
     }
   }
 
