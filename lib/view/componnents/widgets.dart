@@ -9,7 +9,7 @@ import '../../app/app_colors.dart';
 import '../../app/app_sized_box.dart';
 import '../auth/widgets/build_auth_bottom.dart';
 
-Widget dataValue(
+Widget titleAndDescriptionWidget(
     {required String? name,
     required String value,
     IconData? prefix,
@@ -58,7 +58,6 @@ Widget dataValue(
 }
 
 Widget emptListWidget(String? title) {
-  print(title);
   return Center(
     child: Padding(
       padding: const EdgeInsets.all(10.0),
@@ -111,35 +110,13 @@ SizedBox imageWithOnlineState(
               Icons.power_settings_new_outlined,
               color: isOnline ? Colors.green : Colors.deepPurple[900],
               size: 20,
-            )
-            // child: CircleAvatar(
-            //   backgroundColor: isOnline ? Colors.green : Colors.red,
-            //   radius: 1.8.w,
-            // ),
-            ),
+            )),
       ],
     ),
   );
 }
 
-List<String> healthyHistory = const [
-  "Diabetes",
-  "Hypertension",
-  "Heart Disease",
-  "Asthma",
-  "Thyroid Disorders",
-  "Cervical Cancer"
-];
-List<String> postpartumHealth = const [
-  "Postpartum Bleeding",
-  "Abdominal Pain",
-  "Uterine Contraction",
-  "Mastitis",
-  "Constipation",
-  "Excessive Swelling"
-];
-
-Widget selectFromOptionbs(List<String> mainList, List<String> myList) {
+Widget selectMultiItemsFromList(List<String> mainList, List<String> myList) {
   return StatefulBuilder(builder: (context, setState) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +143,6 @@ Widget selectFromOptionbs(List<String> mainList, List<String> myList) {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              //value: mainList[0],
               onChanged: (String? value) {
                 if (value != null && !myList.contains(value)) {
                   setState(() {

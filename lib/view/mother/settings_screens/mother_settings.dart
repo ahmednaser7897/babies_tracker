@@ -1,3 +1,5 @@
+import 'package:babies_tracker/view/componnents/build_cover_text.dart';
+import 'package:babies_tracker/view/componnents/build_list_title_widget.dart';
 import 'package:babies_tracker/view/doctor/mother/current_medications/show_mother_medications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

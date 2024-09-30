@@ -51,18 +51,18 @@ class _AdminDetailsScreenState extends State<AdminDetailsScreen> {
               AppSizedBox.h2,
               //check if The current login admin was created before this admin
               if (canBan) banWidget(),
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Email",
                   value: model.email ?? '',
                   prefix: Icons.email_rounded),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Phone", value: model.phone ?? '', prefix: Icons.call),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Gender",
                   value: model.gender ?? '',
                   prefix: Icons.male),

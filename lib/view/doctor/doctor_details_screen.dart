@@ -73,23 +73,23 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               AppSizedBox.h2,
               //only hospital can ban doctor
               if (AppPreferences.userType == AppStrings.hospital) banWidget(),
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Email",
                   value: model.email ?? '',
                   prefix: Icons.email_rounded),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Phone", value: model.phone ?? '', prefix: Icons.call),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Gender",
                   value: model.gender ?? '',
                   prefix: Icons.male),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Bio",
                   value: model.bio ?? '',
                   prefix: Icons.info_outline),

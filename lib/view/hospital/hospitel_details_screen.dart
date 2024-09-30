@@ -50,21 +50,21 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
               AppSizedBox.h2,
               options(),
               AppSizedBox.h2,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Email",
                   value: model.email ?? '',
                   prefix: Icons.email_rounded),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Phone", value: model.phone ?? '', prefix: Icons.call),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "City", value: model.city ?? '', prefix: Icons.home),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                 name: "Location",
                 value: model.location ?? '',
                 prefix: Icons.location_history,
@@ -79,7 +79,7 @@ class _HospitelDetailsScreenState extends State<HospitelDetailsScreen> {
                 ),
               ),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Bio",
                   value: model.bio ?? '',
                   prefix: Icons.info_outline),

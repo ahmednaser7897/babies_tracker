@@ -36,18 +36,18 @@ class _SleepsDetailsScreenState extends State<SleepsDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppSizedBox.h1,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Total sleeped hours",
                   value: ' ${model.totalSleepDuration ?? ''}  hours',
                   prefix: Icons.timelapse_rounded),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Date",
                   value: model.date ?? '',
                   prefix: Icons.date_range),
               AppSizedBox.h3,
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Notes", value: model.notes ?? '', prefix: Icons.note),
               AppSizedBox.h3,
               Text(

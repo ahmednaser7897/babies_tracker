@@ -36,20 +36,20 @@ class _MedicationsDetailsScreenState extends State<MedicationsDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppSizedBox.h1,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "purpose",
                   value: model.purpose ?? '',
                   prefix: Icons.add_circle),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "frequency",
                   value: model.frequency.toString(),
                   prefix: Icons.numbers),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "dosage",
                   value: model.dosage ?? '',
                   prefix: Icons.medical_information),
@@ -61,7 +61,7 @@ class _MedicationsDetailsScreenState extends State<MedicationsDetailsScreen> {
                   startDateController:
                       TextEditingController(text: model.startDate ?? '')),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Doctor Notes",
                   value: model.doctorNotes.toString(),
                   prefix: Icons.note),

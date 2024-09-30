@@ -36,12 +36,12 @@ class _FeedingsDetailsScreenState extends State<FeedingsDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppSizedBox.h1,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Date",
                   value: model.date ?? '',
                   prefix: Icons.date_range),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Notes", value: model.notes ?? '', prefix: Icons.note),
               AppSizedBox.h3,
               Text(

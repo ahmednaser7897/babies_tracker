@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../app/app_sized_box.dart';
 import '../../../app/app_strings.dart';
 import '../../../app/app_validation.dart';
+import '../../../app/constants.dart';
 import '../../../controller/mother/mother_cubit.dart';
 import '../../../model/mother/mother_model.dart';
 import '../../auth/widgets/build_auth_bottom.dart';
@@ -168,7 +169,8 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
                         ),
                       ),
                       AppSizedBox.h1,
-                      selectFromOptionbs(healthyHistory, motherHealthyHistory),
+                      selectMultiItemsFromList(
+                          healthyHistory, motherHealthyHistory),
                       AppSizedBox.h3,
                       const Text(
                         "Postpartum Health",
@@ -178,7 +180,7 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
                         ),
                       ),
                       AppSizedBox.h1,
-                      selectFromOptionbs(
+                      selectMultiItemsFromList(
                           postpartumHealth, motherPostpartumHealth),
                       AppSizedBox.h3,
                       const Text(

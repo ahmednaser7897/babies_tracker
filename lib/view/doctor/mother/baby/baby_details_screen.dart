@@ -86,13 +86,13 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                   AppSizedBox.h1,
                   userImage(),
                   AppSizedBox.h1,
-                  dataValue(
+                  titleAndDescriptionWidget(
                       name: "Name",
                       value: model.name ?? '',
                       prefix: Icons.person),
                   AppSizedBox.h3,
                   if (model.doctorModel != null) ...[
-                    dataValue(
+                    titleAndDescriptionWidget(
                         name: "Doctor",
                         value: model.doctorModel!.name ?? '',
                         prefix: Icons.person,
@@ -112,34 +112,34 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                             ))),
                     AppSizedBox.h3,
                   ],
-                  dataValue(
+                  titleAndDescriptionWidget(
                       name: "Height in(cm)",
                       value: model.birthLength ?? '',
                       prefix: Icons.height),
                   AppSizedBox.h3,
-                  dataValue(
+                  titleAndDescriptionWidget(
                       name: "Weight in(kg)",
                       value: model.birthWeight ?? '',
                       prefix: Icons.monitor_weight),
                   AppSizedBox.h3,
-                  dataValue(
+                  titleAndDescriptionWidget(
                       name: "Head Circumference in(cm)",
                       value: model.headCircumference ?? '',
                       prefix: Icons.numbers),
                   AppSizedBox.h3,
-                  dataValue(
+                  titleAndDescriptionWidget(
                       name: "Birth Date",
                       value: model.birthDate ?? '',
                       prefix: Icons.date_range),
                   AppSizedBox.h3,
-                  dataValue(
+                  titleAndDescriptionWidget(
                       name: "Gestational Age",
                       value: model.gestationalAge != null
                           ? '${model.gestationalAge!} week'
                           : '',
                       prefix: Icons.date_range),
                   AppSizedBox.h3,
-                  dataValue(
+                  titleAndDescriptionWidget(
                       name: "Delivery Type",
                       value: model.deliveryType ?? '',
                       prefix: Icons.type_specimen_sharp),
@@ -158,13 +158,13 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                     ],
                   ),
                   AppSizedBox.h1,
-                  dataValue(
+                  titleAndDescriptionWidget(
                     name: null,
                     value:
                         '( ${model.appearance} , ${model.pulse} , ${model.grimace} , ${model.activity} , ${model.respiration} )',
                   ),
                   AppSizedBox.h3,
-                  dataValue(
+                  titleAndDescriptionWidget(
                       name: "Doctor Notes",
                       value: model.doctorNotes.toString(),
                       prefix: Icons.note),

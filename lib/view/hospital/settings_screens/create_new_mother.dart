@@ -8,6 +8,7 @@ import '../../../app/app_prefs.dart';
 import '../../../app/app_sized_box.dart';
 import '../../../app/app_strings.dart';
 import '../../../app/app_validation.dart';
+import '../../../app/constants.dart';
 import '../../../controller/hospital/hospital_cubit.dart';
 import '../../../model/mother/mother_model.dart';
 import '../../auth/widgets/build_auth_bottom.dart';
@@ -156,7 +157,8 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
                         ),
                       ),
                       AppSizedBox.h2,
-                      selectFromOptionbs(healthyHistory, motherHealthyHistory),
+                      selectMultiItemsFromList(
+                          healthyHistory, motherHealthyHistory),
                       AppSizedBox.h3,
                       const Text(
                         "Postpartum Health",
@@ -166,7 +168,7 @@ class _AddNewMotherScreenState extends State<AddNewMotherScreen> {
                         ),
                       ),
                       AppSizedBox.h2,
-                      selectFromOptionbs(
+                      selectMultiItemsFromList(
                           postpartumHealth, motherPostpartumHealth),
                       AppSizedBox.h3,
                       const Text(

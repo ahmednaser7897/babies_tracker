@@ -79,11 +79,11 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
               AppSizedBox.h1,
               options(),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
               if (model.doctorModel != null) ...[
-                dataValue(
+                titleAndDescriptionWidget(
                     name: "Doctor",
                     value: model.doctorModel!.name ?? '',
                     prefix: Icons.person,
@@ -104,20 +104,20 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
                 AppSizedBox.h3,
               ],
 
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Email",
                   value: model.email ?? '',
                   prefix: Icons.email_rounded),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Phone", value: model.phone ?? '', prefix: Icons.call),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "address",
                   value: model.address ?? '',
                   prefix: Icons.home),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Doctor notes",
                   value: model.doctorNotes ?? '',
                   prefix: Icons.note),

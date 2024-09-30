@@ -36,22 +36,22 @@ class _VaccinationsDetailsScreenState extends State<VaccinationsDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppSizedBox.h1,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Vaccine Name",
                   value: model.vaccineName ?? '',
                   prefix: Icons.person),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Dose",
                   value: model.dose ?? '',
                   prefix: Icons.medical_information),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Administering Entity",
                   value: model.administering.toString(),
                   prefix: Icons.admin_panel_settings),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Administration Site ",
                   value: model.administrationSite ?? '',
                   prefix: Icons.table_chart_sharp),
@@ -65,7 +65,7 @@ class _VaccinationsDetailsScreenState extends State<VaccinationsDetailsScreen> {
                   startDateController:
                       TextEditingController(text: model.nextDoseDate ?? '')),
               AppSizedBox.h3,
-              dataValue(
+              titleAndDescriptionWidget(
                   name: "Side Effects",
                   value: model.sideEffects.toString(),
                   prefix: Icons.note),
