@@ -435,9 +435,11 @@ class HospitalCubit extends Cubit<HospitalState> {
 
         //get evrey mother baby
         var bays = await element.reference.collection(AppStrings.baby).get();
+
         mother.babys = [];
         for (var element in bays.docs) {
           var baby = BabieModel.fromJson(element.data());
+          baby.doctorModel = mother.doctorModel;
           baby.sleepDetailsModel = [];
           baby.vaccinations = [];
           baby.feedingTimes = [];

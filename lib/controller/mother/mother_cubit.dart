@@ -57,6 +57,14 @@ class MotherCubit extends Cubit<MotherState> {
 
       model = MotherModel.fromJson(value.data() ?? {});
       changeMotherOnline(model!.id ?? '', AppPreferences.hospitalUid, true);
+      //get mother's doctor
+      var doctor = await FirebaseFirestore.instance
+          .collection(AppStrings.hospital)
+          .doc(AppPreferences.hospitalUid)
+          .collection(AppStrings.doctor)
+          .doc(model!.docyorlId)
+          .get();
+      model!.doctorModel = DoctorModel.fromJson(doctor.data() ?? {});
 
       model!.babys = [];
       model!.medications = [];
@@ -180,6 +188,7 @@ class MotherCubit extends Cubit<MotherState> {
 
     for (var element in babys.docs) {
       var baby = BabieModel.fromJson(element.data());
+      baby.doctorModel = mother.doctorModel;
       baby.sleepDetailsModel = [];
       baby.vaccinations = [];
       baby.feedingTimes = [];

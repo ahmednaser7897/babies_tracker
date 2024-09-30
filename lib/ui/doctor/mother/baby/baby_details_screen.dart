@@ -1,6 +1,7 @@
 import 'package:babies_tracker/app/app_colors.dart';
 import 'package:babies_tracker/app/app_strings.dart';
 import 'package:babies_tracker/model/babies_model.dart';
+import 'package:babies_tracker/ui/doctor/doctor_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:babies_tracker/app/app_assets.dart';
 import 'package:babies_tracker/app/app_sized_box.dart';
@@ -90,6 +91,27 @@ class _BabyDetailsScreenState extends State<BabyDetailsScreen> {
                       value: model.name ?? '',
                       prefix: Icons.person),
                   AppSizedBox.h3,
+                  if (model.doctorModel != null) ...[
+                    dataValue(
+                        name: "Doctor",
+                        value: model.doctorModel!.name ?? '',
+                        prefix: Icons.person,
+                        trailing: IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DoctorDetailsScreen(
+                                        model: model.doctorModel!),
+                                  ));
+                            },
+                            icon: const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: AppColors.primerColor,
+                              size: 20,
+                            ))),
+                    AppSizedBox.h3,
+                  ],
                   dataValue(
                       name: "Height in(cm)",
                       value: model.birthLength ?? '',

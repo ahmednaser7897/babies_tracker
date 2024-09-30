@@ -15,6 +15,7 @@ import '../../model/mother_model.dart';
 import '../componnents/custom_button.dart';
 import '../componnents/show_flutter_toast.dart';
 import '../componnents/widgets.dart';
+import '../doctor/doctor_details_screen.dart';
 import '../doctor/mother/baby/show_mother_baybs.dart';
 import '../doctor/chat/doctor_message_mother_screen.dart';
 import '../doctor/mother/current_medications/show_mother_medications.dart';
@@ -81,11 +82,28 @@ class _MotherDetailsScreenState extends State<MotherDetailsScreen> {
               dataValue(
                   name: "Name", value: model.name ?? '', prefix: Icons.person),
               AppSizedBox.h3,
-              dataValue(
-                  name: "Doctor",
-                  value: model.doctorModel!.name ?? '',
-                  prefix: Icons.person),
-              AppSizedBox.h3,
+              if (model.doctorModel != null) ...[
+                dataValue(
+                    name: "Doctor",
+                    value: model.doctorModel!.name ?? '',
+                    prefix: Icons.person,
+                    trailing: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DoctorDetailsScreen(
+                                    model: model.doctorModel!),
+                              ));
+                        },
+                        icon: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: AppColors.primerColor,
+                          size: 20,
+                        ))),
+                AppSizedBox.h3,
+              ],
+
               dataValue(
                   name: "Email",
                   value: model.email ?? '',

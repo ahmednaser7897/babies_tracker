@@ -40,13 +40,13 @@ class _LoginScreenState extends State<LoginScreen> {
     //admin
     // emailController.text = 'ahmed@gmail.com';
     //mother
-    emailController.text = 'soha@gmail.com';
+    //emailController.text = 'soha@gmail.com';
     //doctor
-    // emailController.text = 'rasha@gmail.com';
+    //emailController.text = 'rasha@gmail.com';
     //hospital
-    // emailController.text = 'jeddah@gmail.com';
+    //emailController.text = 'jeddah@gmail.com';
     //password
-    passwordController.text = '12345678';
+    //passwordController.text = '12345678';
 
     return BlocProvider(
       create: (context) => AuthCubit(),

@@ -225,6 +225,7 @@ class DoctorCubit extends Cubit<DoctorState> {
     var babys = await element.reference.collection(AppStrings.baby).get();
     for (var element in babys.docs) {
       var baby = BabieModel.fromJson(element.data());
+      baby.doctorModel = mother.doctorModel;
       baby.sleepDetailsModel = [];
       baby.vaccinations = [];
       baby.feedingTimes = [];

@@ -5,6 +5,7 @@ import 'package:babies_tracker/model/sleep_details_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'doctor_model.dart';
 import 'feeding_times_model.dart';
 import 'vaccinations_histories_model.dart';
 
@@ -33,6 +34,7 @@ class BabieModel extends Equatable {
   List<VaccinationsHistoriesModel>? vaccinations = [];
   List<SleepDetailsModel>? sleepDetailsModel = [];
   List<FeedingTimesModel>? feedingTimes = [];
+  DoctorModel? doctorModel;
   BabieModel(
       {this.id,
       this.motherId,
