@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../ui/componnents/show_flutter_toast.dart';
+import '../view/componnents/show_flutter_toast.dart';
 
 void launchURLFunction(String website) async {
   try {

@@ -1,20 +1,20 @@
 import 'dart:io';
 
 import 'package:babies_tracker/app/app_strings.dart';
-import 'package:babies_tracker/model/doctor_model.dart';
-import 'package:babies_tracker/model/hospital_model.dart';
+import 'package:babies_tracker/model/doctor/doctor_model.dart';
+import 'package:babies_tracker/model/hospital/hospital_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_prefs.dart';
 import 'package:babies_tracker/app/extensions.dart';
-import 'package:babies_tracker/model/admin_model.dart';
+import 'package:babies_tracker/model/admin/admin_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-import '../../ui/admin/admins/show_all_admins.dart';
-import '../../ui/admin/hospitels_screen/show_all_hospitals_screen.dart';
-import '../../ui/admin/settings_screens/admin_settings.dart';
+import '../../view/admin/admins/show_all_admins.dart';
+import '../../view/admin/hospitels_screen/show_all_hospitals_screen.dart';
+import '../../view/admin/settings_screens/admin_settings.dart';
 part 'admin_state.dart';
 
 class AdminCubit extends Cubit<AdminState> {

@@ -4,24 +4,24 @@ import 'dart:io';
 
 import 'package:babies_tracker/app/app_strings.dart';
 import 'package:babies_tracker/controller/mother/mother_state.dart';
-import 'package:babies_tracker/model/doctor_model.dart';
+import 'package:babies_tracker/model/doctor/doctor_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_prefs.dart';
-import 'package:babies_tracker/model/mother_model.dart';
+import 'package:babies_tracker/model/mother/mother_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../../app/notification/onesignal_notifications.dart';
-import '../../model/babies_model.dart';
-import '../../model/current_medications_model.dart';
-import '../../model/feeding_times_model.dart';
-import '../../model/message_model.dart';
-import '../../model/sleep_details_model.dart';
-import '../../model/vaccinations_histories_model.dart';
-import '../../ui/hospital/doctors/show_all_doctors.dart';
-import '../../ui/mother/baby/show_my_baybs.dart';
-import '../../ui/mother/settings_screens/mother_settings.dart';
+import '../../model/baby/babies_model.dart';
+import '../../model/mother/current_medications_model.dart';
+import '../../model/baby/feeding_times_model.dart';
+import '../../model/chat/message_model.dart';
+import '../../model/baby/sleep_details_model.dart';
+import '../../model/baby/vaccinations_histories_model.dart';
+import '../../view/hospital/doctors/show_all_doctors.dart';
+import '../../view/mother/baby/show_my_baybs.dart';
+import '../../view/mother/settings_screens/mother_settings.dart';
 
 class MotherCubit extends Cubit<MotherState> {
   MotherCubit() : super(MotherInitial());

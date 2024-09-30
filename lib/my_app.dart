@@ -4,15 +4,15 @@ import 'package:babies_tracker/controller/mother/mother_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_prefs.dart';
-import 'package:babies_tracker/ui/admin/admin_main_screen.dart';
+import 'package:babies_tracker/view/admin/admin_main_screen.dart';
 import 'package:get/get.dart';
 import 'app/style.dart';
 import 'controller/admin/admin_cubit.dart';
 import 'controller/doctor/doctor_cubit.dart';
-import 'ui/auth/login_screen.dart';
-import 'ui/doctor/doctor_main_screen.dart';
-import 'ui/hospital/hospital_main_screen.dart';
-import 'ui/mother/moher_main_screen.dart';
+import 'view/auth/login_screen.dart';
+import 'view/doctor/doctor_main_screen.dart';
+import 'view/hospital/hospital_main_screen.dart';
+import 'view/mother/moher_main_screen.dart';
 
 class MyApp extends StatelessWidget {
   static late bool isDark;

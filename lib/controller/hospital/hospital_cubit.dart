@@ -1,25 +1,25 @@
 import 'dart:io';
 
 import 'package:babies_tracker/app/app_strings.dart';
-import 'package:babies_tracker/model/doctor_model.dart';
-import 'package:babies_tracker/model/mother_model.dart';
+import 'package:babies_tracker/model/doctor/doctor_model.dart';
+import 'package:babies_tracker/model/mother/mother_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_prefs.dart';
 import 'package:babies_tracker/app/extensions.dart';
-import 'package:babies_tracker/model/hospital_model.dart';
+import 'package:babies_tracker/model/hospital/hospital_model.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-import '../../model/babies_model.dart';
-import '../../model/current_medications_model.dart';
-import '../../model/feeding_times_model.dart';
-import '../../model/sleep_details_model.dart';
-import '../../model/vaccinations_histories_model.dart';
-import '../../ui/hospital/doctors/show_all_doctors.dart';
-import '../../ui/hospital/mother/show_all_mother_screen.dart';
-import '../../ui/hospital/settings_screens/hospitl_settings.dart';
+import '../../model/baby/babies_model.dart';
+import '../../model/mother/current_medications_model.dart';
+import '../../model/baby/feeding_times_model.dart';
+import '../../model/baby/sleep_details_model.dart';
+import '../../model/baby/vaccinations_histories_model.dart';
+import '../../view/hospital/doctors/show_all_doctors.dart';
+import '../../view/hospital/mother/show_all_mother_screen.dart';
+import '../../view/hospital/settings_screens/hospitl_settings.dart';
 import '../admin/admin_cubit.dart';
 
 part 'hospital_state.dart';
