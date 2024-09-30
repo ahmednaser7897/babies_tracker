@@ -1,15 +1,15 @@
 import 'package:babies_tracker/app/app_strings.dart';
 import 'package:babies_tracker/controller/doctor/doctor_cubit.dart';
 import 'package:babies_tracker/controller/doctor/doctor_state.dart';
-import 'package:babies_tracker/model/babies_model.dart';
-import 'package:babies_tracker/ui/componnents/start_end_date.dart';
+import 'package:babies_tracker/model/baby/babies_model.dart';
+import 'package:babies_tracker/view/componnents/start_end_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:babies_tracker/app/app_sized_box.dart';
 import 'package:babies_tracker/app/app_validation.dart';
 import 'package:babies_tracker/app/extensions.dart';
 
-import '../../../../../model/vaccinations_histories_model.dart';
+import '../../../../../model/baby/vaccinations_histories_model.dart';
 import '../../../../auth/widgets/build_auth_bottom.dart';
 import '../../../../componnents/app_textformfiled_widget.dart';
 import '../../../../componnents/const_widget.dart';
