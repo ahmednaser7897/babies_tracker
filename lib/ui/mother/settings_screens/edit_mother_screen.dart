@@ -83,7 +83,7 @@ class _EditeMotherScreenState extends State<EditeMotherScreen> {
       create: (context) => ImageCubit(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppStrings.addNewUser(AppStrings.mother)),
+          title: Text(AppStrings.updateUser(AppStrings.mother)),
         ),
         body: Center(
           child: SingleChildScrollView(

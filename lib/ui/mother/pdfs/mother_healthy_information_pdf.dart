@@ -13,10 +13,9 @@ class MotherHealthPdf {
       margin: const EdgeInsets.all(10),
       build: (context) => [
         buildHeader(model),
-        SizedBox(height: .5 * PdfPageFormat.cm),
         Divider(),
         SizedBox(height: .5 * PdfPageFormat.cm),
-        motyerHealth(model),
+        motherHealth(model),
         SizedBox(height: .5 * PdfPageFormat.cm),
         Divider(),
         SizedBox(height: .5 * PdfPageFormat.cm),
@@ -24,70 +23,59 @@ class MotherHealthPdf {
         SizedBox(height: .5 * PdfPageFormat.cm),
         Divider(),
         SizedBox(height: .5 * PdfPageFormat.cm),
-        // motherBabys(model),
-        // SizedBox(height: .5 * PdfPageFormat.cm),
-        // Divider(),
-        // SizedBox(height: .5 * PdfPageFormat.cm),
+        motherBabys(model),
+        SizedBox(height: .5 * PdfPageFormat.cm),
+        Divider(),
+        SizedBox(height: .5 * PdfPageFormat.cm),
       ],
     ));
 
     return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
   }
 
-  static Widget buildHeader(MotherModel model) => Row(children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Genral information :-',
-              style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+  static Widget buildHeader(MotherModel model) => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          titleText('Genral information'),
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          SizedBox(
+            height: 15.h,
+            child: GridView(
+              childAspectRatio: 50.w / 2.h,
+              crossAxisCount: 2,
+              crossAxisSpacing: 50.w / 2.h,
+              children: <Widget>[
+                buildText(
+                  title: 'Name',
+                  value: model.name ?? '',
+                ),
+                buildText(title: 'Email', value: model.email ?? ''),
+                buildText(title: 'phone ', value: model.phone ?? ''),
+                buildText(title: 'Address', value: model.address ?? ''),
+              ],
             ),
-            SizedBox(height: 0.3 * PdfPageFormat.cm),
-            Text('Name : ${model.name}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal)),
-            SizedBox(height: 1 * PdfPageFormat.mm),
-            Text('Email : ${model.email ?? ''}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal)),
-            SizedBox(height: 1 * PdfPageFormat.mm),
-            Text('phone : ${model.phone ?? ''}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal)),
-            SizedBox(height: 1 * PdfPageFormat.mm),
-            Text('Address : ${model.address ?? ''}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal)),
-            SizedBox(height: 1 * PdfPageFormat.mm),
-            Text('Doctor notes : ${model.doctorNotes ?? ''}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal)),
-          ],
-        )
-      ]);
+          ),
+        ],
+      );
 
-  static Widget motyerHealth(MotherModel model) {
-    print(model.healthyHistory);
-    print(model.postpartumHealth);
+  static Widget motherHealth(MotherModel model) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        'Health information :-',
-        style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(height: 0.5 * PdfPageFormat.cm),
-      Text(
-        "Healthy History :",
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        titleText(
+          "Mother Healthy",
+        )
+      ]),
+      SizedBox(height: .5 * PdfPageFormat.cm),
+      subTitelText(
+        "Healthy History",
       ),
       SizedBox(height: .2 * PdfPageFormat.cm),
       showList(
         model.healthyHistory ?? [],
       ),
       SizedBox(height: 0.5 * PdfPageFormat.cm),
-      Text(
-        "Postpartum Health :",
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
+      subTitelText(
+        "Postpartum Health",
       ),
       SizedBox(height: .2 * PdfPageFormat.cm),
       showList(
@@ -100,15 +88,9 @@ class MotherHealthPdf {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: List.generate(myList.length, (index) {
-        return Column(children: [
-          Text(
-            '${index + 1} - ${myList[index]}',
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-                color: PdfColors.black),
-          )
-        ]);
+        return subTitelText(
+          '${index + 1} - ${myList[index]}',
+        );
       }),
     );
   }
@@ -116,28 +98,25 @@ class MotherHealthPdf {
   static Widget motherMedications(MotherModel model) {
     final headers = [
       'Name',
-      //'Purpose',
       'Frequency',
       'Dosage',
       'Start Date',
       'End Date',
     ];
     final List<List<dynamic>> data = [];
-    model.medications!.forEach((element) {
+    for (var element in model.medications!) {
       data.add([
         element.name,
-        //element.purpose,
         element.frequency,
         element.dosage,
         element.startDate.orEmpty().split('-')[0],
         element.endDate.orEmpty().split('-')[0],
       ]);
-    });
+    }
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        'Current medications :-',
-        style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      titleText(
+        'Current medications',
       ),
       SizedBox(height: 0.5 * PdfPageFormat.cm),
       TableHelper.fromTextArray(
@@ -149,7 +128,6 @@ class MotherHealthPdf {
         cellHeight: 20,
         columnWidths: {
           0: const FlexColumnWidth(2),
-          //1: const FlexColumnWidth(2),
           1: const FlexColumnWidth(1),
           2: const FlexColumnWidth(1),
           3: const FlexColumnWidth(1),
@@ -157,7 +135,6 @@ class MotherHealthPdf {
         },
         cellAlignments: {
           0: Alignment.centerLeft,
-          // 1: Alignment.center,
           1: Alignment.center,
           2: Alignment.center,
           3: Alignment.center,
@@ -167,39 +144,68 @@ class MotherHealthPdf {
     ]);
   }
 
-  static buildSimpleText({
-    required String title,
-    required String value,
-  }) {
-    final style = TextStyle(fontWeight: FontWeight.bold);
+  static Widget motherBabys(MotherModel model) {
+    final headers = [
+      'Name',
+      'Bith Date',
+      'Weight in(kg)',
+      '"Height in(cm)',
+    ];
+    final List<List<dynamic>> data = [];
+    for (var element in model.babys!) {
+      data.add([
+        element.name,
+        element.birthDate,
+        element.birthWeight,
+        element.birthLength,
+      ]);
+    }
 
-    return Row(
-      children: [
-        Text(title, style: style),
-        SizedBox(width: 2 * PdfPageFormat.mm),
-        Text(value),
-      ],
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      titleText(
+        'Babys',
+      ),
+      SizedBox(height: 0.5 * PdfPageFormat.cm),
+      TableHelper.fromTextArray(
+        headers: headers,
+        data: data,
+        border: null,
+        cellAlignment: Alignment.center,
+        headerStyle: TextStyle(fontWeight: FontWeight.bold),
+        headerDecoration: const BoxDecoration(color: PdfColors.grey300),
+      )
+    ]);
+  }
+
+  static Text titleText(String text) {
+    return Text(text,
+        style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: const PdfColor.fromInt(0xFFe0185e)),
+        textAlign: TextAlign.center);
+  }
+
+  static Text subTitelText(String tetx) {
+    return Text(
+      tetx,
+      style: TextStyle(
+          fontSize: 18, fontWeight: FontWeight.bold, color: PdfColors.blueGrey),
     );
   }
 
   static buildText({
     required String title,
     required String value,
-    double width = double.infinity,
     TextStyle? titleStyle,
-    bool unite = false,
   }) {
-    final style =
-        titleStyle ?? TextStyle(fontWeight: FontWeight.normal, fontSize: 18);
+    final style = titleStyle ??
+        TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: PdfColors.blueGrey,
+        );
 
-    return Container(
-      width: width,
-      child: Row(
-        children: [
-          Text('$title : ', style: style),
-          Text(value, style: unite ? style : null),
-        ],
-      ),
-    );
+    return Text('$title : $value', style: style);
   }
 }

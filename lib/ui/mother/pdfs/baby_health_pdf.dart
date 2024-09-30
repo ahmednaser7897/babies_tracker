@@ -16,7 +16,6 @@ class BabyHealthPdf {
       margin: const EdgeInsets.all(10),
       build: (context) => [
         buildHeader(model),
-        SizedBox(height: .5 * PdfPageFormat.cm),
         Divider(),
         SizedBox(height: .5 * PdfPageFormat.cm),
         babySleepTimes(model),
@@ -37,74 +36,56 @@ class BabyHealthPdf {
     return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
   }
 
-  static Widget buildHeader(BabieModel model) => Row(children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Genral information :-',
-              style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+  static Widget buildHeader(BabieModel model) => Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          titleText('Genral information'),
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          SizedBox(
+            height: 30.h,
+            child: GridView(
+              childAspectRatio: 50.w / 2.h,
+              crossAxisCount: 2,
+              crossAxisSpacing: 50.w / 2.h,
+              children: <Widget>[
+                buildText(
+                  title: "Name",
+                  value: model.name ?? '',
+                ),
+                buildText(
+                  title: "Height in(cm)",
+                  value: model.birthLength ?? '',
+                ),
+                buildText(
+                  title: "Head Circumference in(cm)",
+                  value: model.headCircumference ?? '',
+                ),
+                buildText(
+                  title: "Weight in(kg)",
+                  value: model.birthWeight ?? '',
+                ),
+                buildText(
+                  title: "Birth Date",
+                  value: model.birthDate == null
+                      ? ''
+                      : model.birthDate!.split('-')[0],
+                ),
+                buildText(
+                  title: "Gestational Age",
+                  value: model.gestationalAge != null
+                      ? '${model.gestationalAge!} week'
+                      : '',
+                ),
+                buildText(
+                  title: "APGAR Score",
+                  value:
+                      '( ${model.appearance} , ${model.pulse} , ${model.grimace} , ${model.activity} , ${model.respiration} )',
+                ),
+              ],
             ),
-            buildText(
-              title: "Name",
-              value: model.name ?? '',
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Height in(cm)",
-              value: model.birthLength ?? '',
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Weight in(kg)",
-              value: model.birthWeight ?? '',
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Head Circumference in(kg)",
-              value: model.headCircumference ?? '',
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Birth Date",
-              value: model.birthDate ?? '',
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Gestational Age",
-              value: model.gestationalAge != null
-                  ? '${model.gestationalAge!} month'
-                  : '',
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Appearance",
-              value: model.appearance.toString(),
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Grimace",
-              value: model.grimace.toString(),
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Pulse",
-              value: model.pulse.toString(),
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Respiration",
-              value: model.respiration.toString(),
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-            buildText(
-              title: "Doctor Notes",
-              value: model.doctorNotes.toString(),
-            ),
-            SizedBox(height: 0.2 * PdfPageFormat.cm),
-          ],
-        )
-      ]);
+          ),
+        ],
+      );
 
   static Widget babyVaccination(BabieModel model) {
     final headers = [
@@ -115,7 +96,7 @@ class BabyHealthPdf {
       'Next Dose Date',
     ];
     final List<List<dynamic>> data = [];
-    model.vaccinations!.forEach((element) {
+    for (var element in model.vaccinations!) {
       data.add([
         element.vaccineName,
         element.dose,
@@ -123,18 +104,10 @@ class BabyHealthPdf {
         element.vaccinationDate.orEmpty().split('-')[0],
         element.nextDoseDate.orEmpty().split('-')[0],
       ]);
-    });
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        'Health information :-',
-        style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(height: 0.5 * PdfPageFormat.cm),
-      Text(
-        'Vaccination information :-',
-        style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(height: .3 * PdfPageFormat.cm),
+    }
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      titleText('Vaccination information'),
+      SizedBox(height: .5 * PdfPageFormat.cm),
       TableHelper.fromTextArray(
         headers: headers,
         data: data,
@@ -161,132 +134,125 @@ class BabyHealthPdf {
   }
 
   static Widget babySleepTimes(BabieModel model) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        'Sleep Times information :-',
-        style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(height: .3 * PdfPageFormat.cm),
-      showSleepTimesList(
-        model.sleepDetailsModel ?? [],
-      ),
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      titleText('Sleep Times information'),
+      SizedBox(height: .5 * PdfPageFormat.cm),
+      ...List.generate((model.sleepDetailsModel ?? []).length, (index) {
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          subTitelText(
+            'Total hours : ${(model.sleepDetailsModel ?? [])[index].totalSleepDuration} - Date : ${(model.sleepDetailsModel ?? [])[index].date.orEmpty().split('-')[0]}',
+          ),
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          sleepDetailsTable(
+              (model.sleepDetailsModel ?? [])[index].details ?? []),
+        ]);
+      }),
       SizedBox(height: 0.5 * PdfPageFormat.cm),
     ]);
   }
 
-  static Widget showSleepTimesList(List<SleepDetailsModel> myList) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(myList.length, (index) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            myList[index].date.orEmpty().split('-')[0],
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: PdfColors.black),
-          ),
-          SizedBox(height: 0.3 * PdfPageFormat.cm),
-          Text(
-            'Total hours : ${myList[index].totalSleepDuration} ',
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-                color: PdfColors.black),
-          ),
-          SizedBox(height: 0.3 * PdfPageFormat.cm),
-          ...List.generate(myList[index].details!.length, (index2) {
-            return Text(
-              '${index2 + 1} - ${myList[index].details![index2].sleepQuality} - from : ${myList[index].details![index2].startTime} - to: ${myList[index].details![index2].endTime}',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                  height: 1.5,
-                  color: PdfColors.black),
-            );
-          }),
-          SizedBox(height: 0.4 * PdfPageFormat.cm),
-        ]);
-      }),
-    );
+  static Widget sleepDetailsTable(List<DetailsModel> myList) {
+    final headers = [
+      'Sleep Quality',
+      'From',
+      'To',
+    ];
+    final List<List<dynamic>> data = [];
+    for (var element in myList) {
+      data.add([
+        element.sleepQuality,
+        element.startTime,
+        element.endTime,
+      ]);
+    }
+    return Column(children: [
+      TableHelper.fromTextArray(
+        headers: headers,
+        data: data,
+        border: null,
+        cellAlignment: Alignment.center,
+        headerStyle: TextStyle(fontWeight: FontWeight.bold),
+        headerDecoration: const BoxDecoration(color: PdfColors.grey300),
+      ),
+      SizedBox(height: 0.5 * PdfPageFormat.cm),
+    ]);
   }
 
   static Widget babyFeedingTimes(BabieModel model) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        'Feedeing times information :-',
-        style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(height: .3 * PdfPageFormat.cm),
-      showFeedingTimesList(
-        model.feedingTimes ?? [],
+    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      titleText('Feedeing times information'),
+      SizedBox(height: .5 * PdfPageFormat.cm),
+      ...List.generate((model.feedingTimes ?? []).length, (index) {
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          subTitelText(
+              'Date : ${(model.feedingTimes ?? [])[index].date.orEmpty().split('-')[0]}'),
+          SizedBox(height: 0.5 * PdfPageFormat.cm),
+          feedingDetailsTable((model.feedingTimes ?? [])[index].details ?? []),
+        ]);
+      }),
+      SizedBox(height: 0.5 * PdfPageFormat.cm),
+      SizedBox(height: 0.5 * PdfPageFormat.cm),
+    ]);
+  }
+
+  static Widget feedingDetailsTable(List<Feedingdetails> myList) {
+    final headers = [
+      'Feeding Details',
+      'Feeding Time',
+      'Feeding Amount in(ml)',
+      'Feeding Duration in(m)',
+    ];
+    final List<List<dynamic>> data = [];
+    for (var element in myList) {
+      data.add([
+        element.feedingDetails,
+        element.feedingTime,
+        element.feedingAmount,
+        element.feedingDuration,
+      ]);
+    }
+    return Column(children: [
+      TableHelper.fromTextArray(
+        headers: headers,
+        data: data,
+        border: null,
+        cellAlignment: Alignment.center,
+        headerStyle: TextStyle(fontWeight: FontWeight.bold),
+        headerDecoration: const BoxDecoration(color: PdfColors.grey300),
       ),
       SizedBox(height: 0.5 * PdfPageFormat.cm),
     ]);
   }
 
-  static Widget showFeedingTimesList(List<FeedingTimesModel> myList) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(myList.length, (index) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            myList[index].date.orEmpty().split('-')[0],
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: PdfColors.black),
-          ),
-          SizedBox(height: 0.3 * PdfPageFormat.cm),
-          ...List.generate(myList[index].details!.length, (index2) {
-            return Text(
-              '${index2 + 1} - ${myList[index].details![index2].feedingDetails} on ${myList[index].details![index2].feedingTime} - amount ${myList[index].details![index2].feedingAmount} (in ml) -  duration ${myList[index].details![index2].feedingDuration} (in m)',
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                  height: 1.5,
-                  color: PdfColors.black),
-            );
-          }),
-          SizedBox(height: 0.4 * PdfPageFormat.cm),
-        ]);
-      }),
-    );
+  static Text titleText(String text) {
+    return Text(text,
+        style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: const PdfColor.fromInt(0xFFe0185e)),
+        textAlign: TextAlign.center);
   }
 
-  static buildSimpleText({
-    required String title,
-    required String value,
-  }) {
-    final style = TextStyle(fontWeight: FontWeight.bold);
-
-    return Row(
-      children: [
-        Text(title, style: style),
-        SizedBox(width: 2 * PdfPageFormat.mm),
-        Text(value),
-      ],
+  static Text subTitelText(String tetx) {
+    return Text(
+      tetx,
+      style: TextStyle(
+          fontSize: 18, fontWeight: FontWeight.bold, color: PdfColors.blueGrey),
     );
   }
 
   static buildText({
     required String title,
     required String value,
-    double width = double.infinity,
     TextStyle? titleStyle,
-    bool unite = false,
   }) {
-    final style =
-        titleStyle ?? TextStyle(fontWeight: FontWeight.normal, fontSize: 20);
+    final style = titleStyle ??
+        TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: PdfColors.blueGrey,
+        );
 
-    return Container(
-      width: width,
-      child: Row(
-        children: [
-          Text('$title : ', style: style),
-          Text(value, style: style),
-        ],
-      ),
-    );
+    return Text('$title : $value', style: style);
   }
 }
